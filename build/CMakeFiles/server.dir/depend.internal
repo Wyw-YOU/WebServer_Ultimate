@@ -3,10 +3,32 @@
 
 CMakeFiles/server.dir/src/Log.cpp.o
  ../include/Log.hpp
- /root/WebServer/src/Log.cpp
+ /root/WebServer_Ultimate/src/Log.cpp
 CMakeFiles/server.dir/src/Server.cpp.o
+ ../include/Log.hpp
  ../include/Server.hpp
- /root/WebServer/src/Server.cpp
+ ../include/net/Acceptor.hpp
+ ../include/net/InetAddress.hpp
+ ../include/net/Socket.hpp
+ /root/WebServer_Ultimate/src/Server.cpp
+CMakeFiles/server.dir/src/http/HttpRequest.cpp.o
+ /root/WebServer_Ultimate/src/http/HttpRequest.cpp
+CMakeFiles/server.dir/src/http/HttpResponse.cpp.o
+ ../include/http/HttpResponse.hpp
+ /root/WebServer_Ultimate/src/http/HttpResponse.cpp
 CMakeFiles/server.dir/src/main.cpp.o
  ../include/Server.hpp
- /root/WebServer/src/main.cpp
+ /root/WebServer_Ultimate/src/main.cpp
+CMakeFiles/server.dir/src/net/Acceptor.cpp.o
+ ../include/Log.hpp
+ ../include/net/Acceptor.hpp
+ ../include/net/InetAddress.hpp
+ ../include/net/Socket.hpp
+ /root/WebServer_Ultimate/src/net/Acceptor.cpp
+CMakeFiles/server.dir/src/net/InetAddress.cpp.o
+ ../include/net/InetAddress.hpp
+ /root/WebServer_Ultimate/src/net/InetAddress.cpp
+CMakeFiles/server.dir/src/net/Socket.cpp.o
+ ../include/Log.hpp
+ ../include/net/Socket.hpp
+ /root/WebServer_Ultimate/src/net/Socket.cpp

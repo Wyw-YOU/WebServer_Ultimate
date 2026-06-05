@@ -4,9 +4,14 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/root/WebServer/src/Log.cpp" "/root/WebServer/build/CMakeFiles/server.dir/src/Log.cpp.o"
-  "/root/WebServer/src/Server.cpp" "/root/WebServer/build/CMakeFiles/server.dir/src/Server.cpp.o"
-  "/root/WebServer/src/main.cpp" "/root/WebServer/build/CMakeFiles/server.dir/src/main.cpp.o"
+  "/root/WebServer_Ultimate/src/Log.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/Log.cpp.o"
+  "/root/WebServer_Ultimate/src/Server.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/Server.cpp.o"
+  "/root/WebServer_Ultimate/src/http/HttpRequest.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/http/HttpRequest.cpp.o"
+  "/root/WebServer_Ultimate/src/http/HttpResponse.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/http/HttpResponse.cpp.o"
+  "/root/WebServer_Ultimate/src/main.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/main.cpp.o"
+  "/root/WebServer_Ultimate/src/net/Acceptor.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/net/Acceptor.cpp.o"
+  "/root/WebServer_Ultimate/src/net/InetAddress.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/net/InetAddress.cpp.o"
+  "/root/WebServer_Ultimate/src/net/Socket.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/net/Socket.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

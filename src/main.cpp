@@ -11,9 +11,7 @@ int main(int argc,char* argv[])
     }
 
     int port = atoi(argv[1]);
-
     Server server(port);
-
     server.Start();
 
     return 0;

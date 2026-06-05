@@ -1,4 +1,8 @@
 #include "Server.hpp"
+#include "Log.hpp"
+#include "net/Acceptor.hpp"
+#include "net/InetAddress.hpp"
+#include "net/Socket.hpp"
 
 #include <iostream>
 #include <cstring>
@@ -17,38 +21,39 @@ void Server::Start()
 
     if(listenfd < 0)
     {
-        perror("create socket faild!");
+        LOG_DEBUG("socket error!");
         return;
     }
+    Socket socket(listenfd);
+    Acceptor acceptor(port_);
+    // sockaddr_in addr{};
 
-    sockaddr_in addr{};
+    // addr.sin_family = AF_INET;
+    // addr.sin_addr.s_addr = INADDR_ANY;      // 监听所有网卡
+    // addr.sin_port = htons(port_);
 
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = INADDR_ANY;      // 监听所有网卡
-    addr.sin_port = htons(port_);
+    // if(bind(listenfd, (sockaddr*)&addr, sizeof(addr)) < 0)
+    // {
+    //     perror("bind error!");
+    //     return;
+    // }
 
-    if(bind(listenfd, (sockaddr*)&addr, sizeof(addr)) < 0)
-    {
-        perror("bind error!");
-        return;
-    }
+    // if(listen(listenfd, 128) < 0)
+    // {
+    //     perror("listen error");
+    //     return;
+    // }
 
-    if(listen(listenfd, 128) < 0)
-    {
-        perror("listen error");
-        return;
-    }
-
-    std::cout << "Server Start Port " << port_ << std::endl;
+    LOG_NORMAL("WebServer started on port " + std::to_string(port_));
 
     while(true)
     {
-        sockaddr_in client{};
+        InetAddress client;
 
         socklen_t len = sizeof(client);
 
         // 客户端请求 clientfd
-        int connfd = accept( listenfd, (sockaddr*)&client, &len);
+        int connfd = acceptor.Accept(client);
 
         if(connfd < 0)
         {

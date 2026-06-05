@@ -6,25 +6,21 @@
 
 #IncludeRegexTransform: 
 
-../include/Server.hpp
-
-/root/WebServer/src/Server.cpp
-Server.hpp
-/root/WebServer/src/Server.hpp
-iostream
+../include/Log.hpp
+string
 -
-cstring
+
+../include/net/Socket.hpp
+netinet/in.h
 -
 unistd.h
 -
 arpa/inet.h
 -
-sys/socket.h
--
 
-/root/WebServer/src/main.cpp
-Server.hpp
-/root/WebServer/src/Server.hpp
-iostream
--
+/root/WebServer_Ultimate/src/net/Socket.cpp
+net/Socket.hpp
+/root/WebServer_Ultimate/src/net/net/Socket.hpp
+Log.hpp
+/root/WebServer_Ultimate/src/net/Log.hpp
 

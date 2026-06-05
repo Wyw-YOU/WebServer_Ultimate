@@ -68,10 +68,10 @@ RM = /usr/bin/cmake3 -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /root/WebServer
+CMAKE_SOURCE_DIR = /root/WebServer_Ultimate
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /root/WebServer/build
+CMAKE_BINARY_DIR = /root/WebServer_Ultimate/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -100,9 +100,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/WebServer/build/CMakeFiles /root/WebServer/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/WebServer_Ultimate/build/CMakeFiles /root/WebServer_Ultimate/build/CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/WebServer/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/WebServer_Ultimate/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -197,6 +197,60 @@ src/Server.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Server.cpp.s
 .PHONY : src/Server.cpp.s
 
+src/http/HttpRequest.o: src/http/HttpRequest.cpp.o
+
+.PHONY : src/http/HttpRequest.o
+
+# target to build an object file
+src/http/HttpRequest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/http/HttpRequest.cpp.o
+.PHONY : src/http/HttpRequest.cpp.o
+
+src/http/HttpRequest.i: src/http/HttpRequest.cpp.i
+
+.PHONY : src/http/HttpRequest.i
+
+# target to preprocess a source file
+src/http/HttpRequest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/http/HttpRequest.cpp.i
+.PHONY : src/http/HttpRequest.cpp.i
+
+src/http/HttpRequest.s: src/http/HttpRequest.cpp.s
+
+.PHONY : src/http/HttpRequest.s
+
+# target to generate assembly for a file
+src/http/HttpRequest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/http/HttpRequest.cpp.s
+.PHONY : src/http/HttpRequest.cpp.s
+
+src/http/HttpResponse.o: src/http/HttpResponse.cpp.o
+
+.PHONY : src/http/HttpResponse.o
+
+# target to build an object file
+src/http/HttpResponse.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/http/HttpResponse.cpp.o
+.PHONY : src/http/HttpResponse.cpp.o
+
+src/http/HttpResponse.i: src/http/HttpResponse.cpp.i
+
+.PHONY : src/http/HttpResponse.i
+
+# target to preprocess a source file
+src/http/HttpResponse.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/http/HttpResponse.cpp.i
+.PHONY : src/http/HttpResponse.cpp.i
+
+src/http/HttpResponse.s: src/http/HttpResponse.cpp.s
+
+.PHONY : src/http/HttpResponse.s
+
+# target to generate assembly for a file
+src/http/HttpResponse.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/http/HttpResponse.cpp.s
+.PHONY : src/http/HttpResponse.cpp.s
+
 src/main.o: src/main.cpp.o
 
 .PHONY : src/main.o
@@ -224,6 +278,87 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/net/Acceptor.o: src/net/Acceptor.cpp.o
+
+.PHONY : src/net/Acceptor.o
+
+# target to build an object file
+src/net/Acceptor.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Acceptor.cpp.o
+.PHONY : src/net/Acceptor.cpp.o
+
+src/net/Acceptor.i: src/net/Acceptor.cpp.i
+
+.PHONY : src/net/Acceptor.i
+
+# target to preprocess a source file
+src/net/Acceptor.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Acceptor.cpp.i
+.PHONY : src/net/Acceptor.cpp.i
+
+src/net/Acceptor.s: src/net/Acceptor.cpp.s
+
+.PHONY : src/net/Acceptor.s
+
+# target to generate assembly for a file
+src/net/Acceptor.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Acceptor.cpp.s
+.PHONY : src/net/Acceptor.cpp.s
+
+src/net/InetAddress.o: src/net/InetAddress.cpp.o
+
+.PHONY : src/net/InetAddress.o
+
+# target to build an object file
+src/net/InetAddress.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/InetAddress.cpp.o
+.PHONY : src/net/InetAddress.cpp.o
+
+src/net/InetAddress.i: src/net/InetAddress.cpp.i
+
+.PHONY : src/net/InetAddress.i
+
+# target to preprocess a source file
+src/net/InetAddress.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/InetAddress.cpp.i
+.PHONY : src/net/InetAddress.cpp.i
+
+src/net/InetAddress.s: src/net/InetAddress.cpp.s
+
+.PHONY : src/net/InetAddress.s
+
+# target to generate assembly for a file
+src/net/InetAddress.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/InetAddress.cpp.s
+.PHONY : src/net/InetAddress.cpp.s
+
+src/net/Socket.o: src/net/Socket.cpp.o
+
+.PHONY : src/net/Socket.o
+
+# target to build an object file
+src/net/Socket.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Socket.cpp.o
+.PHONY : src/net/Socket.cpp.o
+
+src/net/Socket.i: src/net/Socket.cpp.i
+
+.PHONY : src/net/Socket.i
+
+# target to preprocess a source file
+src/net/Socket.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Socket.cpp.i
+.PHONY : src/net/Socket.cpp.i
+
+src/net/Socket.s: src/net/Socket.cpp.s
+
+.PHONY : src/net/Socket.s
+
+# target to generate assembly for a file
+src/net/Socket.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Socket.cpp.s
+.PHONY : src/net/Socket.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -239,9 +374,24 @@ help:
 	@echo "... src/Server.o"
 	@echo "... src/Server.i"
 	@echo "... src/Server.s"
+	@echo "... src/http/HttpRequest.o"
+	@echo "... src/http/HttpRequest.i"
+	@echo "... src/http/HttpRequest.s"
+	@echo "... src/http/HttpResponse.o"
+	@echo "... src/http/HttpResponse.i"
+	@echo "... src/http/HttpResponse.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/net/Acceptor.o"
+	@echo "... src/net/Acceptor.i"
+	@echo "... src/net/Acceptor.s"
+	@echo "... src/net/InetAddress.o"
+	@echo "... src/net/InetAddress.i"
+	@echo "... src/net/InetAddress.s"
+	@echo "... src/net/Socket.o"
+	@echo "... src/net/Socket.i"
+	@echo "... src/net/Socket.s"
 .PHONY : help
 
 

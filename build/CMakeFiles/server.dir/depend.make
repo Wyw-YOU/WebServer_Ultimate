@@ -4,9 +4,31 @@
 CMakeFiles/server.dir/src/Log.cpp.o: ../include/Log.hpp
 CMakeFiles/server.dir/src/Log.cpp.o: ../src/Log.cpp
 
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/Log.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/Server.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Acceptor.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/InetAddress.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Socket.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../src/Server.cpp
+
+CMakeFiles/server.dir/src/http/HttpRequest.cpp.o: ../src/http/HttpRequest.cpp
+
+CMakeFiles/server.dir/src/http/HttpResponse.cpp.o: ../include/http/HttpResponse.hpp
+CMakeFiles/server.dir/src/http/HttpResponse.cpp.o: ../src/http/HttpResponse.cpp
 
 CMakeFiles/server.dir/src/main.cpp.o: ../include/Server.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../src/main.cpp
+
+CMakeFiles/server.dir/src/net/Acceptor.cpp.o: ../include/Log.hpp
+CMakeFiles/server.dir/src/net/Acceptor.cpp.o: ../include/net/Acceptor.hpp
+CMakeFiles/server.dir/src/net/Acceptor.cpp.o: ../include/net/InetAddress.hpp
+CMakeFiles/server.dir/src/net/Acceptor.cpp.o: ../include/net/Socket.hpp
+CMakeFiles/server.dir/src/net/Acceptor.cpp.o: ../src/net/Acceptor.cpp
+
+CMakeFiles/server.dir/src/net/InetAddress.cpp.o: ../include/net/InetAddress.hpp
+CMakeFiles/server.dir/src/net/InetAddress.cpp.o: ../src/net/InetAddress.cpp
+
+CMakeFiles/server.dir/src/net/Socket.cpp.o: ../include/Log.hpp
+CMakeFiles/server.dir/src/net/Socket.cpp.o: ../include/net/Socket.hpp
+CMakeFiles/server.dir/src/net/Socket.cpp.o: ../src/net/Socket.cpp
 

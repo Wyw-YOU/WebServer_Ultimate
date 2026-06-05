@@ -1,7 +1,12 @@
 file(REMOVE_RECURSE
   "CMakeFiles/server.dir/src/Log.cpp.o"
   "CMakeFiles/server.dir/src/Server.cpp.o"
+  "CMakeFiles/server.dir/src/http/HttpRequest.cpp.o"
+  "CMakeFiles/server.dir/src/http/HttpResponse.cpp.o"
   "CMakeFiles/server.dir/src/main.cpp.o"
+  "CMakeFiles/server.dir/src/net/Acceptor.cpp.o"
+  "CMakeFiles/server.dir/src/net/InetAddress.cpp.o"
+  "CMakeFiles/server.dir/src/net/Socket.cpp.o"
   "server"
   "server.pdb"
 )

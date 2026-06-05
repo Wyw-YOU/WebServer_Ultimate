@@ -6,7 +6,6 @@
 class Server
 {
 public:
-
     /**
      * @brief 构造函数
      *
@@ -20,6 +19,5 @@ public:
     void Start();
 
 private:
-
     int port_;
 };
