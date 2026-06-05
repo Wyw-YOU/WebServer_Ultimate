@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/Server.hpp
+
+/root/WebServer/src/Server.cpp
+Server.hpp
+/root/WebServer/src/Server.hpp
+iostream
+-
+cstring
+-
+unistd.h
+-
+arpa/inet.h
+-
+sys/socket.h
+-
+
+/root/WebServer/src/main.cpp
+Server.hpp
+/root/WebServer/src/Server.hpp
+iostream
+-
+
