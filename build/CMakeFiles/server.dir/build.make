@@ -181,9 +181,22 @@ CMakeFiles/server.dir/src/net/Connection.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/net/Connection.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /root/WebServer_Ultimate/src/net/Connection.cpp -o CMakeFiles/server.dir/src/net/Connection.cpp.s
 
+CMakeFiles/server.dir/src/net/Epoll.cpp.o: CMakeFiles/server.dir/flags.make
+CMakeFiles/server.dir/src/net/Epoll.cpp.o: ../src/net/Epoll.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/WebServer_Ultimate/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/server.dir/src/net/Epoll.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/server.dir/src/net/Epoll.cpp.o -c /root/WebServer_Ultimate/src/net/Epoll.cpp
+
+CMakeFiles/server.dir/src/net/Epoll.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/server.dir/src/net/Epoll.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /root/WebServer_Ultimate/src/net/Epoll.cpp > CMakeFiles/server.dir/src/net/Epoll.cpp.i
+
+CMakeFiles/server.dir/src/net/Epoll.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/net/Epoll.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /root/WebServer_Ultimate/src/net/Epoll.cpp -o CMakeFiles/server.dir/src/net/Epoll.cpp.s
+
 CMakeFiles/server.dir/src/net/InetAddress.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/src/net/InetAddress.cpp.o: ../src/net/InetAddress.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/WebServer_Ultimate/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/server.dir/src/net/InetAddress.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/WebServer_Ultimate/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/server.dir/src/net/InetAddress.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/server.dir/src/net/InetAddress.cpp.o -c /root/WebServer_Ultimate/src/net/InetAddress.cpp
 
 CMakeFiles/server.dir/src/net/InetAddress.cpp.i: cmake_force
@@ -196,7 +209,7 @@ CMakeFiles/server.dir/src/net/InetAddress.cpp.s: cmake_force
 
 CMakeFiles/server.dir/src/net/Socket.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/src/net/Socket.cpp.o: ../src/net/Socket.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/WebServer_Ultimate/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/server.dir/src/net/Socket.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/WebServer_Ultimate/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/server.dir/src/net/Socket.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/server.dir/src/net/Socket.cpp.o -c /root/WebServer_Ultimate/src/net/Socket.cpp
 
 CMakeFiles/server.dir/src/net/Socket.cpp.i: cmake_force
@@ -206,6 +219,19 @@ CMakeFiles/server.dir/src/net/Socket.cpp.i: cmake_force
 CMakeFiles/server.dir/src/net/Socket.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/net/Socket.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /root/WebServer_Ultimate/src/net/Socket.cpp -o CMakeFiles/server.dir/src/net/Socket.cpp.s
+
+CMakeFiles/server.dir/src/util/FileUtil.cpp.o: CMakeFiles/server.dir/flags.make
+CMakeFiles/server.dir/src/util/FileUtil.cpp.o: ../src/util/FileUtil.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/WebServer_Ultimate/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/server.dir/src/util/FileUtil.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/server.dir/src/util/FileUtil.cpp.o -c /root/WebServer_Ultimate/src/util/FileUtil.cpp
+
+CMakeFiles/server.dir/src/util/FileUtil.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/server.dir/src/util/FileUtil.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /root/WebServer_Ultimate/src/util/FileUtil.cpp > CMakeFiles/server.dir/src/util/FileUtil.cpp.i
+
+CMakeFiles/server.dir/src/util/FileUtil.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/util/FileUtil.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /root/WebServer_Ultimate/src/util/FileUtil.cpp -o CMakeFiles/server.dir/src/util/FileUtil.cpp.s
 
 # Object files for target server
 server_OBJECTS = \
@@ -217,8 +243,10 @@ server_OBJECTS = \
 "CMakeFiles/server.dir/src/main.cpp.o" \
 "CMakeFiles/server.dir/src/net/Acceptor.cpp.o" \
 "CMakeFiles/server.dir/src/net/Connection.cpp.o" \
+"CMakeFiles/server.dir/src/net/Epoll.cpp.o" \
 "CMakeFiles/server.dir/src/net/InetAddress.cpp.o" \
-"CMakeFiles/server.dir/src/net/Socket.cpp.o"
+"CMakeFiles/server.dir/src/net/Socket.cpp.o" \
+"CMakeFiles/server.dir/src/util/FileUtil.cpp.o"
 
 # External object files for target server
 server_EXTERNAL_OBJECTS =
@@ -231,11 +259,13 @@ server: CMakeFiles/server.dir/src/http/HttpResponse.cpp.o
 server: CMakeFiles/server.dir/src/main.cpp.o
 server: CMakeFiles/server.dir/src/net/Acceptor.cpp.o
 server: CMakeFiles/server.dir/src/net/Connection.cpp.o
+server: CMakeFiles/server.dir/src/net/Epoll.cpp.o
 server: CMakeFiles/server.dir/src/net/InetAddress.cpp.o
 server: CMakeFiles/server.dir/src/net/Socket.cpp.o
+server: CMakeFiles/server.dir/src/util/FileUtil.cpp.o
 server: CMakeFiles/server.dir/build.make
 server: CMakeFiles/server.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/root/WebServer_Ultimate/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable server"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/root/WebServer_Ultimate/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable server"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/server.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -11,8 +11,11 @@ CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpResponse.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Acceptor.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Connection.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Epoll.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/InetAddress.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Socket.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/util/Error.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/util/FileUtil.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../src/Server.cpp
 
 CMakeFiles/server.dir/src/buffer/Buffer.cpp.o: ../include/buffer/Buffer.hpp
@@ -25,7 +28,18 @@ CMakeFiles/server.dir/src/http/HttpRequest.cpp.o: ../src/http/HttpRequest.cpp
 CMakeFiles/server.dir/src/http/HttpResponse.cpp.o: ../include/http/HttpResponse.hpp
 CMakeFiles/server.dir/src/http/HttpResponse.cpp.o: ../src/http/HttpResponse.cpp
 
+CMakeFiles/server.dir/src/main.cpp.o: ../include/Log.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/Server.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/buffer/Buffer.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/http/HttpRequest.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/http/HttpResponse.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Acceptor.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Connection.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Epoll.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/net/InetAddress.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Socket.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/util/Error.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/util/FileUtil.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../src/main.cpp
 
 CMakeFiles/server.dir/src/net/Acceptor.cpp.o: ../include/Log.hpp
@@ -38,12 +52,23 @@ CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/buffer/Buffer.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpResponse.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/net/Connection.hpp
+CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/util/FileUtil.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../src/net/Connection.cpp
+
+CMakeFiles/server.dir/src/net/Epoll.cpp.o: ../include/Log.hpp
+CMakeFiles/server.dir/src/net/Epoll.cpp.o: ../include/net/Epoll.hpp
+CMakeFiles/server.dir/src/net/Epoll.cpp.o: ../include/util/Error.hpp
+CMakeFiles/server.dir/src/net/Epoll.cpp.o: ../src/net/Epoll.cpp
 
 CMakeFiles/server.dir/src/net/InetAddress.cpp.o: ../include/net/InetAddress.hpp
 CMakeFiles/server.dir/src/net/InetAddress.cpp.o: ../src/net/InetAddress.cpp
 
 CMakeFiles/server.dir/src/net/Socket.cpp.o: ../include/Log.hpp
+CMakeFiles/server.dir/src/net/Socket.cpp.o: ../include/net/Epoll.hpp
 CMakeFiles/server.dir/src/net/Socket.cpp.o: ../include/net/Socket.hpp
+CMakeFiles/server.dir/src/net/Socket.cpp.o: ../include/util/Error.hpp
 CMakeFiles/server.dir/src/net/Socket.cpp.o: ../src/net/Socket.cpp
+
+CMakeFiles/server.dir/src/util/FileUtil.cpp.o: ../include/util/FileUtil.hpp
+CMakeFiles/server.dir/src/util/FileUtil.cpp.o: ../src/util/FileUtil.cpp
 

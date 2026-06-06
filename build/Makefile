@@ -359,6 +359,33 @@ src/net/Connection.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Connection.cpp.s
 .PHONY : src/net/Connection.cpp.s
 
+src/net/Epoll.o: src/net/Epoll.cpp.o
+
+.PHONY : src/net/Epoll.o
+
+# target to build an object file
+src/net/Epoll.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Epoll.cpp.o
+.PHONY : src/net/Epoll.cpp.o
+
+src/net/Epoll.i: src/net/Epoll.cpp.i
+
+.PHONY : src/net/Epoll.i
+
+# target to preprocess a source file
+src/net/Epoll.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Epoll.cpp.i
+.PHONY : src/net/Epoll.cpp.i
+
+src/net/Epoll.s: src/net/Epoll.cpp.s
+
+.PHONY : src/net/Epoll.s
+
+# target to generate assembly for a file
+src/net/Epoll.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Epoll.cpp.s
+.PHONY : src/net/Epoll.cpp.s
+
 src/net/InetAddress.o: src/net/InetAddress.cpp.o
 
 .PHONY : src/net/InetAddress.o
@@ -413,6 +440,33 @@ src/net/Socket.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Socket.cpp.s
 .PHONY : src/net/Socket.cpp.s
 
+src/util/FileUtil.o: src/util/FileUtil.cpp.o
+
+.PHONY : src/util/FileUtil.o
+
+# target to build an object file
+src/util/FileUtil.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/util/FileUtil.cpp.o
+.PHONY : src/util/FileUtil.cpp.o
+
+src/util/FileUtil.i: src/util/FileUtil.cpp.i
+
+.PHONY : src/util/FileUtil.i
+
+# target to preprocess a source file
+src/util/FileUtil.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/util/FileUtil.cpp.i
+.PHONY : src/util/FileUtil.cpp.i
+
+src/util/FileUtil.s: src/util/FileUtil.cpp.s
+
+.PHONY : src/util/FileUtil.s
+
+# target to generate assembly for a file
+src/util/FileUtil.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/util/FileUtil.cpp.s
+.PHONY : src/util/FileUtil.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -446,12 +500,18 @@ help:
 	@echo "... src/net/Connection.o"
 	@echo "... src/net/Connection.i"
 	@echo "... src/net/Connection.s"
+	@echo "... src/net/Epoll.o"
+	@echo "... src/net/Epoll.i"
+	@echo "... src/net/Epoll.s"
 	@echo "... src/net/InetAddress.o"
 	@echo "... src/net/InetAddress.i"
 	@echo "... src/net/InetAddress.s"
 	@echo "... src/net/Socket.o"
 	@echo "... src/net/Socket.i"
 	@echo "... src/net/Socket.s"
+	@echo "... src/util/FileUtil.o"
+	@echo "... src/util/FileUtil.i"
+	@echo "... src/util/FileUtil.s"
 .PHONY : help
 
 
