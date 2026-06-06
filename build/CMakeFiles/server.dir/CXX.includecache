@@ -10,17 +10,17 @@
 string
 -
 
-../include/net/Socket.hpp
-netinet/in.h
+../include/http/HttpRequest.hpp
+string
 -
-unistd.h
--
-arpa/inet.h
+unordered_map
 -
 
-/root/WebServer_Ultimate/src/net/Socket.cpp
-net/Socket.hpp
-/root/WebServer_Ultimate/src/net/net/Socket.hpp
+/root/WebServer_Ultimate/src/http/HttpRequest.cpp
+http/HttpRequest.hpp
+/root/WebServer_Ultimate/src/http/http/HttpRequest.hpp
 Log.hpp
-/root/WebServer_Ultimate/src/net/Log.hpp
+/root/WebServer_Ultimate/src/http/Log.hpp
+sstream
+-
 

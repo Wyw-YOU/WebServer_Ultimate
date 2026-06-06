@@ -197,6 +197,33 @@ src/Server.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Server.cpp.s
 .PHONY : src/Server.cpp.s
 
+src/buffer/Buffer.o: src/buffer/Buffer.cpp.o
+
+.PHONY : src/buffer/Buffer.o
+
+# target to build an object file
+src/buffer/Buffer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/buffer/Buffer.cpp.o
+.PHONY : src/buffer/Buffer.cpp.o
+
+src/buffer/Buffer.i: src/buffer/Buffer.cpp.i
+
+.PHONY : src/buffer/Buffer.i
+
+# target to preprocess a source file
+src/buffer/Buffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/buffer/Buffer.cpp.i
+.PHONY : src/buffer/Buffer.cpp.i
+
+src/buffer/Buffer.s: src/buffer/Buffer.cpp.s
+
+.PHONY : src/buffer/Buffer.s
+
+# target to generate assembly for a file
+src/buffer/Buffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/buffer/Buffer.cpp.s
+.PHONY : src/buffer/Buffer.cpp.s
+
 src/http/HttpRequest.o: src/http/HttpRequest.cpp.o
 
 .PHONY : src/http/HttpRequest.o
@@ -374,6 +401,9 @@ help:
 	@echo "... src/Server.o"
 	@echo "... src/Server.i"
 	@echo "... src/Server.s"
+	@echo "... src/buffer/Buffer.o"
+	@echo "... src/buffer/Buffer.i"
+	@echo "... src/buffer/Buffer.s"
 	@echo "... src/http/HttpRequest.o"
 	@echo "... src/http/HttpRequest.i"
 	@echo "... src/http/HttpRequest.s"

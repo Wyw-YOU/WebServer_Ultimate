@@ -6,11 +6,19 @@ CMakeFiles/server.dir/src/Log.cpp.o: ../src/Log.cpp
 
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/Log.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/Server.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/buffer/Buffer.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpRequest.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpResponse.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Acceptor.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/InetAddress.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Socket.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../src/Server.cpp
 
+CMakeFiles/server.dir/src/buffer/Buffer.cpp.o: ../include/buffer/Buffer.hpp
+CMakeFiles/server.dir/src/buffer/Buffer.cpp.o: ../src/buffer/Buffer.cpp
+
+CMakeFiles/server.dir/src/http/HttpRequest.cpp.o: ../include/Log.hpp
+CMakeFiles/server.dir/src/http/HttpRequest.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/http/HttpRequest.cpp.o: ../src/http/HttpRequest.cpp
 
 CMakeFiles/server.dir/src/http/HttpResponse.cpp.o: ../include/http/HttpResponse.hpp

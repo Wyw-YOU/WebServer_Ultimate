@@ -6,6 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "/root/WebServer_Ultimate/src/Log.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/Log.cpp.o"
   "/root/WebServer_Ultimate/src/Server.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/Server.cpp.o"
+  "/root/WebServer_Ultimate/src/buffer/Buffer.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/buffer/Buffer.cpp.o"
   "/root/WebServer_Ultimate/src/http/HttpRequest.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/http/HttpRequest.cpp.o"
   "/root/WebServer_Ultimate/src/http/HttpResponse.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/http/HttpResponse.cpp.o"
   "/root/WebServer_Ultimate/src/main.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/main.cpp.o"

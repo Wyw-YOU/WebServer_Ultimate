@@ -7,11 +7,19 @@ CMakeFiles/server.dir/src/Log.cpp.o
 CMakeFiles/server.dir/src/Server.cpp.o
  ../include/Log.hpp
  ../include/Server.hpp
+ ../include/buffer/Buffer.hpp
+ ../include/http/HttpRequest.hpp
+ ../include/http/HttpResponse.hpp
  ../include/net/Acceptor.hpp
  ../include/net/InetAddress.hpp
  ../include/net/Socket.hpp
  /root/WebServer_Ultimate/src/Server.cpp
+CMakeFiles/server.dir/src/buffer/Buffer.cpp.o
+ ../include/buffer/Buffer.hpp
+ /root/WebServer_Ultimate/src/buffer/Buffer.cpp
 CMakeFiles/server.dir/src/http/HttpRequest.cpp.o
+ ../include/Log.hpp
+ ../include/http/HttpRequest.hpp
  /root/WebServer_Ultimate/src/http/HttpRequest.cpp
 CMakeFiles/server.dir/src/http/HttpResponse.cpp.o
  ../include/http/HttpResponse.hpp
