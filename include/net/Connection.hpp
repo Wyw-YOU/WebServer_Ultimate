@@ -11,7 +11,7 @@
 class Connection
 {
 public:
-    explicit Connection(int fd);
+    Connection(int fd, const std::string& resourceDir);
 
     bool Read();
 
@@ -25,6 +25,7 @@ public:
 
 private:
     int fd_;
+    std::string resourceDir_;
 
     Buffer readBuffer_;
     Buffer writeBuffer_;

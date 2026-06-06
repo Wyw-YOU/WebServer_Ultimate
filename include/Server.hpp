@@ -30,7 +30,7 @@ public:
      *
      * @param port 监听端口
      */
-    explicit Server(int port);
+    Server(int port, const std::string& resourceDir);
 
     /**
      * @brief 启动服务器
@@ -45,6 +45,7 @@ private:
 
 private:
     int port_;
+    std::string resourceDir_;
     Acceptor acceptor_;
     Epoller epoller_;
 

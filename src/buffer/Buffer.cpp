@@ -27,6 +27,11 @@ std::string Buffer::Retrieve(size_t len)
     return data;
 }
 
+const std::string& Buffer::Peek() const
+{
+    return buffer_;
+}
+
 size_t Buffer::ReadableBytes() const
 {
     return buffer_.size();

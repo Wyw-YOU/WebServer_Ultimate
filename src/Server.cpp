@@ -4,8 +4,9 @@
 
 #define MAXEVENTS 1024
 
-Server::Server(int port)
+Server::Server(int port, const std::string& resourceDir)
     : port_(port),
+      resourceDir_(resourceDir),
       acceptor_(port),
       epoller_(MAXEVENTS)
     { }
@@ -87,7 +88,7 @@ void Server::HandleListenEvent()
     clientSock.SetNonBlocking();
 
     // 创建连接对象并加入到map中管理
-    connections_[connfd] = std::unique_ptr<Connection>(new Connection(connfd));
+    connections_[connfd] = std::unique_ptr<Connection>(new Connection(connfd, resourceDir_));
     // 添加到epoll中监听读事件（写事件先不做）
     epoller_.AddFd(connfd, EPOLLIN);
 }

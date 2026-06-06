@@ -16,10 +16,15 @@ public:
     void Append(const char* data, size_t len);
 
     /**
-     * @brief 获取所有数据
+     * @brief 获取所有数据（清空缓冲区）
      */
     std::string RetrieveAll();
     std::string Retrieve(size_t len);
+
+    /**
+     * @brief 查看数据但不清空
+     */
+    const std::string& Peek() const;
 
     /**
      * @brief 当前数据长度

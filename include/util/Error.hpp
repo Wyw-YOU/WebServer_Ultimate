@@ -1,7 +1,5 @@
 #pragma once
 
-#include "net/Epoll.hpp"
-#include "util/Error.hpp"
 #include "Log.hpp"
 
 #include <cstring>

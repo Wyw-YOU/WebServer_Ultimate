@@ -2,6 +2,8 @@
 #include "util/Error.hpp"
 #include "Log.hpp"
 
+#include <cstdlib>
+
 // 构造
 Socket::Socket()
 {
@@ -21,9 +23,13 @@ Socket::~Socket()
 // 绑定
 void Socket::Bind(const sockaddr_in* addr)
 {
+    int opt = 1;
+    setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+
     if(bind(fd_, reinterpret_cast<const sockaddr*>(addr), sizeof(sockaddr_in)) < 0)
     {
-        LOG_ERROR("Bind error!");
+        Error::SysError("Bind error");
+        exit(1);
     }
 }
 
@@ -32,7 +38,8 @@ void Socket::Listen(int backlog)
 {
     if(listen(fd_, backlog) < 0)
     {
-        LOG_ERROR("Listen error!");
+        Error::SysError("Listen error");
+        exit(1);
     }
 }
 

@@ -1,26 +1,46 @@
 #include "net/Connection.hpp"
 
-Connection::Connection(int fd)
-    : fd_(fd)
+Connection::Connection(int fd, const std::string& resourceDir)
+    : fd_(fd),
+      resourceDir_(resourceDir)
     { }
 
 //  构建Http请求并返回HTTP响应
 bool Connection::Process()
 {
-    // 构建Http请求
-    std::string html;
-
-    if(FileUtil::ReadFile("resources/hello.html", html))
+    // 解析请求
+    std::string raw = readBuffer_.RetrieveAll();
+    if(!request_.Parse(raw))
     {
-        response_.SetStatus(200, "OK");
-        response_.SetHeader("Content-Type", "text/html");
-        response_.SetBody(html);
+        response_.SetStatus(400, "Bad Request");
+        response_.SetBody("400 Bad Request");
     }
     else
     {
-        response_.SetStatus(404, "Not Found");
-        response_.SetBody("404 Not Found");
+        // 根据路径路由
+        std::string path = request_.Path();
+        if(path == "/")
+            path = "/hello";
+
+        std::string filename = resourceDir_ + path + ".html";
+        std::string html;
+
+        if(FileUtil::ReadFile(filename, html))
+        {
+            response_.SetStatus(200, "OK");
+            response_.SetHeader("Content-Type", "text/html");
+            response_.SetBody(html);
+        }
+        else
+        {
+            response_.SetStatus(404, "Not Found");
+            response_.SetBody("404 Not Found");
+        }
     }
+
+    // 将响应序列化写入发送缓冲区
+    std::string resp = response_.ToString();
+    writeBuffer_.Append(resp.c_str(), resp.size());
 
     return true;
 }
@@ -44,7 +64,7 @@ bool Connection::Read()
     else
     {
         // 读取错误
-        if(errno == EAGAIN && errno == EWOULDBLOCK)
+        if(errno == EAGAIN || errno == EWOULDBLOCK)
         {
             // 没有数据可读了，正常情况
             return true;
@@ -66,23 +86,25 @@ bool Connection::Write()
         return true;
     }
 
-    const std::string& data = writeBuffer_.RetrieveAll();
+    const std::string& data = writeBuffer_.Peek();
     ssize_t n = send(fd_, data.c_str(), data.size(), 0);
-    if(n >= 0)
+    if(n > 0)
     {
-        writeBuffer_.Retrieve(n); // 从缓冲区中移除已发送的数据
-        return writeBuffer_.Empty(); // 如果缓冲区已空，返回true
+        writeBuffer_.Retrieve(n);
+        return writeBuffer_.Empty();
+    }
+    else if(n == 0)
+    {
+        return false;
     }
     else
     {
-        if(errno == EAGAIN && errno == EWOULDBLOCK)
+        if(errno == EAGAIN || errno == EWOULDBLOCK)
         {
-            // 发送缓冲区满了，等待下一次可写事件
             return false;
         }
         else
         {
-            // 其他错误
             return false;
         }
     }
