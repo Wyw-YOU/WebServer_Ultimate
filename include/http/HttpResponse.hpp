@@ -13,22 +13,11 @@ public:
     HttpResponse()
         : statusCode_(200), status_("OK") {}
 
-    void SetStatus(int code, const std::string& status)
-    {
-        statusCode_ = code;
-        status_ = status;
-    }
+    void SetStatus(int code, const std::string& status);
 
-    void SetBody(const std::string& body)
-    {
-        body_ = body;
-        headers_["Content-Length"] = std::to_string(body.size());
-    }
+    void SetBody(const std::string& body);
 
-    void SetHeader(const std::string& key, const std::string& value)
-    {
-        headers_[key] = value;
-    }
+    void SetHeader(const std::string& key, const std::string& value);
 
     /**
      * @brief 将HttpResponse对象转换为HTTP协议格式的字符串

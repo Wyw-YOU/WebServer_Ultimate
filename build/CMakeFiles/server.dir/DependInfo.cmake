@@ -11,6 +11,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/root/WebServer_Ultimate/src/http/HttpResponse.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/http/HttpResponse.cpp.o"
   "/root/WebServer_Ultimate/src/main.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/main.cpp.o"
   "/root/WebServer_Ultimate/src/net/Acceptor.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/net/Acceptor.cpp.o"
+  "/root/WebServer_Ultimate/src/net/Connection.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/net/Connection.cpp.o"
   "/root/WebServer_Ultimate/src/net/InetAddress.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/net/InetAddress.cpp.o"
   "/root/WebServer_Ultimate/src/net/Socket.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/net/Socket.cpp.o"
   )

@@ -6,6 +6,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/server.dir/src/http/HttpResponse.cpp.o"
   "CMakeFiles/server.dir/src/main.cpp.o"
   "CMakeFiles/server.dir/src/net/Acceptor.cpp.o"
+  "CMakeFiles/server.dir/src/net/Connection.cpp.o"
   "CMakeFiles/server.dir/src/net/InetAddress.cpp.o"
   "CMakeFiles/server.dir/src/net/Socket.cpp.o"
   "server"

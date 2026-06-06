@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-../include/Log.hpp
+../include/buffer/Buffer.hpp
 string
 -
 
@@ -16,11 +16,27 @@ string
 unordered_map
 -
 
-/root/WebServer_Ultimate/src/http/HttpRequest.cpp
-http/HttpRequest.hpp
-/root/WebServer_Ultimate/src/http/http/HttpRequest.hpp
-Log.hpp
-/root/WebServer_Ultimate/src/http/Log.hpp
+../include/http/HttpResponse.hpp
+string
+-
+unordered_map
+-
 sstream
 -
+
+../include/net/Connection.hpp
+buffer/Buffer.hpp
+../include/net/buffer/Buffer.hpp
+http/HttpRequest.hpp
+../include/net/http/HttpRequest.hpp
+http/HttpResponse.hpp
+../include/net/http/HttpResponse.hpp
+sys/socket.h
+-
+unistd.h
+-
+
+/root/WebServer_Ultimate/src/net/Connection.cpp
+net/Connection.hpp
+/root/WebServer_Ultimate/src/net/net/Connection.hpp
 

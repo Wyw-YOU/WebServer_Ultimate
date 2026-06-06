@@ -22,9 +22,25 @@ std::string HttpResponse::ToString() const
 
     // 空行
     ss << "\r\n";
-
     // body
     ss << body_;
 
     return ss.str();
+}
+
+void HttpResponse::SetStatus(int code, const std::string& status)
+{
+    statusCode_ = code;
+    status_ = status;
+}
+
+void HttpResponse::SetBody(const std::string& body)
+{
+    body_ = body;
+    headers_["Content-Length"] = std::to_string(body.size());
+}
+
+void HttpResponse::SetHeader(const std::string& key, const std::string& value)
+{
+    headers_[key] = value;
 }

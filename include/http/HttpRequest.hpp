@@ -3,19 +3,22 @@
 #include <string>
 #include <unordered_map>
 
-/**
- * @brief HTTP请求对象
- */
 class HttpRequest
 {
 public:
-    std::string method;
+    // 解析HTTP请求
+    bool Parse(const std::string& raw);
 
-    std::string path;
+    const std::string& Method() const;
+    const std::string& Path() const;
+    const std::string& Version() const;
 
-    std::string version;
+    std::string GetHeader(const std::string& key) const;
 
-    std::unordered_map<std::string, std::string> headers;
-
-    std::string body;
+private:
+    std::string method_;
+    std::string path_;
+    std::string version_;
+    std::string body_;
+    std::unordered_map<std::string, std::string> headers_;
 };

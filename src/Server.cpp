@@ -3,6 +3,9 @@
 #include "net/Acceptor.hpp"
 #include "net/InetAddress.hpp"
 #include "net/Socket.hpp"
+#include "buffer/Buffer.hpp"
+#include "http/HttpRequest.hpp"
+#include "http/HttpResponse.hpp"
 
 #include <iostream>
 #include <cstring>
@@ -53,29 +56,34 @@ void Server::Start()
         socklen_t len = sizeof(client);
 
         // 客户端请求 clientfd
-        int connfd = acceptor.Accept(client);
+        int clientfd = acceptor.Accept(client);
 
-        if(connfd < 0)
+        if(clientfd < 0)
         {
             continue;
         }
 
-        char buffer[4096];
-        int n =recv(connfd, buffer, sizeof(buffer), 0);
+        // 接受客户端请求数据并写入Buffer
+        char recvbuffer[4096];
+        int n = recv(clientfd, recvbuffer, sizeof(recvbuffer), 0);
+        Buffer buffer;
+        buffer.Append(recvbuffer, n);
 
-        if(n > 0)
-        {
-            std::cout << buffer << std::endl;
-        }
+        // if(n > 0)
+        // {
+        //     std::cout << buffer << std::endl;
+        // }
 
-        const char* response =
-            "HTTP/1.1 200 OK\r\n"
-            "Content-Type: text/plain\r\n"
-            "Content-Length: 15\r\n"
-            "\r\n"
-            "Hello WebServer";
+        // 构建Http请求并返回HTTP响应
+        HttpRequest request;
+        HttpResponse response;
+        request.Parse(buffer.RetrieveAll());
+        response.SetStatus(200, "OK");
+        response.SetHeader("Content-Type", "text/plain");
+        response.SetBody("Welcome To our Server!");
 
-        send(connfd, response, strlen(response), 0);
-        close(connfd);
+        std::string responseStr = response.ToString();
+        send(clientfd, responseStr.c_str(), responseStr.size(), 0);
+        close(clientfd);
     }
 }

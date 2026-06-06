@@ -332,6 +332,33 @@ src/net/Acceptor.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Acceptor.cpp.s
 .PHONY : src/net/Acceptor.cpp.s
 
+src/net/Connection.o: src/net/Connection.cpp.o
+
+.PHONY : src/net/Connection.o
+
+# target to build an object file
+src/net/Connection.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Connection.cpp.o
+.PHONY : src/net/Connection.cpp.o
+
+src/net/Connection.i: src/net/Connection.cpp.i
+
+.PHONY : src/net/Connection.i
+
+# target to preprocess a source file
+src/net/Connection.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Connection.cpp.i
+.PHONY : src/net/Connection.cpp.i
+
+src/net/Connection.s: src/net/Connection.cpp.s
+
+.PHONY : src/net/Connection.s
+
+# target to generate assembly for a file
+src/net/Connection.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Connection.cpp.s
+.PHONY : src/net/Connection.cpp.s
+
 src/net/InetAddress.o: src/net/InetAddress.cpp.o
 
 .PHONY : src/net/InetAddress.o
@@ -416,6 +443,9 @@ help:
 	@echo "... src/net/Acceptor.o"
 	@echo "... src/net/Acceptor.i"
 	@echo "... src/net/Acceptor.s"
+	@echo "... src/net/Connection.o"
+	@echo "... src/net/Connection.i"
+	@echo "... src/net/Connection.s"
 	@echo "... src/net/InetAddress.o"
 	@echo "... src/net/InetAddress.i"
 	@echo "... src/net/InetAddress.s"
