@@ -3,6 +3,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <fcntl.h>
 
 /**
  * @brief Socket封装
@@ -19,6 +20,9 @@ public:
     void Listen(int backlog = 128);
     int Accept(sockaddr_in* addr);
     void Close();
+
+    // 设置非阻塞
+    void SetNonBlocking();
 
 private:
     int fd_;        // listenfd

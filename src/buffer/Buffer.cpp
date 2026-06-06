@@ -16,6 +16,17 @@ std::string Buffer::RetrieveAll()
     return data;
 }
 
+std::string Buffer::Retrieve(size_t len)
+{
+    if(len > buffer_.size())
+        len = buffer_.size();
+
+    std::string data = buffer_.substr(0, len);
+    buffer_ = buffer_.substr(len);
+
+    return data;
+}
+
 size_t Buffer::ReadableBytes() const
 {
     return buffer_.size();

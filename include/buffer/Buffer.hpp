@@ -19,6 +19,7 @@ public:
      * @brief 获取所有数据
      */
     std::string RetrieveAll();
+    std::string Retrieve(size_t len);
 
     /**
      * @brief 当前数据长度

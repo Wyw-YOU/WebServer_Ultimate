@@ -66,6 +66,8 @@ bool HttpRequest::Parse(const std::string& raw)
 
     LOG_DEBUG("Parsed HTTP request: Method: " + method_ + " Path: " + path_ + " Version: " + version_);
     LOG_DEBUG("Parsed Successfully!");
+
+    return true;
 }
 
 const std::string& HttpRequest::Method() const

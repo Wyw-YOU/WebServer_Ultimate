@@ -20,3 +20,14 @@ int Acceptor::Accept(InetAddress& clientAddr)
 {
     return socket_.Accept(clientAddr.GetAddr());
 }
+
+int Acceptor::GetFd() const
+{
+    return socket_.GetFd();
+}
+
+void Acceptor::SetNonBlocking()
+{
+    socket_.SetNonBlocking();
+    LOG_DEBUG("Set listen socket non-blocking");
+}

@@ -1,4 +1,5 @@
 #include "net/Socket.hpp"
+#include "util/Error.hpp"
 #include "Log.hpp"
 
 // 构造
@@ -56,4 +57,17 @@ void Socket::Close()
         close(fd_);
         fd_ = -1;
     }
+}
+
+// 设置非阻塞
+void Socket::SetNonBlocking()
+{
+    int flags =fcntl(fd_, F_GETFL, 0);
+    if(flags < 0)
+    {
+        Error::SysError("fcntl get");
+        return;
+    }
+
+    fcntl(fd_, F_SETFL, flags | O_NONBLOCK);
 }
