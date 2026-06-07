@@ -71,6 +71,7 @@ void Server::HandleListenEvent()
     {
         if(errno == EAGAIN || errno == EWOULDBLOCK)
         {
+            LOG_DEBUG("No more incoming connections to accept.");
             // 没有更多连接了
             return;
         }
@@ -84,9 +85,9 @@ void Server::HandleListenEvent()
     LOG_DEBUG("new connection fd=" + std::to_string(connfd));
 
     // 设置非阻塞
-    Socket clientSock(connfd);
-    clientSock.SetNonBlocking();
-
+    int flags = fcntl(connfd, F_GETFL, 0);
+    fcntl(connfd, F_SETFL, flags | O_NONBLOCK);
+    
     // 创建连接对象并加入到map中管理
     connections_[connfd] = std::unique_ptr<Connection>(new Connection(connfd, resourceDir_));
     // 添加到epoll中监听读事件（写事件先不做）

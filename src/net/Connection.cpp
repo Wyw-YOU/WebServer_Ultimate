@@ -10,6 +10,9 @@ bool Connection::Process()
 {
     // 解析请求
     std::string raw = readBuffer_.RetrieveAll();
+    LOG_DEBUG("Raw request:\n" + raw);
+    std::cout << std::endl;
+
     if(!request_.Parse(raw))
     {
         response_.SetStatus(400, "Bad Request");
@@ -54,6 +57,7 @@ bool Connection::Read()
     if(n > 0)
     {
         readBuffer_.Append(recvbuffer, n);
+        LOG_DEBUG("Received " + std::to_string(n) + " bytes from fd=" + std::to_string(fd_));
         return true;
     }
     else if(n == 0)
@@ -91,6 +95,7 @@ bool Connection::Write()
     if(n > 0)
     {
         writeBuffer_.Retrieve(n);
+        LOG_DEBUG("Sent " + std::to_string(n) + " bytes to fd=" + std::to_string(fd_));
         return writeBuffer_.Empty();
     }
     else if(n == 0)

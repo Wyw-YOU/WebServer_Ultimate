@@ -4,9 +4,12 @@
 #include "http/HttpRequest.hpp"
 #include "http/HttpResponse.hpp"
 #include "util/FileUtil.hpp"
+#include "Log.hpp"
 
 #include <sys/socket.h>   // recv, send
 #include <unistd.h>       // read, write, close
+#include <iostream>
+#include <string>
 
 class Connection
 {

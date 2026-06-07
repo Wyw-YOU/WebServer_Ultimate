@@ -11,7 +11,7 @@ int main(int argc,char* argv[])
     }
 
     int port = atoi(argv[1]);
-    std::string resourceDir = (argc >= 3) ? argv[2] : "resources";
+    std::string resourceDir = (argc >= 3) ? argv[2] : "../resources";
 
     Server server(port, resourceDir);
     server.Start();

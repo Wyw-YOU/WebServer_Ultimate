@@ -18,6 +18,7 @@ Acceptor::Acceptor(uint16_t port)
 // 调用Socket的Accept方法，获取客户端连接
 int Acceptor::Accept(InetAddress& clientAddr)
 {
+    LOG_DEBUG("Accepting new connection...");
     return socket_.Accept(clientAddr.GetAddr());
 }
 

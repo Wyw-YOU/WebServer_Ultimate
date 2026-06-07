@@ -8,6 +8,8 @@
 Socket::Socket()
 {
     fd_ = socket(AF_INET, SOCK_STREAM, 0);
+
+    LOG_DEBUG("Create socket fd=" + std::to_string(fd_));
 }
 
 Socket::Socket(int fd)
