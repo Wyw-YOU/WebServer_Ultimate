@@ -11,7 +11,6 @@ bool Connection::Process()
     // 解析请求
     std::string raw = readBuffer_.RetrieveAll();
     LOG_DEBUG("Raw request:\n" + raw);
-    std::cout << std::endl;
 
     if(!request_.Parse(raw))
     {

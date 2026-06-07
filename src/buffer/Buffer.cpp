@@ -77,5 +77,5 @@ size_t Buffer::WritableBytes() const
 
 bool Buffer::Empty() const
 {
-    return buffer_.empty();
+    return ReadableBytes() == 0;
 }

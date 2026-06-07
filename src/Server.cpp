@@ -91,7 +91,7 @@ void Server::HandleListenEvent()
     // 创建连接对象并加入到map中管理
     connections_[connfd] = std::unique_ptr<Connection>(new Connection(connfd, resourceDir_));
     // 添加到epoll中监听读事件（写事件先不做）
-    epoller_.AddFd(connfd, EPOLLIN);
+    epoller_.AddFd(connfd, EPOLLIN | EPOLLET);
 }
 
 //  处理读事件，读取客户端请求数据并写入Buffer，构建Http请求并返回HTTP响应，发送HTTP响应数据，并关闭连接
