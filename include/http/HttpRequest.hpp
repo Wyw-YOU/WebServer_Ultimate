@@ -15,6 +15,8 @@ public:
 
     std::string GetHeader(const std::string& key) const;
 
+    bool IsKeepAlive() const;
+
 private:
     std::string method_;
     std::string path_;

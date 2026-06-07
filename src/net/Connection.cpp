@@ -32,6 +32,7 @@ bool Connection::Process()
         {
             response_.SetStatus(200, "OK");
             response_.SetHeader("Content-Type", "text/html");
+            response_.SetHeader("Connection", request_.IsKeepAlive() ? "keep-alive" : "close");
             response_.SetBody(html);
         }
         else
@@ -53,32 +54,39 @@ bool Connection::Read()
 {
     // 接受客户端请求数据并写入Buffer
     char recvbuffer[4096];
-    int n = recv(fd_, recvbuffer, sizeof(recvbuffer), 0);
-    if(n > 0)
+
+    // 循坏读取，直到没有数据可读（非阻塞套接字）
+    while(true)
     {
-        readBuffer_.Append(recvbuffer, n);
-        LOG_DEBUG("Received " + std::to_string(n) + " bytes from fd=" + std::to_string(fd_));
-        return true;
-    }
-    else if(n == 0)
-    {
-        // 客户端关闭连接
-        return false;
-    }
-    else
-    {
-        // 读取错误
-        if(errno == EAGAIN || errno == EWOULDBLOCK)
+        ssize_t n = recv(fd_, recvbuffer, sizeof(recvbuffer), 0);
+
+        if(n > 0)
         {
-            // 没有数据可读了，正常情况
-            return true;
+            readBuffer_.Append(recvbuffer, n);
+            LOG_DEBUG("Received " + std::to_string(n) + " bytes from fd=" + std::to_string(fd_));
+        }
+        else if(n == 0)
+        {
+            // 客户端关闭连接
+            return false;
         }
         else
         {
-            // 其他错误
-            return false;
+            // 读取错误
+            if(errno == EAGAIN || errno == EWOULDBLOCK)
+            {
+                // 没有数据可读了，正常情况
+                break;
+            }
+            else
+            {
+                // 其他错误
+                return false;
+            }
         }
     }
+
+    return true;
 }
 
 //  发送HTTP响应数据
@@ -130,4 +138,10 @@ bool Connection::Close()
         return true;
     }
     return false;
+}
+
+// 判断是否是长连接
+bool Connection::IsKeepAlive()
+{
+    return request_.IsKeepAlive();
 }

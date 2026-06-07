@@ -11,6 +11,14 @@
 #include <iostream>
 #include <string>
 
+enum ConnState
+{
+    Connected,
+    READING,
+    WRITING,
+    CLOSED
+};
+
 class Connection
 {
 public:
@@ -26,8 +34,11 @@ public:
 
     bool Close();
 
+    bool IsKeepAlive();
+
 private:
     int fd_;
+    ConnState state_;
     std::string resourceDir_;
 
     Buffer readBuffer_;

@@ -1,6 +1,8 @@
 #pragma once
 
+#include <cstring>
 #include <string>
+#include <algorithm>
 
 /**
  * @brief 网络缓冲区
@@ -8,34 +10,32 @@
 class Buffer
 {
 public:
-    Buffer();
+    explicit Buffer(size_t initSize = 1024);
 
-    /**
-     * @brief 追加数据
-     */
+    // 追加数据
     void Append(const char* data, size_t len);
 
-    /**
-     * @brief 获取所有数据（清空缓冲区）
-     */
+    // 获取所有数据（清空缓冲区）
     std::string RetrieveAll();
     std::string Retrieve(size_t len);
 
-    /**
-     * @brief 查看数据但不清空
-     */
+    // 查看数据但不清空
     const std::string& Peek() const;
 
-    /**
-     * @brief 当前数据长度
-     */
+    // @brief 当前数据长度
     size_t ReadableBytes() const;
+    size_t WritableBytes() const;
 
-    /**
-     * @brief 是否为空
-     */
+
+    // 是否为空
+
     bool Empty() const;
 
 private:
     std::string buffer_;
+    size_t readPos_;
+    size_t writePos_;
+
+    // 确保有足够空间写入数据
+    void MakeSpace(size_t len);
 };

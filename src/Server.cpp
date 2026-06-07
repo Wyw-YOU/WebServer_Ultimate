@@ -15,7 +15,7 @@ void Server::Start()
 {
     // 设置监听套接字为非阻塞，并添加到epoll中
     acceptor_.SetNonBlocking();
-    epoller_.AddFd(acceptor_.GetFd(), EPOLLIN);
+    epoller_.AddFd(acceptor_.GetFd(), EPOLLIN | EPOLLET);
 
     LOG_NORMAL("WebServer started on port " + std::to_string(port_));
 
@@ -87,7 +87,7 @@ void Server::HandleListenEvent()
     // 设置非阻塞
     int flags = fcntl(connfd, F_GETFL, 0);
     fcntl(connfd, F_SETFL, flags | O_NONBLOCK);
-    
+
     // 创建连接对象并加入到map中管理
     connections_[connfd] = std::unique_ptr<Connection>(new Connection(connfd, resourceDir_));
     // 添加到epoll中监听读事件（写事件先不做）
@@ -119,12 +119,22 @@ void Server::HandleReadEvent(int fd)
     if(!conn->Write())
     {
         // 数据未发送完，添加EPOLLOUT事件，等待下一次可写事件
-        epoller_.ModFd(fd, EPOLLOUT | EPOLLIN);
+        epoller_.ModFd(fd, EPOLLOUT | EPOLLIN | EPOLLET);
     }
     else    
     {
         // 数据发送完，关闭连接
-        CloseConnection(fd);
+        // CloseConnection(fd);
+        if(conn->IsKeepAlive())
+        {
+            // 长连接，继续监听读事件
+            epoller_.ModFd(fd, EPOLLIN | EPOLLET);
+        }
+        else
+        {
+            // 短连接，关闭连接
+            CloseConnection(fd);
+        }
     }
 }
 

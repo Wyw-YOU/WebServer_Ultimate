@@ -94,3 +94,16 @@ std::string HttpRequest::GetHeader(const std::string& key) const
 
     return "";
 }
+
+// 判断是否是长连接
+bool HttpRequest::IsKeepAlive() const
+{
+    auto it = headers_.find("Connection");
+
+    if(it == headers_.end())
+    {
+        return false;
+    }
+
+    return it->second == "keep-alive";
+}
