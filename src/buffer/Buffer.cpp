@@ -65,6 +65,16 @@ const std::string& Buffer::Peek() const
     return buffer_;
 }
 
+const char* Buffer::ReadBegin() const
+{
+    return buffer_.data() + readPos_;
+}
+
+std::pair<const char*, size_t> Buffer::PeekReadable() const
+{
+    return {buffer_.data() + readPos_, ReadableBytes()};
+}
+
 size_t Buffer::ReadableBytes() const
 {
     return writePos_ - readPos_;

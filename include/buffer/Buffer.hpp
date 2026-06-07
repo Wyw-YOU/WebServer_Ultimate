@@ -19,8 +19,12 @@ public:
     std::string RetrieveAll();
     std::string Retrieve(size_t len);
 
-    // 查看数据但不清空
+    // 查看数据但不清空（返回整个内部 buffer，可能含已读旧数据）
     const std::string& Peek() const;
+
+    // 返回可读数据的指针和长度（零拷贝）
+    const char* ReadBegin() const;
+    std::pair<const char*, size_t> PeekReadable() const;
 
     // @brief 当前数据长度
     size_t ReadableBytes() const;

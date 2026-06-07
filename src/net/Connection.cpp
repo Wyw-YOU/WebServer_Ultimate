@@ -88,38 +88,37 @@ bool Connection::Read()
     return true;
 }
 
-//  发送HTTP响应数据
+//  发送HTTP响应数据（循环发送，配合ET模式）
 bool Connection::Write()
 {
-    if(writeBuffer_.ReadableBytes() == 0)
+    while(writeBuffer_.ReadableBytes() > 0)
     {
-        // 没有数据需要发送
-        return true;
-    }
+        auto readable = writeBuffer_.PeekReadable();
+        ssize_t n = send(fd_, readable.first, readable.second, 0);
 
-    const std::string& data = writeBuffer_.Peek();
-    ssize_t n = send(fd_, data.c_str(), data.size(), 0);
-    if(n > 0)
-    {
-        writeBuffer_.Retrieve(n);
-        LOG_DEBUG("Sent " + std::to_string(n) + " bytes to fd=" + std::to_string(fd_));
-        return writeBuffer_.Empty();
-    }
-    else if(n == 0)
-    {
-        return false;
-    }
-    else
-    {
-        if(errno == EAGAIN || errno == EWOULDBLOCK)
+        if(n > 0)
+        {
+            writeBuffer_.Retrieve(n);
+            LOG_DEBUG("Sent " + std::to_string(n) + " bytes to fd=" + std::to_string(fd_));
+        }
+        else if(n == 0)
         {
             return false;
         }
         else
         {
-            return false;
+            if(errno == EAGAIN || errno == EWOULDBLOCK)
+            {
+                return false;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
+
+    return true;
 }
 
 int Connection::GetFd() const

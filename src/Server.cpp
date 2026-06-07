@@ -152,15 +152,22 @@ void Server::HandleWriteEvent(int fd)
     LOG_DEBUG("Handle write event for fd=" + std::to_string(fd));
     if(conn->Write())
     {
-        // 数据发送完，修改为只监听读事件
-        epoller_.ModFd(fd, EPOLLIN);
-        // 关闭连接(短链接)
-        CloseConnection(fd);
+        // 数据发送完
+        if(conn->IsKeepAlive())
+        {
+            // 长连接，继续监听读事件
+            epoller_.ModFd(fd, EPOLLIN | EPOLLET);
+        }
+        else
+        {
+            // 短连接，关闭连接
+            CloseConnection(fd);
+        }
     }
     else
     {
-        // 发送失败，保持监听写事件，等待下一次可写事件
-        LOG_ERROR("Failed to send response to fd=" + std::to_string(fd));
+        // 未发送完，继续监听写事件
+        LOG_DEBUG("Waiting to send more data to fd=" + std::to_string(fd));
     }
 }
 
