@@ -27,7 +27,6 @@ bool Epoller::AddFd(int fd, uint32_t events)
 
     return epoll_ctl(epollFd_, EPOLL_CTL_ADD, fd, &ev) == 0;
 }
-
 bool Epoller::ModFd(int fd, uint32_t events)
 {
     epoll_event ev;
@@ -37,13 +36,30 @@ bool Epoller::ModFd(int fd, uint32_t events)
 
     return epoll_ctl(epollFd_, EPOLL_CTL_MOD, fd, &ev) == 0;
 }
-
 bool Epoller::DelFd(int fd)
 {
-    epoll_event ev;
-    ev.data.fd = fd;
+    return epoll_ctl(epollFd_, EPOLL_CTL_DEL, fd, nullptr) == 0;
+}
 
-    return epoll_ctl(epollFd_, EPOLL_CTL_DEL, fd, &ev) == 0;
+bool Epoller::AddChannel(Channel* channel)
+{
+    epoll_event ev;
+    ev.data.ptr = channel;
+    ev.events = channel->GetEvents();
+
+    return epoll_ctl(epollFd_, EPOLL_CTL_ADD, channel->GetFd(), &ev) == 0;
+}
+bool Epoller::ModChannel(Channel* channel)
+{
+    epoll_event ev;
+    ev.data.ptr = channel;
+    ev.events = channel->GetEvents();
+
+    return epoll_ctl(epollFd_, EPOLL_CTL_MOD, channel->GetFd(), &ev) == 0;
+}
+bool Epoller::DelChannel(Channel* channel)
+{
+    return epoll_ctl(epollFd_, EPOLL_CTL_DEL, channel->GetFd(), nullptr) == 0;
 }
 
 int Epoller::Wait(int timeoutMs)

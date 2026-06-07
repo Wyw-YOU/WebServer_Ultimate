@@ -197,6 +197,33 @@ src/Server.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Server.cpp.s
 .PHONY : src/Server.cpp.s
 
+src/Test/ChannelTest.o: src/Test/ChannelTest.cpp.o
+
+.PHONY : src/Test/ChannelTest.o
+
+# target to build an object file
+src/Test/ChannelTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Test/ChannelTest.cpp.o
+.PHONY : src/Test/ChannelTest.cpp.o
+
+src/Test/ChannelTest.i: src/Test/ChannelTest.cpp.i
+
+.PHONY : src/Test/ChannelTest.i
+
+# target to preprocess a source file
+src/Test/ChannelTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Test/ChannelTest.cpp.i
+.PHONY : src/Test/ChannelTest.cpp.i
+
+src/Test/ChannelTest.s: src/Test/ChannelTest.cpp.s
+
+.PHONY : src/Test/ChannelTest.s
+
+# target to generate assembly for a file
+src/Test/ChannelTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Test/ChannelTest.cpp.s
+.PHONY : src/Test/ChannelTest.cpp.s
+
 src/buffer/Buffer.o: src/buffer/Buffer.cpp.o
 
 .PHONY : src/buffer/Buffer.o
@@ -332,6 +359,33 @@ src/net/Acceptor.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Acceptor.cpp.s
 .PHONY : src/net/Acceptor.cpp.s
 
+src/net/Channel.o: src/net/Channel.cpp.o
+
+.PHONY : src/net/Channel.o
+
+# target to build an object file
+src/net/Channel.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Channel.cpp.o
+.PHONY : src/net/Channel.cpp.o
+
+src/net/Channel.i: src/net/Channel.cpp.i
+
+.PHONY : src/net/Channel.i
+
+# target to preprocess a source file
+src/net/Channel.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Channel.cpp.i
+.PHONY : src/net/Channel.cpp.i
+
+src/net/Channel.s: src/net/Channel.cpp.s
+
+.PHONY : src/net/Channel.s
+
+# target to generate assembly for a file
+src/net/Channel.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Channel.cpp.s
+.PHONY : src/net/Channel.cpp.s
+
 src/net/Connection.o: src/net/Connection.cpp.o
 
 .PHONY : src/net/Connection.o
@@ -385,6 +439,33 @@ src/net/Epoll.s: src/net/Epoll.cpp.s
 src/net/Epoll.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Epoll.cpp.s
 .PHONY : src/net/Epoll.cpp.s
+
+src/net/EventLoop.o: src/net/EventLoop.cpp.o
+
+.PHONY : src/net/EventLoop.o
+
+# target to build an object file
+src/net/EventLoop.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/EventLoop.cpp.o
+.PHONY : src/net/EventLoop.cpp.o
+
+src/net/EventLoop.i: src/net/EventLoop.cpp.i
+
+.PHONY : src/net/EventLoop.i
+
+# target to preprocess a source file
+src/net/EventLoop.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/EventLoop.cpp.i
+.PHONY : src/net/EventLoop.cpp.i
+
+src/net/EventLoop.s: src/net/EventLoop.cpp.s
+
+.PHONY : src/net/EventLoop.s
+
+# target to generate assembly for a file
+src/net/EventLoop.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/EventLoop.cpp.s
+.PHONY : src/net/EventLoop.cpp.s
 
 src/net/InetAddress.o: src/net/InetAddress.cpp.o
 
@@ -482,6 +563,9 @@ help:
 	@echo "... src/Server.o"
 	@echo "... src/Server.i"
 	@echo "... src/Server.s"
+	@echo "... src/Test/ChannelTest.o"
+	@echo "... src/Test/ChannelTest.i"
+	@echo "... src/Test/ChannelTest.s"
 	@echo "... src/buffer/Buffer.o"
 	@echo "... src/buffer/Buffer.i"
 	@echo "... src/buffer/Buffer.s"
@@ -497,12 +581,18 @@ help:
 	@echo "... src/net/Acceptor.o"
 	@echo "... src/net/Acceptor.i"
 	@echo "... src/net/Acceptor.s"
+	@echo "... src/net/Channel.o"
+	@echo "... src/net/Channel.i"
+	@echo "... src/net/Channel.s"
 	@echo "... src/net/Connection.o"
 	@echo "... src/net/Connection.i"
 	@echo "... src/net/Connection.s"
 	@echo "... src/net/Epoll.o"
 	@echo "... src/net/Epoll.i"
 	@echo "... src/net/Epoll.s"
+	@echo "... src/net/EventLoop.o"
+	@echo "... src/net/EventLoop.i"
+	@echo "... src/net/EventLoop.s"
 	@echo "... src/net/InetAddress.o"
 	@echo "... src/net/InetAddress.i"
 	@echo "... src/net/InetAddress.s"

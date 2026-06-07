@@ -11,6 +11,7 @@ CMakeFiles/server.dir/src/Server.cpp.o
  ../include/http/HttpRequest.hpp
  ../include/http/HttpResponse.hpp
  ../include/net/Acceptor.hpp
+ ../include/net/Channel.hpp
  ../include/net/Connection.hpp
  ../include/net/Epoll.hpp
  ../include/net/InetAddress.hpp
@@ -18,6 +19,8 @@ CMakeFiles/server.dir/src/Server.cpp.o
  ../include/util/Error.hpp
  ../include/util/FileUtil.hpp
  /root/WebServer_Ultimate/src/Server.cpp
+CMakeFiles/server.dir/src/Test/ChannelTest.cpp.o
+ /root/WebServer_Ultimate/src/Test/ChannelTest.cpp
 CMakeFiles/server.dir/src/buffer/Buffer.cpp.o
  ../include/buffer/Buffer.hpp
  /root/WebServer_Ultimate/src/buffer/Buffer.cpp
@@ -35,6 +38,7 @@ CMakeFiles/server.dir/src/main.cpp.o
  ../include/http/HttpRequest.hpp
  ../include/http/HttpResponse.hpp
  ../include/net/Acceptor.hpp
+ ../include/net/Channel.hpp
  ../include/net/Connection.hpp
  ../include/net/Epoll.hpp
  ../include/net/InetAddress.hpp
@@ -48,6 +52,9 @@ CMakeFiles/server.dir/src/net/Acceptor.cpp.o
  ../include/net/InetAddress.hpp
  ../include/net/Socket.hpp
  /root/WebServer_Ultimate/src/net/Acceptor.cpp
+CMakeFiles/server.dir/src/net/Channel.cpp.o
+ ../include/net/Channel.hpp
+ /root/WebServer_Ultimate/src/net/Channel.cpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o
  ../include/Log.hpp
  ../include/buffer/Buffer.hpp
@@ -58,9 +65,12 @@ CMakeFiles/server.dir/src/net/Connection.cpp.o
  /root/WebServer_Ultimate/src/net/Connection.cpp
 CMakeFiles/server.dir/src/net/Epoll.cpp.o
  ../include/Log.hpp
+ ../include/net/Channel.hpp
  ../include/net/Epoll.hpp
  ../include/util/Error.hpp
  /root/WebServer_Ultimate/src/net/Epoll.cpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o
+ /root/WebServer_Ultimate/src/net/EventLoop.cpp
 CMakeFiles/server.dir/src/net/InetAddress.cpp.o
  ../include/net/InetAddress.hpp
  /root/WebServer_Ultimate/src/net/InetAddress.cpp

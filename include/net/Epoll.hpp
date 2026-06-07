@@ -2,10 +2,14 @@
 
 #include "util/Error.hpp"
 #include "Log.hpp"
+#include "net/Channel.hpp"
 
 #include <unistd.h>
 #include <vector>
 #include <sys/epoll.h>
+
+// 补充声明
+class Channel;
 
 /**
  * @brief epoll封装
@@ -18,10 +22,12 @@ public:
     ~Epoller();
 
     bool AddFd(int fd, uint32_t events);
-
     bool ModFd(int fd, uint32_t events);
-
     bool DelFd(int fd);
+
+    bool AddChannel(Channel* channel);
+    bool ModChannel(Channel* channel);
+    bool DelChannel(Channel* channel);
 
     int Wait(int timeoutMs);
 
