@@ -49,6 +49,7 @@ CMakeFiles/server.dir/src/net/Acceptor.cpp.o
  ../include/net/Socket.hpp
  /root/WebServer_Ultimate/src/net/Acceptor.cpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o
+ ../include/Log.hpp
  ../include/buffer/Buffer.hpp
  ../include/http/HttpRequest.hpp
  ../include/http/HttpResponse.hpp
@@ -65,7 +66,6 @@ CMakeFiles/server.dir/src/net/InetAddress.cpp.o
  /root/WebServer_Ultimate/src/net/InetAddress.cpp
 CMakeFiles/server.dir/src/net/Socket.cpp.o
  ../include/Log.hpp
- ../include/net/Epoll.hpp
  ../include/net/Socket.hpp
  ../include/util/Error.hpp
  /root/WebServer_Ultimate/src/net/Socket.cpp

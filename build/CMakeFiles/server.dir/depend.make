@@ -48,6 +48,7 @@ CMakeFiles/server.dir/src/net/Acceptor.cpp.o: ../include/net/InetAddress.hpp
 CMakeFiles/server.dir/src/net/Acceptor.cpp.o: ../include/net/Socket.hpp
 CMakeFiles/server.dir/src/net/Acceptor.cpp.o: ../src/net/Acceptor.cpp
 
+CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/Log.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/buffer/Buffer.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpResponse.hpp
@@ -64,7 +65,6 @@ CMakeFiles/server.dir/src/net/InetAddress.cpp.o: ../include/net/InetAddress.hpp
 CMakeFiles/server.dir/src/net/InetAddress.cpp.o: ../src/net/InetAddress.cpp
 
 CMakeFiles/server.dir/src/net/Socket.cpp.o: ../include/Log.hpp
-CMakeFiles/server.dir/src/net/Socket.cpp.o: ../include/net/Epoll.hpp
 CMakeFiles/server.dir/src/net/Socket.cpp.o: ../include/net/Socket.hpp
 CMakeFiles/server.dir/src/net/Socket.cpp.o: ../include/util/Error.hpp
 CMakeFiles/server.dir/src/net/Socket.cpp.o: ../src/net/Socket.cpp
