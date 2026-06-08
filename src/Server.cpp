@@ -10,6 +10,9 @@ Server::Server(int port, const std::string& resourceDir)
       acceptor_(port),
       loop_(MAXEVENTS)
 {
+    // 先设置非阻塞，再注册到epoll
+    acceptor_.SetNonBlocking();
+
     listenChannel_.reset(new Channel(acceptor_.GetFd()));
     listenChannel_->SetEvents(EPOLLIN | EPOLLET);
 
@@ -20,15 +23,12 @@ Server::Server(int port, const std::string& resourceDir)
             HandleListenEvent();
         }
     );
-    
+
     loop_.GetEpoller().AddChannel(listenChannel_.get());
 }
 
 void Server::Start()
 {
-    // 设置监听套接字为非阻塞，并添加到epoll中
-    acceptor_.SetNonBlocking();
-
     LOG_NORMAL("WebServer started on port " + std::to_string(port_));
 
     // 进入实际循坏
@@ -191,18 +191,19 @@ void Server::HandleWriteEvent(int fd)
 //  关闭连接，删除epoll事件并从连接列表中移除
 void Server::CloseConnection(int fd)
 {
-    auto it = connections_.find(fd);
-    if(it != connections_.end())
-    {
-        it->second->Close();
-        connections_.erase(it);
-    }
-
+    // 先从epoll注销Channel，再关闭fd，避免对已关闭fd执行epoll DEL
     auto cit = channels_.find(fd);
     if(cit != channels_.end())
     {
         loop_.GetEpoller().DelChannel(cit->second.get());
         channels_.erase(cit);
+    }
+
+    auto it = connections_.find(fd);
+    if(it != connections_.end())
+    {
+        it->second->Close();
+        connections_.erase(it);
     }
 
     LOG_DEBUG("Closed connection fd=" + std::to_string(fd));

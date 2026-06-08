@@ -1,15 +1,12 @@
 #pragma once
 
 #include "util/Error.hpp"
-#include "Log.hpp"
 #include "net/Channel.hpp"
+#include "Log.hpp"
 
 #include <unistd.h>
 #include <vector>
 #include <sys/epoll.h>
-
-// 补充声明
-class Channel;
 
 /**
  * @brief epoll封装
