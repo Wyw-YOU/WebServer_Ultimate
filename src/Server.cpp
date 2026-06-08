@@ -9,13 +9,7 @@ Server::Server(int port, const std::string& resourceDir)
       resourceDir_(resourceDir),
       acceptor_(port),
       loop_(MAXEVENTS)
-    { }
-
-void Server::Start()
 {
-    // 设置监听套接字为非阻塞，并添加到epoll中
-    acceptor_.SetNonBlocking();
-    // epoller_.AddFd(acceptor_.GetFd(), EPOLLIN | EPOLLET);
     listenChannel_.reset(new Channel(acceptor_.GetFd()));
     listenChannel_->SetEvents(EPOLLIN | EPOLLET);
 
@@ -28,9 +22,16 @@ void Server::Start()
     );
     
     loop_.GetEpoller().AddChannel(listenChannel_.get());
+}
+
+void Server::Start()
+{
+    // 设置监听套接字为非阻塞，并添加到epoll中
+    acceptor_.SetNonBlocking();
 
     LOG_NORMAL("WebServer started on port " + std::to_string(port_));
 
+    // 进入实际循坏
     loop_.Loop();
 }
 

@@ -18,27 +18,6 @@ Epoller::~Epoller()
     }
 }
 
-bool Epoller::AddFd(int fd, uint32_t events)
-{
-    epoll_event ev;
-    ev.data.fd = fd;
-    ev.events = events;
-
-    return epoll_ctl(epollFd_, EPOLL_CTL_ADD, fd, &ev) == 0;
-}
-bool Epoller::ModFd(int fd, uint32_t events)
-{
-    epoll_event ev;
-    ev.data.fd = fd;
-    ev.events = events;
-
-    return epoll_ctl(epollFd_, EPOLL_CTL_MOD, fd, &ev) == 0;
-}
-bool Epoller::DelFd(int fd)
-{
-    return epoll_ctl(epollFd_, EPOLL_CTL_DEL, fd, nullptr) == 0;
-}
-
 bool Epoller::AddChannel(Channel* channel)
 {
     epoll_event ev;
@@ -74,6 +53,6 @@ epoll_event Epoller::GetEvent(size_t index) const
     else
     {
         Error::SysError("Index out of bounds in GetEvent!");
-        return epoll_event{};
+        return epoll_event{0, {0}};
     }
 }
