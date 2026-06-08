@@ -13,6 +13,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/server.dir/src/net/EventLoop.cpp.o"
   "CMakeFiles/server.dir/src/net/InetAddress.cpp.o"
   "CMakeFiles/server.dir/src/net/Socket.cpp.o"
+  "CMakeFiles/server.dir/src/thread/ThreadPool.cpp.o"
   "CMakeFiles/server.dir/src/util/FileUtil.cpp.o"
   "server"
   "server.pdb"

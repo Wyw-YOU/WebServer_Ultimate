@@ -11,12 +11,12 @@
 #include <iostream>
 #include <string>
 
-enum ConnState
+enum class ConnState
 {
-    Connected,
-    READING,
-    WRITING,
-    CLOSED
+    Reading,
+    Processing,
+    Writing,
+    Closed
 };
 
 class Connection

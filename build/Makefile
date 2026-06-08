@@ -521,6 +521,33 @@ src/net/Socket.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/Socket.cpp.s
 .PHONY : src/net/Socket.cpp.s
 
+src/thread/ThreadPool.o: src/thread/ThreadPool.cpp.o
+
+.PHONY : src/thread/ThreadPool.o
+
+# target to build an object file
+src/thread/ThreadPool.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/thread/ThreadPool.cpp.o
+.PHONY : src/thread/ThreadPool.cpp.o
+
+src/thread/ThreadPool.i: src/thread/ThreadPool.cpp.i
+
+.PHONY : src/thread/ThreadPool.i
+
+# target to preprocess a source file
+src/thread/ThreadPool.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/thread/ThreadPool.cpp.i
+.PHONY : src/thread/ThreadPool.cpp.i
+
+src/thread/ThreadPool.s: src/thread/ThreadPool.cpp.s
+
+.PHONY : src/thread/ThreadPool.s
+
+# target to generate assembly for a file
+src/thread/ThreadPool.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/thread/ThreadPool.cpp.s
+.PHONY : src/thread/ThreadPool.cpp.s
+
 src/util/FileUtil.o: src/util/FileUtil.cpp.o
 
 .PHONY : src/util/FileUtil.o
@@ -599,6 +626,9 @@ help:
 	@echo "... src/net/Socket.o"
 	@echo "... src/net/Socket.i"
 	@echo "... src/net/Socket.s"
+	@echo "... src/thread/ThreadPool.o"
+	@echo "... src/thread/ThreadPool.i"
+	@echo "... src/thread/ThreadPool.s"
 	@echo "... src/util/FileUtil.o"
 	@echo "... src/util/FileUtil.i"
 	@echo "... src/util/FileUtil.s"

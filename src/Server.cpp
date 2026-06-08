@@ -35,68 +35,73 @@ void Server::Start()
     loop_.Loop();
 }
 
+
+
 //  处理监听事件，接受新连接并添加到epoll中
 void Server::HandleListenEvent()
 {
     InetAddress clientAddr;
-    int connfd = acceptor_.Accept(clientAddr);
-    if(connfd < 0)
+    while(true)
     {
-        if(errno == EAGAIN || errno == EWOULDBLOCK)
+        int connfd = acceptor_.Accept(clientAddr);
+        if(connfd < 0)
         {
-            LOG_DEBUG("No more incoming connections to accept.");
-            // 没有更多连接了
-            return;
+            if(errno == EAGAIN || errno == EWOULDBLOCK)
+            {
+                LOG_DEBUG("No more incoming connections to accept.");
+                // 没有更多连接了
+                break;
+            }
+            else
+            {
+                LOG_ERROR("Accept error!");
+                break;
+            }
         }
-        else
-        {
-            LOG_ERROR("Accept error!");
-            return;
-        }
+
+        LOG_DEBUG("new connection fd=" + std::to_string(connfd));
+
+        // 设置非阻塞
+        int flags = fcntl(connfd, F_GETFL, 0);
+        fcntl(connfd, F_SETFL, flags | O_NONBLOCK);
+
+        // 创建connection 和 channel对象并加入到map中管理
+        connections_[connfd] = std::unique_ptr<Connection>(new Connection(connfd, resourceDir_));
+        channels_[connfd] = std::unique_ptr<Channel>(new Channel(connfd));
+
+        // 绑定回调
+        Channel* channel = channels_[connfd].get();
+        // 读回调
+        channel->SetReadCallback
+        (
+            [this, connfd]()
+            {
+                HandleReadEvent(connfd);
+            }
+        );
+        // 写回调
+        channel->SetWriteCallback
+        (
+            [this, connfd]()
+            {
+                HandleWriteEvent(connfd);
+            }
+        );
+        // 错误回调
+        channel->SetCloseCallback
+        (
+            [this, connfd]()
+            {
+                CloseConnection(connfd);
+            }
+        );
+
+        // 添加到epoll中监听事件
+        channel->SetEvents(EPOLLIN | EPOLLET);
+
+        // 注册到EventLoop中
+        loop_.GetEpoller().AddChannel(channel);
     }
-
-    LOG_DEBUG("new connection fd=" + std::to_string(connfd));
-
-    // 设置非阻塞
-    int flags = fcntl(connfd, F_GETFL, 0);
-    fcntl(connfd, F_SETFL, flags | O_NONBLOCK);
-
-    // 创建connection 和 channel对象并加入到map中管理
-    connections_[connfd] = std::unique_ptr<Connection>(new Connection(connfd, resourceDir_));
-    channels_[connfd] = std::unique_ptr<Channel>(new Channel(connfd));
-
-    // 绑定回调
-    Channel* channel = channels_[connfd].get();
-    // 读回调
-    channel->SetReadCallback
-    (
-        [this, connfd]()
-        {
-            HandleReadEvent(connfd);
-        }
-    );
-    // 写回调
-    channel->SetWriteCallback
-    (
-        [this, connfd]()
-        {
-            HandleWriteEvent(connfd);
-        }
-    );
-    // 错误回调
-    channel->SetCloseCallback
-    (
-        [this, connfd]()
-        {
-            CloseConnection(connfd);
-        }
-    );
-
-    // 添加到epoll中监听事件
-    channel->SetEvents(EPOLLIN | EPOLLET);
-
-    // 注册到EventLoop中
-    loop_.GetEpoller().AddChannel(channel);
 }
 
 //  处理读事件，读取客户端请求数据并写入Buffer，构建Http请求并返回HTTP响应，发送HTTP响应数据，并关闭连接

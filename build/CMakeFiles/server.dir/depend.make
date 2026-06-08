@@ -86,6 +86,9 @@ CMakeFiles/server.dir/src/net/Socket.cpp.o: ../include/net/Socket.hpp
 CMakeFiles/server.dir/src/net/Socket.cpp.o: ../include/util/Error.hpp
 CMakeFiles/server.dir/src/net/Socket.cpp.o: ../src/net/Socket.cpp
 
+CMakeFiles/server.dir/src/thread/ThreadPool.cpp.o: ../include/thread/ThreadPool.hpp
+CMakeFiles/server.dir/src/thread/ThreadPool.cpp.o: ../src/thread/ThreadPool.cpp
+
 CMakeFiles/server.dir/src/util/FileUtil.cpp.o: ../include/util/FileUtil.hpp
 CMakeFiles/server.dir/src/util/FileUtil.cpp.o: ../src/util/FileUtil.cpp
 
