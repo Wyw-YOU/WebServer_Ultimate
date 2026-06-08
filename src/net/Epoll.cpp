@@ -21,7 +21,6 @@ Epoller::~Epoller()
 bool Epoller::AddFd(int fd, uint32_t events)
 {
     epoll_event ev;
-
     ev.data.fd = fd;
     ev.events = events;
 
@@ -30,7 +29,6 @@ bool Epoller::AddFd(int fd, uint32_t events)
 bool Epoller::ModFd(int fd, uint32_t events)
 {
     epoll_event ev;
-
     ev.data.fd = fd;
     ev.events = events;
 

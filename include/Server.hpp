@@ -9,6 +9,8 @@
 #include "http/HttpRequest.hpp"
 #include "http/HttpResponse.hpp"
 #include "net/Epoll.hpp"
+#include "net/EventLoop.hpp"
+#include "net/Channel.hpp"
 
 #include <iostream>
 #include <cstring>
@@ -47,7 +49,9 @@ private:
     int port_;
     std::string resourceDir_;
     Acceptor acceptor_;
-    Epoller epoller_;
+    EventLoop loop_;
 
+    std::unique_ptr<Channel> listenChannel_;
+    std::unordered_map<int, std::unique_ptr<Channel>> channels_;
     std::unordered_map<int, std::unique_ptr<Connection>> connections_;
 };

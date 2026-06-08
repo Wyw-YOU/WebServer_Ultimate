@@ -23,6 +23,7 @@ public:
 public:
     int GetFd() const;
 
+    // 其中Events为主动监听，Revents为返回事件属于被动监听
     uint32_t GetEvents() const;
     uint32_t GetRevents() const;
 

@@ -13,6 +13,7 @@ CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Acceptor.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Channel.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Connection.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Epoll.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/EventLoop.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/InetAddress.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Socket.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/util/Error.hpp
@@ -40,6 +41,7 @@ CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Acceptor.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Channel.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Connection.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Epoll.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/net/EventLoop.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/InetAddress.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Socket.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/util/Error.hpp
@@ -69,6 +71,11 @@ CMakeFiles/server.dir/src/net/Epoll.cpp.o: ../include/net/Epoll.hpp
 CMakeFiles/server.dir/src/net/Epoll.cpp.o: ../include/util/Error.hpp
 CMakeFiles/server.dir/src/net/Epoll.cpp.o: ../src/net/Epoll.cpp
 
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/Log.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/net/Channel.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/net/Epoll.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/net/EventLoop.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/util/Error.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../src/net/EventLoop.cpp
 
 CMakeFiles/server.dir/src/net/InetAddress.cpp.o: ../include/net/InetAddress.hpp
