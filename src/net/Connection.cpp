@@ -2,16 +2,17 @@
 
 Connection::Connection(int fd, const std::string& resourceDir)
     : fd_(fd),
+      state_(ConnState::Connected),
       resourceDir_(resourceDir)
     { }
 
 //  构建Http请求并返回HTTP响应
 bool Connection::Process()
 {
-    LOG_DEBUG("Process in thread id=" + std::to_string(std::hash<std::thread::id>{}(std::this_thread::get_id())));
+    // LOG_DEBUG("Process in thread id=" + std::to_string(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     // 解析请求
     std::string raw = readBuffer_.RetrieveAll();
-    LOG_DEBUG("Raw request:\n" + raw);
+    // LOG_DEBUG("Raw request:\n" + raw);
 
     if(!request_.Parse(raw))
     {
@@ -143,4 +144,13 @@ bool Connection::Close()
 bool Connection::IsKeepAlive()
 {
     return request_.IsKeepAlive();
+}
+
+ConnState Connection::GetState() const
+{
+    return state_.load();
+}
+void Connection::SetState(ConnState state)
+{
+    state_.store(state);
 }

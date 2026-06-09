@@ -9,12 +9,14 @@
 
 #include <sys/socket.h>   // recv, send
 #include <unistd.h>       // read, write, close
+#include <atomic>
 #include <iostream>
 #include <string>
 
 // 连接状态
 enum class ConnState
 {
+    Connected,
     Reading,
     Processing,
     Writing,
@@ -39,6 +41,10 @@ public:
     bool Read();
     WriteResult Write();
 
+    // 连接状态管理
+    ConnState GetState() const;
+    void SetState(ConnState state);
+
     int GetFd() const;
 
     bool Close();
@@ -47,7 +53,8 @@ public:
 
 private:
     int fd_;
-    ConnState state_;
+    // ConnState state_;
+    std::atomic<ConnState> state_;
     std::string resourceDir_;
 
     Buffer readBuffer_;

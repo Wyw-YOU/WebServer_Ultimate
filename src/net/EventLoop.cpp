@@ -22,6 +22,8 @@ EventLoop::EventLoop(int maxEvents, int threadNum)
         }
     );
     wakeupChannel_->SetEvents(EPOLLIN | EPOLLET);
+
+    epoller_.AddChannel(wakeupChannel_.get());
 }
 EventLoop::~EventLoop()
 {

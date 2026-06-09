@@ -116,9 +116,12 @@ void Server::HandleFinished(int fd, std::shared_ptr<Connection> conn)
         auto channel = channels_[fd].get();
         channel->SetEvents(EPOLLIN | EPOLLET);
         loop_.GetEpoller().ModChannel(channel);
+
+        conn->SetState(ConnState::Connected);
     } 
     else 
     {
+        conn->SetState(ConnState::Closed);
         // 短链接：关闭
         CloseConnection(fd);
     }
@@ -135,37 +138,57 @@ void Server::HandleReadEvent(int fd)
     }
 
     std::shared_ptr<Connection> conn = it->second;
+    if(conn->GetState() != ConnState::Connected)
+    {
+        LOG_DEBUG("Connection is processing, ignore fd= " + std::to_string(fd));
+        return;
+    }
+
+    // 读取失败则关闭
+    if(!conn->Read())
+    {
+        CloseConnection(fd);
+        return;
+    }
+    LOG_DEBUG("Read data from fd=" + std::to_string(fd));
+    conn->SetState(ConnState::Processing);
 
     // 业务处理(丢给线程池)
     pool_.AddTask([this, conn, fd]() 
     {
-        // 读取失败则关闭
-        if(!conn->Read())
-        {
-            CloseConnection(fd);
-            return;
-        }
-        LOG_DEBUG("Read data from fd=" + std::to_string(fd));
-        
         // 线程池线程执行
         conn->Process();
+        conn->SetState(ConnState::Writing);
     
         // Process 完之后，把写事件提交回主线程 EventLoop
         loop_.QueueInLoop([this, conn, fd]() 
         {
             // 尝试发送响应
-            if(!conn->Write()) 
+            WriteResult result = conn->Write();
+
+            switch(result)
             {
-                // 数据未发送完，添加 EPOLLOUT
-                auto channel = channels_[fd].get();
-                channel->SetEvents(EPOLLIN | EPOLLOUT | EPOLLET);
-                loop_.GetEpoller().ModChannel(channel);
-            } 
-            else 
-            {
-                // 数据发送完
-                // 判断是否是长连接
-                HandleFinished(fd, conn);
+                case WRITE_COMPLETE:
+                {
+                    HandleFinished(fd, conn);
+                    break;
+                }
+
+                case WRITE_AGAIN:
+                {
+                    // 数据未发送完，添加 EPOLLOUT
+                    auto channel = channels_[fd].get();
+                    channel->SetEvents(EPOLLIN | EPOLLOUT | EPOLLET);
+                    loop_.GetEpoller().ModChannel(channel);
+
+                    break;
+                }
+
+                case WRITE_ERROR:
+                {
+                    CloseConnection(fd);
+                    break;
+                }
             }
         });
     });
