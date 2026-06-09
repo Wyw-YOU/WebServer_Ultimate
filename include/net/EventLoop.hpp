@@ -3,6 +3,7 @@
 #include "net/Epoll.hpp"
 #include "net/Channel.hpp"
 #include "thread/ThreadPool.hpp"
+#include "timer/Timer.hpp"
 #include "Log.hpp"
 
 #include <mutex>
@@ -30,6 +31,11 @@ public:
     // 把任务交给线程池执行
     void RunInThreadPool(std::function<void()> task);
 
+    // 接入timer进行时间管理
+    void AddTimer(int fd, int timeoutMs, std::function<void()> cb);
+    void AdjustTimer(int fd, int timeoutMs);
+    void RemoveTimer(int fd);
+
 private:
     void DoPendingFunctors();
 
@@ -38,6 +44,7 @@ private:
     void Wakeup();
 
 private:
+    Timer timer_;
     Epoller epoller_;
 
     std::mutex mutex_;

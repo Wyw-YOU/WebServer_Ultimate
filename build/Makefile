@@ -224,6 +224,33 @@ src/Test/ChannelTest.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Test/ChannelTest.cpp.s
 .PHONY : src/Test/ChannelTest.cpp.s
 
+src/Test/ThreadPoolTest.o: src/Test/ThreadPoolTest.cpp.o
+
+.PHONY : src/Test/ThreadPoolTest.o
+
+# target to build an object file
+src/Test/ThreadPoolTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Test/ThreadPoolTest.cpp.o
+.PHONY : src/Test/ThreadPoolTest.cpp.o
+
+src/Test/ThreadPoolTest.i: src/Test/ThreadPoolTest.cpp.i
+
+.PHONY : src/Test/ThreadPoolTest.i
+
+# target to preprocess a source file
+src/Test/ThreadPoolTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Test/ThreadPoolTest.cpp.i
+.PHONY : src/Test/ThreadPoolTest.cpp.i
+
+src/Test/ThreadPoolTest.s: src/Test/ThreadPoolTest.cpp.s
+
+.PHONY : src/Test/ThreadPoolTest.s
+
+# target to generate assembly for a file
+src/Test/ThreadPoolTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Test/ThreadPoolTest.cpp.s
+.PHONY : src/Test/ThreadPoolTest.cpp.s
+
 src/buffer/Buffer.o: src/buffer/Buffer.cpp.o
 
 .PHONY : src/buffer/Buffer.o
@@ -548,6 +575,33 @@ src/thread/ThreadPool.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/thread/ThreadPool.cpp.s
 .PHONY : src/thread/ThreadPool.cpp.s
 
+src/timer/Timer.o: src/timer/Timer.cpp.o
+
+.PHONY : src/timer/Timer.o
+
+# target to build an object file
+src/timer/Timer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/timer/Timer.cpp.o
+.PHONY : src/timer/Timer.cpp.o
+
+src/timer/Timer.i: src/timer/Timer.cpp.i
+
+.PHONY : src/timer/Timer.i
+
+# target to preprocess a source file
+src/timer/Timer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/timer/Timer.cpp.i
+.PHONY : src/timer/Timer.cpp.i
+
+src/timer/Timer.s: src/timer/Timer.cpp.s
+
+.PHONY : src/timer/Timer.s
+
+# target to generate assembly for a file
+src/timer/Timer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/timer/Timer.cpp.s
+.PHONY : src/timer/Timer.cpp.s
+
 src/util/FileUtil.o: src/util/FileUtil.cpp.o
 
 .PHONY : src/util/FileUtil.o
@@ -593,6 +647,9 @@ help:
 	@echo "... src/Test/ChannelTest.o"
 	@echo "... src/Test/ChannelTest.i"
 	@echo "... src/Test/ChannelTest.s"
+	@echo "... src/Test/ThreadPoolTest.o"
+	@echo "... src/Test/ThreadPoolTest.i"
+	@echo "... src/Test/ThreadPoolTest.s"
 	@echo "... src/buffer/Buffer.o"
 	@echo "... src/buffer/Buffer.i"
 	@echo "... src/buffer/Buffer.s"
@@ -629,6 +686,9 @@ help:
 	@echo "... src/thread/ThreadPool.o"
 	@echo "... src/thread/ThreadPool.i"
 	@echo "... src/thread/ThreadPool.s"
+	@echo "... src/timer/Timer.o"
+	@echo "... src/timer/Timer.i"
+	@echo "... src/timer/Timer.s"
 	@echo "... src/util/FileUtil.o"
 	@echo "... src/util/FileUtil.i"
 	@echo "... src/util/FileUtil.s"

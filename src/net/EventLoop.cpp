@@ -42,7 +42,9 @@ void EventLoop::Loop()
 {
     while(true)
     {
-        int eventCnt = epoller_.Wait(-1);
+        int timeout = timer_.GetNextTick();
+        int eventCnt = epoller_.Wait(timeout);
+
         if(eventCnt < 0)
         {
             LOG_ERROR("epoll_wait failed: " + std::string(strerror(errno)));
@@ -61,6 +63,7 @@ void EventLoop::Loop()
         }
 
         DoPendingFunctors();
+        timer_.Tick();
     }
 }
 
@@ -118,4 +121,20 @@ void EventLoop::HandleWakeup()
     {
         LOG_ERROR("EventLoop::HandleWakeup read error: " + std::string(strerror(errno)));
     }
+}
+
+// timer接入
+void EventLoop::AddTimer(int fd, int timeoutMs, std::function<void()> cb)
+{
+    timer_.Add(fd, timeoutMs, cb);
+}
+
+void EventLoop::AdjustTimer(int fd, int timeoutMs)
+{
+    timer_.Adjust(fd, timeoutMs);
+}
+
+void EventLoop::RemoveTimer(int fd)
+{
+    timer_.Delete(fd);
 }

@@ -104,6 +104,14 @@ void Server::HandleListenEvent()
 
         // 注册到EventLoop中
         loop_.GetEpoller().AddChannel(channel);
+
+        // 添加timer计时器
+        loop_.AddTimer(connfd, 5000, 
+            [this, connfd]()
+            {
+                CloseConnection(connfd);
+            }
+        );
     }
 }
 
@@ -130,6 +138,9 @@ void Server::HandleFinished(int fd, std::shared_ptr<Connection> conn)
 //  处理读事件，读取客户端请求数据并写入Buffer，构建Http请求并返回HTTP响应，发送HTTP响应数据，并关闭连接
 void Server::HandleReadEvent(int fd)
 {
+    // 刷新计时
+    loop_.AdjustTimer(fd, 60000);
+
     auto it = connections_.find(fd);
     if(it == connections_.end())
     {
@@ -197,6 +208,9 @@ void Server::HandleReadEvent(int fd)
 // 处理写事件，继续发送响应数据
 void Server::HandleWriteEvent(int fd)
 {
+    // 刷新计时
+    loop_.AdjustTimer(fd, 60000);
+
     auto it = connections_.find(fd);
     if(it == connections_.end())
     {
@@ -252,6 +266,8 @@ void Server::CloseConnection(int fd)
         it->second->Close();
         connections_.erase(it);
     }
+    // 关闭计时
+    loop_.RemoveTimer(fd);
 
     LOG_DEBUG("Closed connection fd=" + std::to_string(fd));
 }
