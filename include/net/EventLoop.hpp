@@ -2,6 +2,7 @@
 
 #include "net/Epoll.hpp"
 #include "net/Channel.hpp"
+#include "thread/ThreadPool.hpp"
 #include "Log.hpp"
 
 #include <mutex>
@@ -18,13 +19,16 @@
 class EventLoop
 {
 public:
-    explicit EventLoop(int maxEvents = 1024);
+    explicit EventLoop(int maxEvents = 1024, int threadNum = 128);
     ~EventLoop();
 
     void Loop();
     void QueueInLoop(std::function<void()> cb);
 
     Epoller& GetEpoller();
+
+    // 把任务交给线程池执行
+    void RunInThreadPool(std::function<void()> task);
 
 private:
     void DoPendingFunctors();
@@ -41,4 +45,6 @@ private:
 
     int wakeupFd_;
     std::unique_ptr<Channel> wakeupChannel_;
+
+    ThreadPool threadPool_;
 };

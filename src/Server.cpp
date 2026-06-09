@@ -3,12 +3,14 @@
 #include <memory>
 
 #define MAXEVENTS 1024
+#define THREAD_NUM 20
 
 Server::Server(int port, const std::string& resourceDir)
     : port_(port),
       resourceDir_(resourceDir),
       acceptor_(port),
-      loop_(MAXEVENTS)
+      loop_(MAXEVENTS),
+      pool_(THREAD_NUM)
 {
     // 先设置非阻塞，再注册到epoll
     acceptor_.SetNonBlocking();
@@ -27,6 +29,7 @@ Server::Server(int port, const std::string& resourceDir)
     loop_.GetEpoller().AddChannel(listenChannel_.get());
 }
 
+// 启动服务器
 void Server::Start()
 {
     LOG_NORMAL("WebServer started on port " + std::to_string(port_));
@@ -66,7 +69,7 @@ void Server::HandleListenEvent()
         fcntl(connfd, F_SETFL, flags | O_NONBLOCK);
 
         // 创建connection 和 channel对象并加入到map中管理
-        connections_[connfd] = std::unique_ptr<Connection>(new Connection(connfd, resourceDir_));
+        connections_[connfd] = std::shared_ptr<Connection>(new Connection(connfd, resourceDir_));
         channels_[connfd] = std::unique_ptr<Channel>(new Channel(connfd));
 
         // 绑定回调
@@ -104,6 +107,23 @@ void Server::HandleListenEvent()
     }
 }
 
+void Server::HandleFinished(int fd, std::shared_ptr<Connection> conn)
+{
+    //  是否长连接？
+    // 长连接：继续监听
+    if(conn->IsKeepAlive()) 
+    {
+        auto channel = channels_[fd].get();
+        channel->SetEvents(EPOLLIN | EPOLLET);
+        loop_.GetEpoller().ModChannel(channel);
+    } 
+    else 
+    {
+        // 短链接：关闭
+        CloseConnection(fd);
+    }
+}
+
 //  处理读事件，读取客户端请求数据并写入Buffer，构建Http请求并返回HTTP响应，发送HTTP响应数据，并关闭连接
 void Server::HandleReadEvent(int fd)
 {
@@ -114,43 +134,41 @@ void Server::HandleReadEvent(int fd)
         return;
     }
 
-    Connection* conn = it->second.get();
-    // 读取失败则关闭
-    if(!conn->Read())
-    {
-        CloseConnection(fd);
-        return;
-    }
-    LOG_DEBUG("Read data from fd=" + std::to_string(fd));
-    // 业务处理
-    conn->Process();
+    std::shared_ptr<Connection> conn = it->second;
 
-    // 发送响应
-    if(!conn->Write())
+    // 业务处理(丢给线程池)
+    pool_.AddTask([this, conn, fd]() 
     {
-        // 数据未发送完，添加EPOLLOUT事件，等待下一次可写事件
-        auto channel = channels_[fd].get();
-        channel->SetEvents(EPOLLIN | EPOLLOUT | EPOLLET);
-
-        loop_.GetEpoller().ModChannel(channel);
-    }
-    else    
-    {
-        // 数据发送完，关闭连接
-        if(conn->IsKeepAlive())
+        // 读取失败则关闭
+        if(!conn->Read())
         {
-            // 长连接，继续监听读事件
-            auto channel = channels_[fd].get();
-            channel->SetEvents(EPOLLIN | EPOLLET);
-    
-            loop_.GetEpoller().ModChannel(channel);
-        }
-        else
-        {
-            // 短连接，关闭连接
             CloseConnection(fd);
+            return;
         }
-    }
+        LOG_DEBUG("Read data from fd=" + std::to_string(fd));
+        
+        // 线程池线程执行
+        conn->Process();
+    
+        // Process 完之后，把写事件提交回主线程 EventLoop
+        loop_.QueueInLoop([this, conn, fd]() 
+        {
+            // 尝试发送响应
+            if(!conn->Write()) 
+            {
+                // 数据未发送完，添加 EPOLLOUT
+                auto channel = channels_[fd].get();
+                channel->SetEvents(EPOLLIN | EPOLLOUT | EPOLLET);
+                loop_.GetEpoller().ModChannel(channel);
+            } 
+            else 
+            {
+                // 数据发送完
+                // 判断是否是长连接
+                HandleFinished(fd, conn);
+            }
+        });
+    });
 }
 
 // 处理写事件，继续发送响应数据
@@ -163,33 +181,34 @@ void Server::HandleWriteEvent(int fd)
         return;
     }
 
-    Connection* conn = it->second.get();
+    std::shared_ptr<Connection> conn = it->second;
     LOG_DEBUG("Handle write event for fd=" + std::to_string(fd));
-    if(conn->Write())
-    {
-        // 数据发送完
-        if(conn->IsKeepAlive())
-        {
-            // 长连接，继续监听读事件
-            auto channel = channels_[fd].get();
-            channel->SetEvents(EPOLLIN | EPOLLET);
-    
-            loop_.GetEpoller().ModChannel(channel);
-        }
-        else
-        {
-            // 短连接，关闭连接
-            CloseConnection(fd);
-        }
-    }
-    else
-    {
-        // 未发送完，继续监听写事件
-        auto channel = channels_[fd].get();
-        channel->SetEvents(EPOLLIN | EPOLLOUT | EPOLLET);
 
-        loop_.GetEpoller().ModChannel(channel);
-        LOG_DEBUG("Waiting to send more data to fd=" + std::to_string(fd));
+    auto result = conn->Write();
+    switch(result)
+    {
+        case WRITE_COMPLETE:
+        {
+            // 数据发送完
+            // 判断是否是长连接
+            HandleFinished(fd, conn);
+            break;
+        }
+        case WRITE_AGAIN:
+        {
+            // 未发送完，继续监听写事件
+            auto channel = channels_[fd].get();
+            channel->SetEvents(EPOLLIN | EPOLLOUT | EPOLLET);
+
+            loop_.GetEpoller().ModChannel(channel);
+            LOG_DEBUG("Waiting to send more data to fd=" + std::to_string(fd));
+            break;
+        }
+        case WRITE_ERROR:
+        {
+            CloseConnection(fd);
+            break;
+        }
     }
 }
 

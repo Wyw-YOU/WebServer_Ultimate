@@ -8,6 +8,7 @@ Connection::Connection(int fd, const std::string& resourceDir)
 //  构建Http请求并返回HTTP响应
 bool Connection::Process()
 {
+    LOG_DEBUG("Process in thread id=" + std::to_string(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     // 解析请求
     std::string raw = readBuffer_.RetrieveAll();
     LOG_DEBUG("Raw request:\n" + raw);
@@ -89,7 +90,7 @@ bool Connection::Read()
 }
 
 //  发送HTTP响应数据（循环发送，配合ET模式）
-bool Connection::Write()
+WriteResult Connection::Write()
 {
     while(writeBuffer_.ReadableBytes() > 0)
     {
@@ -103,22 +104,22 @@ bool Connection::Write()
         }
         else if(n == 0)
         {
-            return false;
+            return WRITE_COMPLETE;
         }
         else
         {
             if(errno == EAGAIN || errno == EWOULDBLOCK)
             {
-                return false;
+                return WRITE_AGAIN;
             }
             else
             {
-                return false;
+                return WRITE_ERROR;
             }
         }
     }
 
-    return true;
+    return WRITE_COMPLETE;
 }
 
 int Connection::GetFd() const

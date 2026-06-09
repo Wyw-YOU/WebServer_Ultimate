@@ -1,7 +1,8 @@
 #include "net/EventLoop.hpp"
 
-EventLoop::EventLoop(int maxEvents)
-    : epoller_(maxEvents)
+EventLoop::EventLoop(int maxEvents, int threadNum)
+    : epoller_(maxEvents),
+      threadPool_(threadNum)
 {
     // 创建 eventfd
     wakeupFd_ = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
@@ -71,6 +72,14 @@ void EventLoop::QueueInLoop(std::function<void()> cb)
     // 唤醒eventloop线程
     Wakeup();
 }
+
+void EventLoop::RunInThreadPool(std::function<void()> task)
+{
+    threadPool_.AddTask(std::move(task));
+}
+
+
+//  private:
 
 void EventLoop::DoPendingFunctors()
 {

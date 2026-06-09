@@ -16,6 +16,7 @@ CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Epoll.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/EventLoop.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/InetAddress.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Socket.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/thread/ThreadPool.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/util/Error.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/util/FileUtil.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../src/Server.cpp
@@ -44,6 +45,7 @@ CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Epoll.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/EventLoop.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/InetAddress.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Socket.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/thread/ThreadPool.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/util/Error.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/util/FileUtil.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../src/main.cpp
@@ -62,6 +64,7 @@ CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/buffer/Buffer.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpResponse.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/net/Connection.hpp
+CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/thread/ThreadPool.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/util/FileUtil.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../src/net/Connection.cpp
 
@@ -75,6 +78,7 @@ CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/Log.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/net/Channel.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/net/Epoll.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/net/EventLoop.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/thread/ThreadPool.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/util/Error.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../src/net/EventLoop.cpp
 

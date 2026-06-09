@@ -11,6 +11,7 @@
 #include "net/Epoll.hpp"
 #include "net/EventLoop.hpp"
 #include "net/Channel.hpp"
+#include "thread/ThreadPool.hpp"
 
 #include <iostream>
 #include <cstring>
@@ -45,13 +46,16 @@ private:
     void HandleWriteEvent(int fd);
     void CloseConnection(int fd);
 
+    void HandleFinished(int fd, std::shared_ptr<Connection> conn);
+
 private:
     int port_;
     std::string resourceDir_;
     Acceptor acceptor_;
     EventLoop loop_;
+    ThreadPool pool_;
 
     std::unique_ptr<Channel> listenChannel_;
     std::unordered_map<int, std::unique_ptr<Channel>> channels_;
-    std::unordered_map<int, std::unique_ptr<Connection>> connections_;
+    std::unordered_map<int, std::shared_ptr<Connection>> connections_;
 };

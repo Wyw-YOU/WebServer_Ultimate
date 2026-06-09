@@ -4,6 +4,7 @@
 #include "http/HttpRequest.hpp"
 #include "http/HttpResponse.hpp"
 #include "util/FileUtil.hpp"
+#include "thread/ThreadPool.hpp"
 #include "Log.hpp"
 
 #include <sys/socket.h>   // recv, send
@@ -11,6 +12,7 @@
 #include <iostream>
 #include <string>
 
+// 连接状态
 enum class ConnState
 {
     Reading,
@@ -19,16 +21,23 @@ enum class ConnState
     Closed
 };
 
+// 写状态分析
+enum WriteResult
+{
+    WRITE_COMPLETE,
+    WRITE_AGAIN,
+    WRITE_ERROR
+};
+
 class Connection
 {
 public:
     Connection(int fd, const std::string& resourceDir);
-
-    bool Read();
-
+    
     bool Process();
 
-    bool Write();
+    bool Read();
+    WriteResult Write();
 
     int GetFd() const;
 
