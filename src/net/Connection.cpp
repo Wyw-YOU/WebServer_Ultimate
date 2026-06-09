@@ -4,7 +4,9 @@ Connection::Connection(int fd, const std::string& resourceDir)
     : fd_(fd),
       state_(ConnState::Connected),
       resourceDir_(resourceDir)
-    { }
+    {
+        channel_ = std::make_unique<Channel>(fd_);
+    }
 
 //  构建Http请求并返回HTTP响应
 bool Connection::Process()
@@ -127,6 +129,10 @@ int Connection::GetFd() const
 {
     return fd_;
 }
+Channel* Connection::GetChannel() const
+{
+    return channel_.get();
+}
 
 // 关闭连接
 bool Connection::Close()
@@ -153,4 +159,17 @@ ConnState Connection::GetState() const
 void Connection::SetState(ConnState state)
 {
     state_.store(state);
+}
+
+void Connection::SetReadCallback(std::function<void()> cb)
+{
+    channel_->SetReadCallback(std::move(cb));
+}
+void Connection::SetWriteCallback(std::function<void()> cb)
+{
+    channel_->SetWriteCallback(std::move(cb));
+}
+void Connection::SetCloseCallback(std::function<void()> cb)
+{
+    channel_->SetCloseCallback(std::move(cb));
 }

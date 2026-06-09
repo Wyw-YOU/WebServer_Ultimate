@@ -5,6 +5,7 @@
 #include "http/HttpResponse.hpp"
 #include "util/FileUtil.hpp"
 #include "thread/ThreadPool.hpp"
+#include "net/Channel.hpp"
 #include "Log.hpp"
 
 #include <sys/socket.h>   // recv, send
@@ -46,16 +47,28 @@ public:
     void SetState(ConnState state);
 
     int GetFd() const;
+    Channel* GetChannel() const;
 
     bool Close();
 
     bool IsKeepAlive();
+
+    // 设置回调
+    void SetReadCallback(std::function<void()> cb);
+    void SetWriteCallback(std::function<void()> cb);
+    void SetCloseCallback(std::function<void()> cb);
+
+    void EnableReading();
+    void EnableWriting();
+    void DisableWriting();
 
 private:
     int fd_;
     // ConnState state_;
     std::atomic<ConnState> state_;
     std::string resourceDir_;
+
+    std::unique_ptr<Channel> channel_;
 
     Buffer readBuffer_;
     Buffer writeBuffer_;

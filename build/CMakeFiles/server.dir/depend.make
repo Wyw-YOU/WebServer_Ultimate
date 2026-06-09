@@ -24,6 +24,8 @@ CMakeFiles/server.dir/src/Server.cpp.o: ../src/Server.cpp
 
 CMakeFiles/server.dir/src/Test/ChannelTest.cpp.o: ../src/Test/ChannelTest.cpp
 
+CMakeFiles/server.dir/src/Test/EventLoopThreadTest.cpp.o: ../src/Test/EventLoopThreadTest.cpp
+
 CMakeFiles/server.dir/src/Test/ThreadPoolTest.cpp.o: ../src/Test/ThreadPoolTest.cpp
 
 CMakeFiles/server.dir/src/buffer/Buffer.cpp.o: ../include/buffer/Buffer.hpp
@@ -67,6 +69,7 @@ CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/Log.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/buffer/Buffer.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpResponse.hpp
+CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/net/Channel.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/net/Connection.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/thread/ThreadPool.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/util/FileUtil.hpp
@@ -86,6 +89,16 @@ CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/thread/ThreadPool.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/timer/Timer.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/util/Error.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../src/net/EventLoop.cpp
+
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/Log.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/net/Channel.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/net/Epoll.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/net/EventLoop.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/net/EventLoopThread.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/thread/ThreadPool.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/timer/Timer.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/util/Error.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../src/net/EventLoopThread.cpp
 
 CMakeFiles/server.dir/src/net/InetAddress.cpp.o: ../include/net/InetAddress.hpp
 CMakeFiles/server.dir/src/net/InetAddress.cpp.o: ../src/net/InetAddress.cpp

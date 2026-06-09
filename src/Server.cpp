@@ -70,12 +70,11 @@ void Server::HandleListenEvent()
 
         // 创建connection 和 channel对象并加入到map中管理
         connections_[connfd] = std::shared_ptr<Connection>(new Connection(connfd, resourceDir_));
-        channels_[connfd] = std::unique_ptr<Channel>(new Channel(connfd));
+        auto conn = connections_[connfd];
 
         // 绑定回调
-        Channel* channel = channels_[connfd].get();
         // 读回调
-        channel->SetReadCallback
+        conn->SetReadCallback
         (
             [this, connfd]()
             {
@@ -83,7 +82,7 @@ void Server::HandleListenEvent()
             }
         );
         // 写回调
-        channel->SetWriteCallback
+        conn->SetWriteCallback
         (
             [this, connfd]()
             {
@@ -91,7 +90,7 @@ void Server::HandleListenEvent()
             }
         );
         // 错误回调
-        channel->SetCloseCallback
+        conn->SetCloseCallback
         (
             [this, connfd]()
             {
@@ -100,7 +99,7 @@ void Server::HandleListenEvent()
         );
 
         // 添加到epoll中监听事件
-        channel->SetEvents(EPOLLIN | EPOLLET);
+        connections_[connfd].channel_.get()->SetEvents(EPOLLIN | EPOLLET);
 
         // 注册到EventLoop中
         loop_.GetEpoller().AddChannel(channel);
@@ -121,7 +120,8 @@ void Server::HandleFinished(int fd, std::shared_ptr<Connection> conn)
     // 长连接：继续监听
     if(conn->IsKeepAlive()) 
     {
-        auto channel = channels_[fd].get();
+        // auto channel = channels_[fd].get();
+        auto channel = connections_[fd]->GetChannel();
         channel->SetEvents(EPOLLIN | EPOLLET);
         loop_.GetEpoller().ModChannel(channel);
 
@@ -138,15 +138,14 @@ void Server::HandleFinished(int fd, std::shared_ptr<Connection> conn)
 //  处理读事件，读取客户端请求数据并写入Buffer，构建Http请求并返回HTTP响应，发送HTTP响应数据，并关闭连接
 void Server::HandleReadEvent(int fd)
 {
-    // 刷新计时
-    loop_.AdjustTimer(fd, 60000);
-
     auto it = connections_.find(fd);
     if(it == connections_.end())
     {
         LOG_DEBUG("Connection not found for fd = " + std::to_string(fd));
         return;
     }
+    // 刷新计时
+    loop_.AdjustTimer(fd, 60000);
 
     std::shared_ptr<Connection> conn = it->second;
     if(conn->GetState() != ConnState::Connected)
@@ -181,6 +180,7 @@ void Server::HandleReadEvent(int fd)
             {
                 case WRITE_COMPLETE:
                 {
+                    // 判断是否是长连接
                     HandleFinished(fd, conn);
                     break;
                 }
@@ -188,7 +188,8 @@ void Server::HandleReadEvent(int fd)
                 case WRITE_AGAIN:
                 {
                     // 数据未发送完，添加 EPOLLOUT
-                    auto channel = channels_[fd].get();
+                    // auto channel = channels_[fd].get();
+                    auto channel = connections_[fd]->GetChannel();
                     channel->SetEvents(EPOLLIN | EPOLLOUT | EPOLLET);
                     loop_.GetEpoller().ModChannel(channel);
 
@@ -234,7 +235,8 @@ void Server::HandleWriteEvent(int fd)
         case WRITE_AGAIN:
         {
             // 未发送完，继续监听写事件
-            auto channel = channels_[fd].get();
+            // auto channel = channels_[fd].get();
+            auto channel = connections_[fd]->GetChannel();
             channel->SetEvents(EPOLLIN | EPOLLOUT | EPOLLET);
 
             loop_.GetEpoller().ModChannel(channel);
@@ -252,17 +254,13 @@ void Server::HandleWriteEvent(int fd)
 //  关闭连接，删除epoll事件并从连接列表中移除
 void Server::CloseConnection(int fd)
 {
-    // 先从epoll注销Channel，再关闭fd，避免对已关闭fd执行epoll DEL
-    auto cit = channels_.find(fd);
-    if(cit != channels_.end())
-    {
-        loop_.GetEpoller().DelChannel(cit->second.get());
-        channels_.erase(cit);
-    }
-
     auto it = connections_.find(fd);
     if(it != connections_.end())
     {
+        // 先移除epoll里面的fd
+        auto channel = it->second->GetChannel();
+        loop_.GetEpoller().DelChannel(channel);
+
         it->second->Close();
         connections_.erase(it);
     }

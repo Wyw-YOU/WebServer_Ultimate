@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <functional>
 #include <chrono>
+#include <cstdint>
 
 class Timer
 {
@@ -21,7 +22,7 @@ private:
     struct TimerNode
     {
         int fd;
-        size_t expire;
+        uint64_t expire;
         std::function<void()> cb;
     };
 

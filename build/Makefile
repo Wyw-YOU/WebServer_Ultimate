@@ -224,6 +224,33 @@ src/Test/ChannelTest.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Test/ChannelTest.cpp.s
 .PHONY : src/Test/ChannelTest.cpp.s
 
+src/Test/EventLoopThreadTest.o: src/Test/EventLoopThreadTest.cpp.o
+
+.PHONY : src/Test/EventLoopThreadTest.o
+
+# target to build an object file
+src/Test/EventLoopThreadTest.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Test/EventLoopThreadTest.cpp.o
+.PHONY : src/Test/EventLoopThreadTest.cpp.o
+
+src/Test/EventLoopThreadTest.i: src/Test/EventLoopThreadTest.cpp.i
+
+.PHONY : src/Test/EventLoopThreadTest.i
+
+# target to preprocess a source file
+src/Test/EventLoopThreadTest.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Test/EventLoopThreadTest.cpp.i
+.PHONY : src/Test/EventLoopThreadTest.cpp.i
+
+src/Test/EventLoopThreadTest.s: src/Test/EventLoopThreadTest.cpp.s
+
+.PHONY : src/Test/EventLoopThreadTest.s
+
+# target to generate assembly for a file
+src/Test/EventLoopThreadTest.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Test/EventLoopThreadTest.cpp.s
+.PHONY : src/Test/EventLoopThreadTest.cpp.s
+
 src/Test/ThreadPoolTest.o: src/Test/ThreadPoolTest.cpp.o
 
 .PHONY : src/Test/ThreadPoolTest.o
@@ -494,6 +521,33 @@ src/net/EventLoop.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/EventLoop.cpp.s
 .PHONY : src/net/EventLoop.cpp.s
 
+src/net/EventLoopThread.o: src/net/EventLoopThread.cpp.o
+
+.PHONY : src/net/EventLoopThread.o
+
+# target to build an object file
+src/net/EventLoopThread.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o
+.PHONY : src/net/EventLoopThread.cpp.o
+
+src/net/EventLoopThread.i: src/net/EventLoopThread.cpp.i
+
+.PHONY : src/net/EventLoopThread.i
+
+# target to preprocess a source file
+src/net/EventLoopThread.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/EventLoopThread.cpp.i
+.PHONY : src/net/EventLoopThread.cpp.i
+
+src/net/EventLoopThread.s: src/net/EventLoopThread.cpp.s
+
+.PHONY : src/net/EventLoopThread.s
+
+# target to generate assembly for a file
+src/net/EventLoopThread.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/EventLoopThread.cpp.s
+.PHONY : src/net/EventLoopThread.cpp.s
+
 src/net/InetAddress.o: src/net/InetAddress.cpp.o
 
 .PHONY : src/net/InetAddress.o
@@ -647,6 +701,9 @@ help:
 	@echo "... src/Test/ChannelTest.o"
 	@echo "... src/Test/ChannelTest.i"
 	@echo "... src/Test/ChannelTest.s"
+	@echo "... src/Test/EventLoopThreadTest.o"
+	@echo "... src/Test/EventLoopThreadTest.i"
+	@echo "... src/Test/EventLoopThreadTest.s"
 	@echo "... src/Test/ThreadPoolTest.o"
 	@echo "... src/Test/ThreadPoolTest.i"
 	@echo "... src/Test/ThreadPoolTest.s"
@@ -677,6 +734,9 @@ help:
 	@echo "... src/net/EventLoop.o"
 	@echo "... src/net/EventLoop.i"
 	@echo "... src/net/EventLoop.s"
+	@echo "... src/net/EventLoopThread.o"
+	@echo "... src/net/EventLoopThread.i"
+	@echo "... src/net/EventLoopThread.s"
 	@echo "... src/net/InetAddress.o"
 	@echo "... src/net/InetAddress.i"
 	@echo "... src/net/InetAddress.s"

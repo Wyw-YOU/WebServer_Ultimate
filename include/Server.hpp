@@ -56,6 +56,5 @@ private:
     ThreadPool pool_;
 
     std::unique_ptr<Channel> listenChannel_;
-    std::unordered_map<int, std::unique_ptr<Channel>> channels_;
     std::unordered_map<int, std::shared_ptr<Connection>> connections_;
 };

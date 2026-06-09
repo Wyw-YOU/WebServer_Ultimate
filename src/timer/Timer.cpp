@@ -5,7 +5,7 @@ using namespace std::chrono;
 namespace
 {
     // 获取当前系统启动后的毫秒数（单调时钟，不受系统时间调整影响）
-    size_t GetMs()
+    uint64_t GetMs()
     {
         return duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
     }
@@ -127,7 +127,6 @@ void Timer::SiftDown(size_t i)
         }
 
         SwapNode(i, smallest);
-
         i = smallest;
     }
 }
@@ -144,7 +143,7 @@ void Timer::Tick()
 
     while(!heap_.empty())
     {
-        TimerNode node = heap_.front();
+        const TimerNode node = heap_.front();
 
         if(node.expire > now)
         {
