@@ -56,7 +56,7 @@ bool Connection::Process()
 }
 
 //  接受客户端请求数据并写入Buffer
-bool Connection::Read()
+ReadResult Connection::Read()
 {
     // 接受客户端请求数据并写入Buffer
     char recvbuffer[4096];
@@ -74,7 +74,7 @@ bool Connection::Read()
         else if(n == 0)
         {
             // 客户端关闭连接
-            return false;
+            return ReadResult::Closed;
         }
         else
         {
@@ -87,12 +87,12 @@ bool Connection::Read()
             else
             {
                 // 其他错误
-                return false;
+                return ReadResult::Error;
             }
         }
     }
 
-    return true;
+    return ReadResult::Success;
 }
 
 //  发送HTTP响应数据（循环发送，配合ET模式）
@@ -192,10 +192,39 @@ void Connection::DisableWriting()
     channel_->SetEvents(EPOLLIN | EPOLLET);
 }
 
+void Connection::ResetForNextRequest()
+{
+    EnableReading();
+    UpdateChannel(loop_->GetEpoller());
+    SetState(ConnState::Connected);
+
+    LOG_DEBUG("Reset connection fd= " + std::to_string(fd_));
+}
+
     // 事件处理
 void Connection::HandleRead()
 {
     LOG_DEBUG("HandleRead fd=" + std::to_string(fd_));
+
+    auto result = Read();
+    if(result == ReadResult::Closed)
+    {
+        if(onClose_)
+        {
+            onClose_(shared_from_this());
+        }
+        return;
+    }
+
+    if(result == ReadResult::Error)
+    {
+        if(onClose_)
+        {
+            onClose_(shared_from_this());
+        }
+        return;
+    }
+
     if(onRead_)
     {
         onRead_(shared_from_this());
@@ -203,7 +232,7 @@ void Connection::HandleRead()
 }
 void Connection::HandleWrite()
 {
-    LOG_DEBUG("HandleRead fd=" + std::to_string(fd_));
+    LOG_DEBUG("HandleWrite fd=" + std::to_string(fd_));
     if(onWrite_)
     {
         onWrite_(shared_from_this());
@@ -211,7 +240,7 @@ void Connection::HandleWrite()
 }
 void Connection::HandleClose()
 {
-    LOG_DEBUG("HandleRead fd=" + std::to_string(fd_));
+    LOG_DEBUG("HandleClose fd=" + std::to_string(fd_));
     if(onClose_)
     {
         onClose_(shared_from_this());
@@ -227,11 +256,24 @@ void Connection::SetOnRead(ReadEventCallback cb)
 {
     onRead_ = std::move(cb);
 }
-void Connection::SetOnWriteComplete(WriteEventCallback cb)
+void Connection::SetOnWrite(WriteEventCallback cb)
 {
     onWrite_ = std::move(cb);
 }
 void Connection::SetOnClose(ConnectionCloseCallback cb)
 {
     onClose_ = std::move(cb);
+}
+
+
+
+WriteResult Connection::SendResponse()
+{
+    return Write();
+}
+
+void Connection::EnableWriteEvent()
+{
+    EnableWriting();
+    UpdateChannel(loop_->GetEpoller());
 }

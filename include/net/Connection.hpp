@@ -34,6 +34,22 @@ enum WriteResult
     WRITE_ERROR
 };
 
+// 读状态分析
+enum class ReadResult
+{
+    Success,
+    Closed,
+    Error
+};
+
+// 发送状态
+enum class SendStatus
+{
+    Complete,
+    Again,
+    Error
+};
+
 class Connection : public std::enable_shared_from_this<Connection>
 {
 public:
@@ -51,7 +67,7 @@ public:
     
     bool Process();
 
-    bool Read();
+    ReadResult Read();
     WriteResult Write();
 
     // 连接状态管理
@@ -62,7 +78,6 @@ public:
     Channel* GetChannel() const;
 
     bool Close();
-
     bool IsKeepAlive();
 
     // IO回调
@@ -72,7 +87,7 @@ public:
 
     // 业务回调
     void SetOnRead(ReadEventCallback cb);
-    void SetOnWriteComplete(WriteEventCallback cb);
+    void SetOnWrite(WriteEventCallback cb);
     void SetOnClose(ConnectionCloseCallback cb);
 
     // 事件修改
@@ -80,12 +95,17 @@ public:
     void EnableWriting();
     void DisableWriting();
 
+    void ResetForNextRequest();     //继续监听
+
     // 事件处理
     void HandleRead();
     void HandleWrite();
     void HandleClose();
 
     void UpdateChannel(Epoller& epoller);
+    WriteResult SendResponse();
+
+    void EnableWriteEvent();
 
 private:
     int fd_;

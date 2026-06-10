@@ -83,7 +83,7 @@ void Server::HandleListenEvent()
             }
         );
         // 写回调
-        conn->SetOnWriteComplete
+        conn->SetOnWrite
         (
             [this](std::shared_ptr<Connection> conn)
             {
@@ -135,7 +135,7 @@ void Server::HandleListenEvent()
         loop_.GetEpoller().AddChannel(conn->GetChannel());
 
         // 添加timer计时器
-        loop_.AddTimer(connfd, 5000, 
+        loop_.AddTimer(connfd, 60000, 
             [this, connfd]()
             {
                 auto it = connections_.find(connfd);
@@ -152,14 +152,7 @@ void Server::HandleFinished(std::shared_ptr<Connection> conn)
     // 长连接：继续监听
     if(conn->IsKeepAlive()) 
     {
-        // auto channel = channels_[fd].get();
-        // auto channel = connections_[fd]->GetChannel();
-        // channel->SetEvents(EPOLLIN | EPOLLET);
-        // loop_.GetEpoller().ModChannel(channel);
-        conn->EnableReading();
-        conn->UpdateChannel(loop_.GetEpoller());
-
-        conn->SetState(ConnState::Connected);
+        conn->ResetForNextRequest();
     } 
     else 
     {
@@ -173,14 +166,8 @@ void Server::HandleFinished(std::shared_ptr<Connection> conn)
 void Server::HandleReadEvent(std::shared_ptr<Connection> conn)
 {
     int fd = conn->GetFd();
-    // auto it = connections_.find(fd);
-    // if(it == connections_.end())
-    // {
-    //     LOG_DEBUG("Connection not found for fd = " + std::to_string(fd));
-    //     return;
-    // }
-    // // 刷新计时
-    // loop_.AdjustTimer(fd, 60000);
+    // 刷新计时
+    loop_.AdjustTimer(fd, 60000);
 
     // std::shared_ptr<Connection> conn = it->second;
     if(conn->GetState() != ConnState::Connected)
@@ -189,12 +176,6 @@ void Server::HandleReadEvent(std::shared_ptr<Connection> conn)
         return;
     }
 
-    // 读取失败则关闭
-    if(!conn->Read())
-    {
-        CloseConnection(conn);
-        return;
-    }
     LOG_DEBUG("Read data from fd=" + std::to_string(fd));
     conn->SetState(ConnState::Processing);
 
@@ -209,7 +190,7 @@ void Server::HandleReadEvent(std::shared_ptr<Connection> conn)
         loop_.QueueInLoop([this, conn, fd]() 
         {
             // 尝试发送响应
-            WriteResult result = conn->Write();
+            WriteResult result = conn->SendResponse();
 
             switch(result)
             {
@@ -225,8 +206,7 @@ void Server::HandleReadEvent(std::shared_ptr<Connection> conn)
                     // 数据未发送完，添加 EPOLLOUT
                     // auto channel = channels_[fd].get();
                     // auto channel = connections_[fd]->GetChannel();
-                    conn->EnableWriting();
-                    conn->UpdateChannel(loop_.GetEpoller());
+                    conn->EnableWritingEvent();
 
                     break;
                 }
@@ -245,20 +225,13 @@ void Server::HandleReadEvent(std::shared_ptr<Connection> conn)
 void Server::HandleWriteEvent(std::shared_ptr<Connection> conn)
 {
     int fd = conn->GetFd();
-    // // 刷新计时
-    // loop_.AdjustTimer(fd, 60000);
-
-    // auto it = connections_.find(fd);
-    // if(it == connections_.end())
-    // {
-    //     LOG_DEBUG("Connection not found for fd = " + std::to_string(fd));
-    //     return;
-    // }
+    // 刷新计时
+    loop_.AdjustTimer(fd, 60000);
 
     // std::shared_ptr<Connection> conn = it->second;
     LOG_DEBUG("Handle write event for fd=" + std::to_string(fd));
 
-    auto result = conn->Write();
+    auto result = conn->SendResponse();
     switch(result)
     {
         case WRITE_COMPLETE:
@@ -273,8 +246,7 @@ void Server::HandleWriteEvent(std::shared_ptr<Connection> conn)
             // 未发送完，继续监听写事件
             // auto channel = channels_[fd].get();
             // auto channel = connections_[fd]->GetChannel();
-            conn->EnableWriting();
-            conn->UpdateChannel(loop_.GetEpoller());
+            conn->EnableWritingEvent();
             LOG_DEBUG("Waiting to send more data to fd=" + std::to_string(fd));
             break;
         }
