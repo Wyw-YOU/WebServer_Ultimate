@@ -6,6 +6,7 @@
 #include "util/FileUtil.hpp"
 #include "thread/ThreadPool.hpp"
 #include "net/Channel.hpp"
+#include "net/EventLoop.hpp"
 #include "Log.hpp"
 
 #include <sys/socket.h>   // recv, send
@@ -13,6 +14,7 @@
 #include <atomic>
 #include <iostream>
 #include <string>
+
 
 // 连接状态
 enum class ConnState
@@ -32,10 +34,13 @@ enum WriteResult
     WRITE_ERROR
 };
 
-class Connection
+class Connection : public std::enable_shared_from_this<Connection>
 {
 public:
-    Connection(int fd, const std::string& resourceDir);
+    Connection(int fd, EventLoop* loop, const std::string& resourceDir);
+
+    using MessageCallback = std::function<void(std::shared_ptr<Connection>)>;
+    using CloseCallback = std::function<void(std::shared_ptr<Connection>)>;
     
     bool Process();
 
@@ -58,13 +63,25 @@ public:
     void SetWriteCallback(std::function<void()> cb);
     void SetCloseCallback(std::function<void()> cb);
 
+    // 业务回调
+    void SetMessageCallback(MessageCallback cb);
+    void SetCloseCallback(CloseCallback cb);
+
+    // 事件修改
     void EnableReading();
     void EnableWriting();
     void DisableWriting();
 
+    // 事件处理
+    void HandleRead();
+    void HandleWrite();
+    void HandleClose();
+
+    void UpdateChannel(Epoller& epoller);
+
 private:
     int fd_;
-    // ConnState state_;
+    EventLoop* loop_;
     std::atomic<ConnState> state_;
     std::string resourceDir_;
 
@@ -74,4 +91,7 @@ private:
     Buffer writeBuffer_;
     HttpRequest request_;
     HttpResponse response_;
+
+    MessageCallback messageCallback_;
+    CloseCallback closeCallback_;
 };

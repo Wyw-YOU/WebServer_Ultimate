@@ -1,11 +1,14 @@
 #include "net/Connection.hpp"
 
-Connection::Connection(int fd, const std::string& resourceDir)
+
+Connection::Connection(int fd, EventLoop* loop, const std::string& resourceDir)
     : fd_(fd),
+      loop_(loop),
       state_(ConnState::Connected),
       resourceDir_(resourceDir)
     {
-        channel_ = std::make_unique<Channel>(fd_);
+        // channel_ = std::make_unique<Channel>(fd_);
+        channel_ = std::unique_ptr<Channel>(new Channel(fd_));
     }
 
 //  构建Http请求并返回HTTP响应
@@ -161,6 +164,7 @@ void Connection::SetState(ConnState state)
     state_.store(state);
 }
 
+    // 设置回调
 void Connection::SetReadCallback(std::function<void()> cb)
 {
     channel_->SetReadCallback(std::move(cb));
@@ -172,4 +176,92 @@ void Connection::SetWriteCallback(std::function<void()> cb)
 void Connection::SetCloseCallback(std::function<void()> cb)
 {
     channel_->SetCloseCallback(std::move(cb));
+}
+
+    // 事件修改
+void Connection::EnableReading()
+{
+    channel_->SetEvents(EPOLLIN | EPOLLET);
+}
+void Connection::EnableWriting()
+{
+    channel_->SetEvents(EPOLLIN | EPOLLOUT | EPOLLET);
+}
+void Connection::DisableWriting()
+{
+    channel_->SetEvents(EPOLLIN | EPOLLET);
+}
+
+    // 事件处理
+void Connection::HandleRead()
+{
+    LOG_DEBUG("HandleRead fd=" + std::to_string(fd_));
+    if(messageCallback_)
+    {
+        messageCallback_(shared_from_this());
+    }
+
+    // // 读取失败则关闭
+    // if(!conn->Read())
+    // {
+    //     CloseConnection(fd);
+    //     return;
+    // }
+    // LOG_DEBUG("Read data from fd=" + std::to_string(fd));
+    // conn->SetState(ConnState::Processing);
+
+    // // 业务处理(丢给线程池)
+    // pool_.AddTask([this, conn, fd]() 
+    // {
+    //     // 线程池线程执行
+    //     conn->Process();
+    //     conn->SetState(ConnState::Writing);
+    
+    //     // Process 完之后，把写事件提交回主线程 EventLoop
+    //     loop_.QueueInLoop([this, conn, fd]() 
+    //     {
+    //         // 尝试发送响应
+    //         WriteResult result = conn->Write();
+
+    //         switch(result)
+    //         {
+    //             case WRITE_COMPLETE:
+    //             {
+    //                 // 判断是否是长连接
+    //                 HandleFinished(fd, conn);
+    //                 break;
+    //             }
+
+    //             case WRITE_AGAIN:
+    //             {
+    //                 // 数据未发送完，添加 EPOLLOUT
+    //                 // auto channel = channels_[fd].get();
+    //                 auto channel = connections_[fd]->GetChannel();
+    //                 conn->EnableWriting();
+    //                 conn->UpdateChannel(loop_.GetEpoller());
+
+    //                 break;
+    //             }
+
+    //             case WRITE_ERROR:
+    //             {
+    //                 CloseConnection(fd);
+    //                 break;
+    //             }
+    //         }
+    //     });
+    // });
+}
+void Connection::HandleWrite()
+{
+    LOG_DEBUG("HandleWrite fd=" + std::to_string(fd_));
+}
+void Connection::HandleClose()
+{
+    LOG_DEBUG("HandleClose fd=" + std::to_string(fd_));
+}
+
+void Connection::UpdateChannel(Epoller& epoller)
+{
+    epoller.ModChannel(channel_.get());
 }

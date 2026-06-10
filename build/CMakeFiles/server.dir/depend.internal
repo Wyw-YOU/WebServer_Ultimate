@@ -72,7 +72,11 @@ CMakeFiles/server.dir/src/net/Connection.cpp.o
  ../include/http/HttpResponse.hpp
  ../include/net/Channel.hpp
  ../include/net/Connection.hpp
+ ../include/net/Epoll.hpp
+ ../include/net/EventLoop.hpp
  ../include/thread/ThreadPool.hpp
+ ../include/timer/Timer.hpp
+ ../include/util/Error.hpp
  ../include/util/FileUtil.hpp
  /root/WebServer_Ultimate/src/net/Connection.cpp
 CMakeFiles/server.dir/src/net/Epoll.cpp.o

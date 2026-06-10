@@ -10,46 +10,6 @@
 string
 -
 
-../include/Server.hpp
-Log.hpp
-../include/Log.hpp
-net/Acceptor.hpp
-../include/net/Acceptor.hpp
-net/InetAddress.hpp
-../include/net/InetAddress.hpp
-net/Socket.hpp
-../include/net/Socket.hpp
-net/Connection.hpp
-../include/net/Connection.hpp
-buffer/Buffer.hpp
-../include/buffer/Buffer.hpp
-http/HttpRequest.hpp
-../include/http/HttpRequest.hpp
-http/HttpResponse.hpp
-../include/http/HttpResponse.hpp
-net/Epoll.hpp
-../include/net/Epoll.hpp
-net/EventLoop.hpp
-../include/net/EventLoop.hpp
-net/Channel.hpp
-../include/net/Channel.hpp
-thread/ThreadPool.hpp
-../include/thread/ThreadPool.hpp
-iostream
--
-cstring
--
-unordered_map
--
-memory
--
-unistd.h
--
-arpa/inet.h
--
-sys/socket.h
--
-
 ../include/buffer/Buffer.hpp
 cstring
 -
@@ -72,12 +32,6 @@ unordered_map
 sstream
 -
 
-../include/net/Acceptor.hpp
-Socket.hpp
-../include/net/Socket.hpp
-InetAddress.hpp
-../include/net/InetAddress.hpp
-
 ../include/net/Channel.hpp
 functional
 -
@@ -99,6 +53,8 @@ thread/ThreadPool.hpp
 ../include/net/thread/ThreadPool.hpp
 net/Channel.hpp
 ../include/net/net/Channel.hpp
+net/EventLoop.hpp
+../include/net/net/EventLoop.hpp
 Log.hpp
 ../include/net/Log.hpp
 sys/socket.h
@@ -158,22 +114,6 @@ fcntl.h
 stdint.h
 -
 
-../include/net/InetAddress.hpp
-arpa/inet.h
--
-string
--
-
-../include/net/Socket.hpp
-netinet/in.h
--
-unistd.h
--
-arpa/inet.h
--
-fcntl.h
--
-
 ../include/thread/ThreadPool.hpp
 vector
 -
@@ -210,9 +150,7 @@ cstring
 string
 -
 
-/root/WebServer_Ultimate/src/Server.cpp
-Server.hpp
-/root/WebServer_Ultimate/src/Server.hpp
-memory
--
+/root/WebServer_Ultimate/src/net/Connection.cpp
+net/Connection.hpp
+/root/WebServer_Ultimate/src/net/net/Connection.hpp
 

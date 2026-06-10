@@ -69,40 +69,40 @@ void Server::HandleListenEvent()
         fcntl(connfd, F_SETFL, flags | O_NONBLOCK);
 
         // 创建connection 和 channel对象并加入到map中管理
-        connections_[connfd] = std::shared_ptr<Connection>(new Connection(connfd, resourceDir_));
+        connections_[connfd] = std::shared_ptr<Connection>(new Connection(connfd, &loop_, resourceDir_));
         auto conn = connections_[connfd];
 
         // 绑定回调
         // 读回调
         conn->SetReadCallback
         (
-            [this, connfd]()
+            [conn]()
             {
-                HandleReadEvent(connfd);
+                conn->HandleRead();
             }
         );
         // 写回调
         conn->SetWriteCallback
         (
-            [this, connfd]()
+            [conn]()
             {
-                HandleWriteEvent(connfd);
+                conn->HandleWrite();
             }
         );
         // 错误回调
         conn->SetCloseCallback
         (
-            [this, connfd]()
+            [conn]()
             {
-                CloseConnection(connfd);
+                conn->HandleClose();
             }
         );
 
         // 添加到epoll中监听事件
-        connections_[connfd].channel_.get()->SetEvents(EPOLLIN | EPOLLET);
+        conn->EnableReading();
 
         // 注册到EventLoop中
-        loop_.GetEpoller().AddChannel(channel);
+        loop_.GetEpoller().AddChannel(conn->GetChannel());
 
         // 添加timer计时器
         loop_.AddTimer(connfd, 5000, 
@@ -121,9 +121,11 @@ void Server::HandleFinished(int fd, std::shared_ptr<Connection> conn)
     if(conn->IsKeepAlive()) 
     {
         // auto channel = channels_[fd].get();
-        auto channel = connections_[fd]->GetChannel();
-        channel->SetEvents(EPOLLIN | EPOLLET);
-        loop_.GetEpoller().ModChannel(channel);
+        // auto channel = connections_[fd]->GetChannel();
+        // channel->SetEvents(EPOLLIN | EPOLLET);
+        // loop_.GetEpoller().ModChannel(channel);
+        conn->EnableReading();
+        conn->UpdateChannel(loop_.GetEpoller());
 
         conn->SetState(ConnState::Connected);
     } 
@@ -189,9 +191,9 @@ void Server::HandleReadEvent(int fd)
                 {
                     // 数据未发送完，添加 EPOLLOUT
                     // auto channel = channels_[fd].get();
-                    auto channel = connections_[fd]->GetChannel();
-                    channel->SetEvents(EPOLLIN | EPOLLOUT | EPOLLET);
-                    loop_.GetEpoller().ModChannel(channel);
+                    // auto channel = connections_[fd]->GetChannel();
+                    conn->EnableWriting();
+                    conn->UpdateChannel(loop_.GetEpoller());
 
                     break;
                 }
@@ -236,10 +238,9 @@ void Server::HandleWriteEvent(int fd)
         {
             // 未发送完，继续监听写事件
             // auto channel = channels_[fd].get();
-            auto channel = connections_[fd]->GetChannel();
-            channel->SetEvents(EPOLLIN | EPOLLOUT | EPOLLET);
-
-            loop_.GetEpoller().ModChannel(channel);
+            // auto channel = connections_[fd]->GetChannel();
+            conn->EnableWriting();
+            conn->UpdateChannel(loop_.GetEpoller());
             LOG_DEBUG("Waiting to send more data to fd=" + std::to_string(fd));
             break;
         }

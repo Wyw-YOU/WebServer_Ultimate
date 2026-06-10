@@ -71,7 +71,11 @@ CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpResponse.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/net/Channel.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/net/Connection.hpp
+CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/net/Epoll.hpp
+CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/net/EventLoop.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/thread/ThreadPool.hpp
+CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/timer/Timer.hpp
+CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/util/Error.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/util/FileUtil.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../src/net/Connection.cpp
 
