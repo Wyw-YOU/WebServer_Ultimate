@@ -38,9 +38,16 @@ class Connection : public std::enable_shared_from_this<Connection>
 {
 public:
     Connection(int fd, EventLoop* loop, const std::string& resourceDir);
+    // ~Connection()
+    // {
+    //     LOG_ERROR(
+    //         "Connection destroyed fd="
+    //         + std::to_string(fd_));
+    // }
 
-    using MessageCallback = std::function<void(std::shared_ptr<Connection>)>;
-    using CloseCallback = std::function<void(std::shared_ptr<Connection>)>;
+    using ReadEventCallback = std::function<void(std::shared_ptr<Connection>)>;
+    using WriteEventCallback = std::function<void(std::shared_ptr<Connection>)>;
+    using ConnectionCloseCallback = std::function<void(std::shared_ptr<Connection>)>;
     
     bool Process();
 
@@ -58,14 +65,15 @@ public:
 
     bool IsKeepAlive();
 
-    // 设置回调
+    // IO回调
     void SetReadCallback(std::function<void()> cb);
     void SetWriteCallback(std::function<void()> cb);
     void SetCloseCallback(std::function<void()> cb);
 
     // 业务回调
-    void SetMessageCallback(MessageCallback cb);
-    void SetCloseCallback(CloseCallback cb);
+    void SetOnRead(ReadEventCallback cb);
+    void SetOnWriteComplete(WriteEventCallback cb);
+    void SetOnClose(ConnectionCloseCallback cb);
 
     // 事件修改
     void EnableReading();
@@ -92,6 +100,7 @@ private:
     HttpRequest request_;
     HttpResponse response_;
 
-    MessageCallback messageCallback_;
-    CloseCallback closeCallback_;
+    ReadEventCallback onRead_;
+    WriteEventCallback onWrite_;
+    ConnectionCloseCallback onClose_;
 };

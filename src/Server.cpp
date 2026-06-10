@@ -73,28 +73,58 @@ void Server::HandleListenEvent()
         auto conn = connections_[connfd];
 
         // 绑定回调
+        // -----------业务回调
         // 读回调
-        conn->SetReadCallback
+        conn->SetOnRead
         (
-            [conn]()
+            [this](std::shared_ptr<Connection> conn)
             {
-                conn->HandleRead();
+                HandleReadEvent(conn);
             }
         );
         // 写回调
-        conn->SetWriteCallback
+        conn->SetOnWriteComplete
         (
-            [conn]()
+            [this](std::shared_ptr<Connection> conn)
             {
-                conn->HandleWrite();
+                HandleWriteEvent(conn);
             }
         );
         // 错误回调
+        conn->SetOnClose
+        (
+            [this](std::shared_ptr<Connection> conn)
+            {
+                CloseConnection(conn);
+            }
+        );
+        // -----------------------------------
+        // ------------- IO回调
+        std::weak_ptr<Connection> weakConn = conn;  // 避免引起connection环
+        conn->SetReadCallback
+        (
+            [weakConn]()
+            {
+                if(auto conn = weakConn.lock())
+                    conn->HandleRead();
+            }
+        );
+
+        conn->SetWriteCallback
+        (
+            [weakConn]()
+            {
+                if(auto conn = weakConn.lock())
+                    conn->HandleWrite();
+            }
+        );
+
         conn->SetCloseCallback
         (
-            [conn]()
+            [weakConn]()
             {
-                conn->HandleClose();
+                if(auto conn = weakConn.lock())
+                    conn->HandleClose();
             }
         );
 
@@ -108,13 +138,15 @@ void Server::HandleListenEvent()
         loop_.AddTimer(connfd, 5000, 
             [this, connfd]()
             {
-                CloseConnection(connfd);
+                auto it = connections_.find(connfd);
+                if(it != connections_.end())
+                    CloseConnection(it->second);
             }
         );
     }
 }
 
-void Server::HandleFinished(int fd, std::shared_ptr<Connection> conn)
+void Server::HandleFinished(std::shared_ptr<Connection> conn)
 {
     //  是否长连接？
     // 长连接：继续监听
@@ -133,23 +165,24 @@ void Server::HandleFinished(int fd, std::shared_ptr<Connection> conn)
     {
         conn->SetState(ConnState::Closed);
         // 短链接：关闭
-        CloseConnection(fd);
+        CloseConnection(conn);
     }
 }
 
 //  处理读事件，读取客户端请求数据并写入Buffer，构建Http请求并返回HTTP响应，发送HTTP响应数据，并关闭连接
-void Server::HandleReadEvent(int fd)
+void Server::HandleReadEvent(std::shared_ptr<Connection> conn)
 {
-    auto it = connections_.find(fd);
-    if(it == connections_.end())
-    {
-        LOG_DEBUG("Connection not found for fd = " + std::to_string(fd));
-        return;
-    }
-    // 刷新计时
-    loop_.AdjustTimer(fd, 60000);
+    int fd = conn->GetFd();
+    // auto it = connections_.find(fd);
+    // if(it == connections_.end())
+    // {
+    //     LOG_DEBUG("Connection not found for fd = " + std::to_string(fd));
+    //     return;
+    // }
+    // // 刷新计时
+    // loop_.AdjustTimer(fd, 60000);
 
-    std::shared_ptr<Connection> conn = it->second;
+    // std::shared_ptr<Connection> conn = it->second;
     if(conn->GetState() != ConnState::Connected)
     {
         LOG_DEBUG("Connection is processing, ignore fd= " + std::to_string(fd));
@@ -159,7 +192,7 @@ void Server::HandleReadEvent(int fd)
     // 读取失败则关闭
     if(!conn->Read())
     {
-        CloseConnection(fd);
+        CloseConnection(conn);
         return;
     }
     LOG_DEBUG("Read data from fd=" + std::to_string(fd));
@@ -183,7 +216,7 @@ void Server::HandleReadEvent(int fd)
                 case WRITE_COMPLETE:
                 {
                     // 判断是否是长连接
-                    HandleFinished(fd, conn);
+                    HandleFinished(conn);
                     break;
                 }
 
@@ -200,7 +233,7 @@ void Server::HandleReadEvent(int fd)
 
                 case WRITE_ERROR:
                 {
-                    CloseConnection(fd);
+                    CloseConnection(conn);
                     break;
                 }
             }
@@ -209,19 +242,20 @@ void Server::HandleReadEvent(int fd)
 }
 
 // 处理写事件，继续发送响应数据
-void Server::HandleWriteEvent(int fd)
+void Server::HandleWriteEvent(std::shared_ptr<Connection> conn)
 {
-    // 刷新计时
-    loop_.AdjustTimer(fd, 60000);
+    int fd = conn->GetFd();
+    // // 刷新计时
+    // loop_.AdjustTimer(fd, 60000);
 
-    auto it = connections_.find(fd);
-    if(it == connections_.end())
-    {
-        LOG_DEBUG("Connection not found for fd = " + std::to_string(fd));
-        return;
-    }
+    // auto it = connections_.find(fd);
+    // if(it == connections_.end())
+    // {
+    //     LOG_DEBUG("Connection not found for fd = " + std::to_string(fd));
+    //     return;
+    // }
 
-    std::shared_ptr<Connection> conn = it->second;
+    // std::shared_ptr<Connection> conn = it->second;
     LOG_DEBUG("Handle write event for fd=" + std::to_string(fd));
 
     auto result = conn->Write();
@@ -231,7 +265,7 @@ void Server::HandleWriteEvent(int fd)
         {
             // 数据发送完
             // 判断是否是长连接
-            HandleFinished(fd, conn);
+            HandleFinished(conn);
             break;
         }
         case WRITE_AGAIN:
@@ -246,15 +280,16 @@ void Server::HandleWriteEvent(int fd)
         }
         case WRITE_ERROR:
         {
-            CloseConnection(fd);
+            CloseConnection(conn);
             break;
         }
     }
 }
 
 //  关闭连接，删除epoll事件并从连接列表中移除
-void Server::CloseConnection(int fd)
+void Server::CloseConnection(std::shared_ptr<Connection> conn)
 {
+    int fd = conn->GetFd();
     auto it = connections_.find(fd);
     if(it != connections_.end())
     {

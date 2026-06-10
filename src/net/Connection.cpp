@@ -164,7 +164,7 @@ void Connection::SetState(ConnState state)
     state_.store(state);
 }
 
-    // 设置回调
+    // IO回调: Channel
 void Connection::SetReadCallback(std::function<void()> cb)
 {
     channel_->SetReadCallback(std::move(cb));
@@ -196,72 +196,42 @@ void Connection::DisableWriting()
 void Connection::HandleRead()
 {
     LOG_DEBUG("HandleRead fd=" + std::to_string(fd_));
-    if(messageCallback_)
+    if(onRead_)
     {
-        messageCallback_(shared_from_this());
+        onRead_(shared_from_this());
     }
-
-    // // 读取失败则关闭
-    // if(!conn->Read())
-    // {
-    //     CloseConnection(fd);
-    //     return;
-    // }
-    // LOG_DEBUG("Read data from fd=" + std::to_string(fd));
-    // conn->SetState(ConnState::Processing);
-
-    // // 业务处理(丢给线程池)
-    // pool_.AddTask([this, conn, fd]() 
-    // {
-    //     // 线程池线程执行
-    //     conn->Process();
-    //     conn->SetState(ConnState::Writing);
-    
-    //     // Process 完之后，把写事件提交回主线程 EventLoop
-    //     loop_.QueueInLoop([this, conn, fd]() 
-    //     {
-    //         // 尝试发送响应
-    //         WriteResult result = conn->Write();
-
-    //         switch(result)
-    //         {
-    //             case WRITE_COMPLETE:
-    //             {
-    //                 // 判断是否是长连接
-    //                 HandleFinished(fd, conn);
-    //                 break;
-    //             }
-
-    //             case WRITE_AGAIN:
-    //             {
-    //                 // 数据未发送完，添加 EPOLLOUT
-    //                 // auto channel = channels_[fd].get();
-    //                 auto channel = connections_[fd]->GetChannel();
-    //                 conn->EnableWriting();
-    //                 conn->UpdateChannel(loop_.GetEpoller());
-
-    //                 break;
-    //             }
-
-    //             case WRITE_ERROR:
-    //             {
-    //                 CloseConnection(fd);
-    //                 break;
-    //             }
-    //         }
-    //     });
-    // });
 }
 void Connection::HandleWrite()
 {
-    LOG_DEBUG("HandleWrite fd=" + std::to_string(fd_));
+    LOG_DEBUG("HandleRead fd=" + std::to_string(fd_));
+    if(onWrite_)
+    {
+        onWrite_(shared_from_this());
+    }
 }
 void Connection::HandleClose()
 {
-    LOG_DEBUG("HandleClose fd=" + std::to_string(fd_));
+    LOG_DEBUG("HandleRead fd=" + std::to_string(fd_));
+    if(onClose_)
+    {
+        onClose_(shared_from_this());
+    }
 }
-
 void Connection::UpdateChannel(Epoller& epoller)
 {
     epoller.ModChannel(channel_.get());
+}
+
+    // 业务回调: Connection
+void Connection::SetOnRead(ReadEventCallback cb)
+{
+    onRead_ = std::move(cb);
+}
+void Connection::SetOnWriteComplete(WriteEventCallback cb)
+{
+    onWrite_ = std::move(cb);
+}
+void Connection::SetOnClose(ConnectionCloseCallback cb)
+{
+    onClose_ = std::move(cb);
 }

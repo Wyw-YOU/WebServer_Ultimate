@@ -42,11 +42,11 @@ public:
 
 private:
     void HandleListenEvent();
-    void HandleReadEvent(int fd);
-    void HandleWriteEvent(int fd);
-    void CloseConnection(int fd);
+    void HandleReadEvent(std::shared_ptr<Connection> conn);
+    void HandleWriteEvent(std::shared_ptr<Connection> conn);
+    void CloseConnection(std::shared_ptr<Connection> conn);
 
-    void HandleFinished(int fd, std::shared_ptr<Connection> conn);
+    void HandleFinished(std::shared_ptr<Connection> conn);
 
 private:
     int port_;

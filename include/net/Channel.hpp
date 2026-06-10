@@ -16,6 +16,7 @@ public:
     void HandleEvent();
 
 public:
+    // 设置IO回调
     void SetReadCallback(EventCallback cb);
     void SetWriteCallback(EventCallback cb);
     void SetCloseCallback(EventCallback cb);
