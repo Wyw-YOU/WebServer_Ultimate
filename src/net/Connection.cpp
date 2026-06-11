@@ -194,9 +194,8 @@ void Connection::DisableWriting()
 
 void Connection::ResetForNextRequest()
 {
-    EnableReading();
-    UpdateChannel(loop_->GetEpoller());
     SetState(ConnState::Connected);
+    EnableReadEvent();
 
     LOG_DEBUG("Reset connection fd= " + std::to_string(fd_));
 }
@@ -230,13 +229,19 @@ void Connection::HandleRead()
         onRead_(shared_from_this());
     }
 }
+void Connection::TrySend()
+{
+    WriteResult result = SendResponse();
+
+    if(onWriteComplete_)
+    {
+        onWriteComplete_(shared_from_this(),  result);
+    }
+}
 void Connection::HandleWrite()
 {
     LOG_DEBUG("HandleWrite fd=" + std::to_string(fd_));
-    if(onWrite_)
-    {
-        onWrite_(shared_from_this());
-    }
+    TrySend();
 }
 void Connection::HandleClose()
 {
@@ -256,13 +261,17 @@ void Connection::SetOnRead(ReadEventCallback cb)
 {
     onRead_ = std::move(cb);
 }
-void Connection::SetOnWrite(WriteEventCallback cb)
-{
-    onWrite_ = std::move(cb);
-}
+// void Connection::SetOnWrite(WriteEventCallback cb)
+// {
+//     onWrite_ = std::move(cb);
+// }
 void Connection::SetOnClose(ConnectionCloseCallback cb)
 {
     onClose_ = std::move(cb);
+}
+void Connection::SetOnWriteComplete(WriteCompleteCallback cb)
+{
+    onWriteComplete_ = std::move(cb);
 }
 
 
@@ -272,8 +281,45 @@ WriteResult Connection::SendResponse()
     return Write();
 }
 
+void Connection::EnableReadEvent()
+{
+    EnableReading();
+    UpdateChannel(loop_->GetEpoller());
+}
 void Connection::EnableWriteEvent()
 {
     EnableWriting();
     UpdateChannel(loop_->GetEpoller());
+}
+
+// 是否长连接？
+bool Connection::OnResponseFinished()
+{
+    if(IsKeepAlive())
+    {
+        ResetForNextRequest();
+        return true;
+    }
+
+    SetState(ConnState::Closed);
+    return false;
+}
+
+// 解析
+void Connection::ProcessInWorker()
+{
+    Process();
+    SetState(ConnState::Writing);
+
+    auto self = shared_from_this();
+    loop_->QueueInLoop(
+    [self]()
+    {
+        if(self->GetState() == ConnState::Closed)
+        {
+            return;
+        }
+
+        self->TrySend();
+    });
 }

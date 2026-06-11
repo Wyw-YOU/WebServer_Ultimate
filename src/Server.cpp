@@ -83,11 +83,11 @@ void Server::HandleListenEvent()
             }
         );
         // 写回调
-        conn->SetOnWrite
+        conn->SetOnWriteComplete
         (
-            [this](std::shared_ptr<Connection> conn)
+            [this](std::shared_ptr<Connection> conn, WriteResult result)
             {
-                HandleWriteEvent(conn);
+                HandleWriteResult(conn, result);
             }
         );
         // 错误回调
@@ -146,19 +146,30 @@ void Server::HandleListenEvent()
     }
 }
 
-void Server::HandleFinished(std::shared_ptr<Connection> conn)
+
+void Server::HandleWriteResult(std::shared_ptr<Connection> conn, WriteResult result)
 {
-    //  是否长连接？
-    // 长连接：继续监听
-    if(conn->IsKeepAlive()) 
+    switch(result)
     {
-        conn->ResetForNextRequest();
-    } 
-    else 
-    {
-        conn->SetState(ConnState::Closed);
-        // 短链接：关闭
-        CloseConnection(conn);
+        case WRITE_COMPLETE:
+        {
+            if(!conn->OnResponseFinished())
+                CloseConnection(conn);
+            break;
+        }
+
+        case WRITE_AGAIN:
+        {
+            conn->EnableWriteEvent();
+            LOG_DEBUG("Waiting to send more data fd=" + std::to_string(conn->GetFd()));
+            break;
+        }
+
+        case WRITE_ERROR:
+        {
+            CloseConnection(conn);
+            break;
+        }
     }
 }
 
@@ -180,83 +191,43 @@ void Server::HandleReadEvent(std::shared_ptr<Connection> conn)
     conn->SetState(ConnState::Processing);
 
     // 业务处理(丢给线程池)
-    pool_.AddTask([this, conn, fd]() 
-    {
-        // 线程池线程执行
-        conn->Process();
-        conn->SetState(ConnState::Writing);
+    // pool_.AddTask([this, conn, fd]() 
+    // {
+    //     // 线程池线程执行
+    //     conn->Process();
+    //     conn->SetState(ConnState::Writing);
     
-        // Process 完之后，把写事件提交回主线程 EventLoop
-        loop_.QueueInLoop([this, conn, fd]() 
+    //     // Process 完之后，把写事件提交回主线程 EventLoop
+    //     loop_.QueueInLoop([this, conn, fd]() 
+    //     {
+    //         // 尝试发送响应
+    //         WriteResult result = conn->SendResponse();
+    //         HandleWriteResult(conn, result);
+    //     });
+    // });
+
+    pool_.AddTask
+    (
+        [conn]()
         {
-            // 尝试发送响应
-            WriteResult result = conn->SendResponse();
-
-            switch(result)
-            {
-                case WRITE_COMPLETE:
-                {
-                    // 判断是否是长连接
-                    HandleFinished(conn);
-                    break;
-                }
-
-                case WRITE_AGAIN:
-                {
-                    // 数据未发送完，添加 EPOLLOUT
-                    // auto channel = channels_[fd].get();
-                    // auto channel = connections_[fd]->GetChannel();
-                    conn->EnableWritingEvent();
-
-                    break;
-                }
-
-                case WRITE_ERROR:
-                {
-                    CloseConnection(conn);
-                    break;
-                }
-            }
-        });
-    });
+            conn->ProcessInWorker();
+        }
+    );
 }
 
 // 处理写事件，继续发送响应数据
-void Server::HandleWriteEvent(std::shared_ptr<Connection> conn)
-{
-    int fd = conn->GetFd();
-    // 刷新计时
-    loop_.AdjustTimer(fd, 60000);
+// void Server::HandleWriteEvent(std::shared_ptr<Connection> conn)
+// {
+//     int fd = conn->GetFd();
+//     // 刷新计时
+//     loop_.AdjustTimer(fd, 60000);
 
-    // std::shared_ptr<Connection> conn = it->second;
-    LOG_DEBUG("Handle write event for fd=" + std::to_string(fd));
+//     // std::shared_ptr<Connection> conn = it->second;
+//     LOG_DEBUG("Handle write event for fd=" + std::to_string(fd));
 
-    auto result = conn->SendResponse();
-    switch(result)
-    {
-        case WRITE_COMPLETE:
-        {
-            // 数据发送完
-            // 判断是否是长连接
-            HandleFinished(conn);
-            break;
-        }
-        case WRITE_AGAIN:
-        {
-            // 未发送完，继续监听写事件
-            // auto channel = channels_[fd].get();
-            // auto channel = connections_[fd]->GetChannel();
-            conn->EnableWritingEvent();
-            LOG_DEBUG("Waiting to send more data to fd=" + std::to_string(fd));
-            break;
-        }
-        case WRITE_ERROR:
-        {
-            CloseConnection(conn);
-            break;
-        }
-    }
-}
+//     auto result = conn->SendResponse();
+//     HandleWriteResult(conn, result);
+// }
 
 //  关闭连接，删除epoll事件并从连接列表中移除
 void Server::CloseConnection(std::shared_ptr<Connection> conn)
@@ -277,3 +248,4 @@ void Server::CloseConnection(std::shared_ptr<Connection> conn)
 
     LOG_DEBUG("Closed connection fd=" + std::to_string(fd));
 }
+

@@ -43,10 +43,10 @@ public:
 private:
     void HandleListenEvent();
     void HandleReadEvent(std::shared_ptr<Connection> conn);
-    void HandleWriteEvent(std::shared_ptr<Connection> conn);
+    // void HandleWriteEvent(std::shared_ptr<Connection> conn);
+    void HandleWriteResult(std::shared_ptr<Connection> conn, WriteResult result);
     void CloseConnection(std::shared_ptr<Connection> conn);
 
-    void HandleFinished(std::shared_ptr<Connection> conn);
 
 private:
     int port_;

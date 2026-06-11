@@ -62,8 +62,9 @@ public:
     // }
 
     using ReadEventCallback = std::function<void(std::shared_ptr<Connection>)>;
-    using WriteEventCallback = std::function<void(std::shared_ptr<Connection>)>;
+    // using WriteEventCallback = std::function<void(std::shared_ptr<Connection>)>;
     using ConnectionCloseCallback = std::function<void(std::shared_ptr<Connection>)>;
+    using WriteCompleteCallback = std::function<void(std::shared_ptr<Connection>, WriteResult)>;
     
     bool Process();
 
@@ -87,8 +88,9 @@ public:
 
     // 业务回调
     void SetOnRead(ReadEventCallback cb);
-    void SetOnWrite(WriteEventCallback cb);
+    // void SetOnWrite(WriteEventCallback cb);
     void SetOnClose(ConnectionCloseCallback cb);
+    void SetOnWriteComplete(WriteCompleteCallback cb);
 
     // 事件修改
     void EnableReading();
@@ -99,13 +101,22 @@ public:
 
     // 事件处理
     void HandleRead();
+    void TrySend();
     void HandleWrite();
     void HandleClose();
 
     void UpdateChannel(Epoller& epoller);
     WriteResult SendResponse();
 
+    // 可读/写
+    void EnableReadEvent();
     void EnableWriteEvent();
+
+    // 判断长连接
+    bool OnResponseFinished();
+
+    // 解析处理
+    void ProcessInWorker();
 
 private:
     int fd_;
@@ -121,6 +132,7 @@ private:
     HttpResponse response_;
 
     ReadEventCallback onRead_;
-    WriteEventCallback onWrite_;
+    // WriteEventCallback onWrite_;
     ConnectionCloseCallback onClose_;
+    WriteCompleteCallback onWriteComplete_;
 };
