@@ -3,6 +3,64 @@
 
 #include <sstream>
 
+//--------------private:
+// 解析请求行
+bool HttpRequest::ParseRequestLine(const std::string& line)
+{
+    std::stringstream requestLine(line);
+
+    requestLine >> method_ >> path_ >> version_;
+
+    if(method_.empty() || path_.empty() || version_.empty())
+    {
+        return false;
+    }
+
+    return true;
+}
+// 解析请求头
+bool HttpRequest::ParseHeaders(std::stringstream& ss)
+{
+    std::string line;
+    while(std::getline(ss, line))
+    {
+        if(line == "\r" || line.empty())
+        {
+            break;
+        }
+        if(!line.empty() && line.back() == '\r')
+        {
+            line.pop_back();
+        }
+
+        auto pos = line.find(':');
+        if(pos == std::string::npos)
+        {
+            continue;
+        }
+
+        std::string key = line.substr(0, pos);
+        std::string value = line.substr(pos + 1);
+        while(!value.empty() && value.front() == ' ')
+        {
+            value.erase(value.begin());
+        }
+
+        headers_[key] = value;
+    }
+    return true;
+}
+// 解析body层
+void HttpRequest::ParseBody(std::stringstream& ss)
+{
+    std::string line;
+    while(std::getline(ss, line))
+    {
+        body_ += line;
+    }
+}
+
+// -----------------public
 // 解析HTTP请求
 bool HttpRequest::Parse(const std::string& raw)
 {
@@ -23,48 +81,15 @@ bool HttpRequest::Parse(const std::string& raw)
         line.pop_back();
     }
 
-    std::stringstream requestLine(line);
-
-    requestLine >> method_ >> path_ >> version_;
-
-    // 解析HTTP头部字段
-    while(std::getline(ss, line))
+    if(!ParseRequestLine(line))
     {
-        if(line == "\r" || line.empty())
-        {
-            break;
-        }
-
-        if(line.back() == '\r')
-        {
-            line.pop_back();
-        }
-
-        auto pos = line.find(':');
-
-        if(pos == std::string::npos)
-        {
-            continue;
-        }
-
-        std::string key = line.substr(0, pos);
-        std::string value = line.substr(pos + 1);
-
-        while(!value.empty() && value.front() == ' ')
-        {
-            value.erase(value.begin());
-        }
-
-        headers_[key] = value;
+        LOG_ERROR("Parse request line error!");
     }
-
-    // 解析HTTP请求体
-    std::string bodyLine;
-
-    while(std::getline(ss, bodyLine))
+    if(!ParseHeaders(ss))
     {
-        body_ += bodyLine;
+        LOG_ERROR("Parse request headers error!");
     }
+    ParseBody(ss);
 
     LOG_DEBUG("Parsed HTTP request: Method: " + method_ + " Path: " + path_ + " Version: " + version_);
     LOG_DEBUG("Parsed Successfully!");

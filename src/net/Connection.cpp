@@ -14,40 +14,40 @@ Connection::Connection(int fd, EventLoop* loop, const std::string& resourceDir)
 //  构建Http请求并返回HTTP响应
 bool Connection::Process()
 {
-    // std::cout << "Process fd = " + std::to_string(fd_) << std::endl;
     // LOG_DEBUG("Process in thread id=" + std::to_string(std::hash<std::thread::id>{}(std::this_thread::get_id())));
-    // 解析请求
-    std::string raw = readBuffer_.RetrieveAll();
     // LOG_DEBUG("Raw request:\n" + raw);
-
-    if(!request_.Parse(raw))
+    // 解析请求
+    if(!context_.ParseRequest(readBuffer_))
     {
         response_.SetStatus(400, "Bad Request");
-        response_.SetBody("400 Bad Request");
+        response_.SetText("400 Bad Request");
+        response_.SetKeepAlive(false);
+
+        return false;
+    }
+    HttpRequest& request = context_.Request();
+
+    // 根据路径路由
+    std::string path = request.Path();
+    if(path == "/")
+        path = "/hello";
+
+    std::string filename = resourceDir_ + path + ".html";
+    std::string html;
+
+    if(FileUtil::ReadFile(filename, html))
+    {
+        response_.SetStatus(200, "OK");
+        response_.SetHtml(html);
     }
     else
     {
-        // 根据路径路由
-        std::string path = request_.Path();
-        if(path == "/")
-            path = "/hello";
-
-        std::string filename = resourceDir_ + path + ".html";
-        std::string html;
-
-        if(FileUtil::ReadFile(filename, html))
-        {
-            response_.SetStatus(200, "OK");
-            response_.SetHeader("Content-Type", "text/html");
-            response_.SetHeader("Connection", request_.IsKeepAlive() ? "keep-alive" : "close");
-            response_.SetBody(html);
-        }
-        else
-        {
-            response_.SetStatus(404, "Not Found");
-            response_.SetBody("404 Not Found");
-        }
+        response_.SetStatus(404, "Not Found");
+        response_.SetText("404 Not Found");
     }
+    response_.SetKeepAlive(request.IsKeepAlive());
+    response_.BuildDefaultHeaders();
+    
 
     // 将响应序列化写入发送缓冲区
     std::string resp = response_.ToString();
@@ -152,7 +152,7 @@ bool Connection::Close()
 // 判断是否是长连接
 bool Connection::IsKeepAlive()
 {
-    return request_.IsKeepAlive();
+    return context_.Request().IsKeepAlive();
 }
 
 ConnState Connection::GetState() const
@@ -194,7 +194,7 @@ void Connection::DisableWriting()
 
 void Connection::ResetForNextRequest()
 {
-    request_.Reset();
+    context_.Reset();
     response_.Reset();
     writeBuffer_.RetrieveAll();
     
@@ -292,7 +292,7 @@ void Connection::EnableWriteEvent()
     UpdateChannel(loop_->GetEpoller());
 }
 
-// 是否长连接？
+// 响应是否结束：
 bool Connection::OnResponseFinished()
 {
     // std::cout << "keepalive = " << IsKeepAlive() << std::endl;

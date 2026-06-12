@@ -5,6 +5,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/server.dir/src/Test/EventLoopThreadTest.cpp.o"
   "CMakeFiles/server.dir/src/Test/ThreadPoolTest.cpp.o"
   "CMakeFiles/server.dir/src/buffer/Buffer.cpp.o"
+  "CMakeFiles/server.dir/src/http/HttpContext.cpp.o"
   "CMakeFiles/server.dir/src/http/HttpRequest.cpp.o"
   "CMakeFiles/server.dir/src/http/HttpResponse.cpp.o"
   "CMakeFiles/server.dir/src/main.cpp.o"

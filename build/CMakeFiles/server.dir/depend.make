@@ -7,6 +7,7 @@ CMakeFiles/server.dir/src/Log.cpp.o: ../src/Log.cpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/Log.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/Server.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/buffer/Buffer.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpContext.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpResponse.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Acceptor.hpp
@@ -31,6 +32,11 @@ CMakeFiles/server.dir/src/Test/ThreadPoolTest.cpp.o: ../src/Test/ThreadPoolTest.
 CMakeFiles/server.dir/src/buffer/Buffer.cpp.o: ../include/buffer/Buffer.hpp
 CMakeFiles/server.dir/src/buffer/Buffer.cpp.o: ../src/buffer/Buffer.cpp
 
+CMakeFiles/server.dir/src/http/HttpContext.cpp.o: ../include/buffer/Buffer.hpp
+CMakeFiles/server.dir/src/http/HttpContext.cpp.o: ../include/http/HttpContext.hpp
+CMakeFiles/server.dir/src/http/HttpContext.cpp.o: ../include/http/HttpRequest.hpp
+CMakeFiles/server.dir/src/http/HttpContext.cpp.o: ../src/http/HttpContext.cpp
+
 CMakeFiles/server.dir/src/http/HttpRequest.cpp.o: ../include/Log.hpp
 CMakeFiles/server.dir/src/http/HttpRequest.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/http/HttpRequest.cpp.o: ../src/http/HttpRequest.cpp
@@ -41,6 +47,7 @@ CMakeFiles/server.dir/src/http/HttpResponse.cpp.o: ../src/http/HttpResponse.cpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/Log.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/Server.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/buffer/Buffer.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/http/HttpContext.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/http/HttpResponse.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Acceptor.hpp
@@ -67,6 +74,7 @@ CMakeFiles/server.dir/src/net/Channel.cpp.o: ../src/net/Channel.cpp
 
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/Log.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/buffer/Buffer.hpp
+CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpContext.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpResponse.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/net/Channel.hpp

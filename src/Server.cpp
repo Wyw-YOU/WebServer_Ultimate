@@ -74,7 +74,7 @@ void Server::HandleListenEvent()
 
         // 绑定回调
         // -----------业务回调
-        // 读回调
+        // 读写回调
         conn->SetOnRead
         (
             [this](std::shared_ptr<Connection> conn)
@@ -82,14 +82,7 @@ void Server::HandleListenEvent()
                 HandleReadEvent(conn);
             }
         );
-        // // 写回调
-        // conn->SetOnWriteComplete
-        // (
-        //     [this](std::shared_ptr<Connection> conn, WriteResult result)
-        //     {
-        //         HandleWriteResult(conn, result);
-        //     }
-        // );
+
         // 错误回调
         conn->SetOnClose
         (
@@ -174,19 +167,6 @@ void Server::HandleReadEvent(std::shared_ptr<Connection> conn)
     );
 }
 
-// 处理写事件，继续发送响应数据
-// void Server::HandleWriteEvent(std::shared_ptr<Connection> conn)
-// {
-//     int fd = conn->GetFd();
-//     // 刷新计时
-//     loop_.AdjustTimer(fd, 60000);
-
-//     // std::shared_ptr<Connection> conn = it->second;
-//     LOG_DEBUG("Handle write event for fd=" + std::to_string(fd));
-
-//     auto result = conn->SendResponse();
-//     HandleWriteResult(conn, result);
-// }
 
 //  关闭连接，删除epoll事件并从连接列表中移除
 void Server::CloseConnection(std::shared_ptr<Connection> conn)

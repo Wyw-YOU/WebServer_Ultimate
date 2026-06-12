@@ -8,6 +8,7 @@ CMakeFiles/server.dir/src/Server.cpp.o
  ../include/Log.hpp
  ../include/Server.hpp
  ../include/buffer/Buffer.hpp
+ ../include/http/HttpContext.hpp
  ../include/http/HttpRequest.hpp
  ../include/http/HttpResponse.hpp
  ../include/net/Acceptor.hpp
@@ -31,6 +32,11 @@ CMakeFiles/server.dir/src/Test/ThreadPoolTest.cpp.o
 CMakeFiles/server.dir/src/buffer/Buffer.cpp.o
  ../include/buffer/Buffer.hpp
  /root/WebServer_Ultimate/src/buffer/Buffer.cpp
+CMakeFiles/server.dir/src/http/HttpContext.cpp.o
+ ../include/buffer/Buffer.hpp
+ ../include/http/HttpContext.hpp
+ ../include/http/HttpRequest.hpp
+ /root/WebServer_Ultimate/src/http/HttpContext.cpp
 CMakeFiles/server.dir/src/http/HttpRequest.cpp.o
  ../include/Log.hpp
  ../include/http/HttpRequest.hpp
@@ -42,6 +48,7 @@ CMakeFiles/server.dir/src/main.cpp.o
  ../include/Log.hpp
  ../include/Server.hpp
  ../include/buffer/Buffer.hpp
+ ../include/http/HttpContext.hpp
  ../include/http/HttpRequest.hpp
  ../include/http/HttpResponse.hpp
  ../include/net/Acceptor.hpp
@@ -68,6 +75,7 @@ CMakeFiles/server.dir/src/net/Channel.cpp.o
 CMakeFiles/server.dir/src/net/Connection.cpp.o
  ../include/Log.hpp
  ../include/buffer/Buffer.hpp
+ ../include/http/HttpContext.hpp
  ../include/http/HttpRequest.hpp
  ../include/http/HttpResponse.hpp
  ../include/net/Channel.hpp

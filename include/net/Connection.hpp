@@ -1,8 +1,8 @@
 #pragma once
 
 #include "buffer/Buffer.hpp"
-#include "http/HttpRequest.hpp"
 #include "http/HttpResponse.hpp"
+#include "http/HttpContext.hpp"
 #include "util/FileUtil.hpp"
 #include "thread/ThreadPool.hpp"
 #include "net/Channel.hpp"
@@ -131,11 +131,9 @@ private:
 
     Buffer readBuffer_;
     Buffer writeBuffer_;
-    HttpRequest request_;
     HttpResponse response_;
+    HttpContext context_;
 
     ReadEventCallback onRead_;
-    // WriteEventCallback onWrite_;
     ConnectionCloseCallback onClose_;
-    // WriteCompleteCallback onWriteComplete_;
 };

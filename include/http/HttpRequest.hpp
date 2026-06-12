@@ -3,6 +3,15 @@
 #include <string>
 #include <unordered_map>
 
+enum class HttpMethod
+{
+    GET,
+    POST,
+    PUT,
+    DELETE_,
+    UNKNOWN
+};
+
 class HttpRequest
 {
 public:
@@ -19,6 +28,12 @@ public:
     std::string GetHeader(const std::string& key) const;
 
     bool IsKeepAlive() const;
+
+private:
+    // 3大解析函数
+    bool ParseRequestLine(const std::string& line);
+    bool ParseHeaders(std::stringstream& ss);
+    void ParseBody(std::stringstream& ss);
 
 private:
     std::string method_;
