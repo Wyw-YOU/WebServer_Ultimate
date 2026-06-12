@@ -82,14 +82,14 @@ void Server::HandleListenEvent()
                 HandleReadEvent(conn);
             }
         );
-        // 写回调
-        conn->SetOnWriteComplete
-        (
-            [this](std::shared_ptr<Connection> conn, WriteResult result)
-            {
-                HandleWriteResult(conn, result);
-            }
-        );
+        // // 写回调
+        // conn->SetOnWriteComplete
+        // (
+        //     [this](std::shared_ptr<Connection> conn, WriteResult result)
+        //     {
+        //         HandleWriteResult(conn, result);
+        //     }
+        // );
         // 错误回调
         conn->SetOnClose
         (
@@ -147,32 +147,6 @@ void Server::HandleListenEvent()
 }
 
 
-void Server::HandleWriteResult(std::shared_ptr<Connection> conn, WriteResult result)
-{
-    switch(result)
-    {
-        case WRITE_COMPLETE:
-        {
-            if(!conn->OnResponseFinished())
-                CloseConnection(conn);
-            break;
-        }
-
-        case WRITE_AGAIN:
-        {
-            conn->EnableWriteEvent();
-            LOG_DEBUG("Waiting to send more data fd=" + std::to_string(conn->GetFd()));
-            break;
-        }
-
-        case WRITE_ERROR:
-        {
-            CloseConnection(conn);
-            break;
-        }
-    }
-}
-
 //  处理读事件，读取客户端请求数据并写入Buffer，构建Http请求并返回HTTP响应，发送HTTP响应数据，并关闭连接
 void Server::HandleReadEvent(std::shared_ptr<Connection> conn)
 {
@@ -190,22 +164,7 @@ void Server::HandleReadEvent(std::shared_ptr<Connection> conn)
     LOG_DEBUG("Read data from fd=" + std::to_string(fd));
     conn->SetState(ConnState::Processing);
 
-    // 业务处理(丢给线程池)
-    // pool_.AddTask([this, conn, fd]() 
-    // {
-    //     // 线程池线程执行
-    //     conn->Process();
-    //     conn->SetState(ConnState::Writing);
-    
-    //     // Process 完之后，把写事件提交回主线程 EventLoop
-    //     loop_.QueueInLoop([this, conn, fd]() 
-    //     {
-    //         // 尝试发送响应
-    //         WriteResult result = conn->SendResponse();
-    //         HandleWriteResult(conn, result);
-    //     });
-    // });
-
+    // 业务处理(丢给线程池，并下沉到Connection层，让Connection自行管理)
     pool_.AddTask
     (
         [conn]()
@@ -232,6 +191,14 @@ void Server::HandleReadEvent(std::shared_ptr<Connection> conn)
 //  关闭连接，删除epoll事件并从连接列表中移除
 void Server::CloseConnection(std::shared_ptr<Connection> conn)
 {
+    // 避免： HandleClose()、Timer超时、Write失败 同时进入关闭流程
+    if(!conn)
+        return;
+
+    if(conn->GetState() == ConnState::Closed)
+        return;
+
+    conn->SetState(ConnState::Closed);
     int fd = conn->GetFd();
     auto it = connections_.find(fd);
     if(it != connections_.end())

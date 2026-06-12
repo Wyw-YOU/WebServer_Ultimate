@@ -9,6 +9,9 @@ public:
     // 解析HTTP请求
     bool Parse(const std::string& raw);
 
+    // 清空上次的残留信息
+    void Reset();
+
     const std::string& Method() const;
     const std::string& Path() const;
     const std::string& Version() const;

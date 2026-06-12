@@ -14,10 +14,11 @@ public:
         : statusCode_(200), status_("OK") {}
 
     void SetStatus(int code, const std::string& status);
-
     void SetBody(const std::string& body);
-
     void SetHeader(const std::string& key, const std::string& value);
+    
+    // 清空上次的残留信息
+    void Reset();
 
     /**
      * @brief 将HttpResponse对象转换为HTTP协议格式的字符串

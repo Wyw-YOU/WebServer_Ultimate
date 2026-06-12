@@ -44,3 +44,14 @@ void HttpResponse::SetHeader(const std::string& key, const std::string& value)
 {
     headers_[key] = value;
 }
+
+    // 清空上次的残留信息
+void HttpResponse::Reset()
+{
+    statusCode_ = 200;
+    status_ = "OK";
+
+    body_.clear();
+
+    headers_.clear();
+}

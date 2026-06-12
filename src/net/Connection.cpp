@@ -14,6 +14,7 @@ Connection::Connection(int fd, EventLoop* loop, const std::string& resourceDir)
 //  构建Http请求并返回HTTP响应
 bool Connection::Process()
 {
+    // std::cout << "Process fd = " + std::to_string(fd_) << std::endl;
     // LOG_DEBUG("Process in thread id=" + std::to_string(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     // 解析请求
     std::string raw = readBuffer_.RetrieveAll();
@@ -124,7 +125,6 @@ WriteResult Connection::Write()
             }
         }
     }
-
     return WRITE_COMPLETE;
 }
 
@@ -194,6 +194,10 @@ void Connection::DisableWriting()
 
 void Connection::ResetForNextRequest()
 {
+    request_.Reset();
+    response_.Reset();
+    writeBuffer_.RetrieveAll();
+    
     SetState(ConnState::Connected);
     EnableReadEvent();
 
@@ -232,11 +236,7 @@ void Connection::HandleRead()
 void Connection::TrySend()
 {
     WriteResult result = SendResponse();
-
-    if(onWriteComplete_)
-    {
-        onWriteComplete_(shared_from_this(),  result);
-    }
+    HandleWriteResult(result);
 }
 void Connection::HandleWrite()
 {
@@ -269,10 +269,10 @@ void Connection::SetOnClose(ConnectionCloseCallback cb)
 {
     onClose_ = std::move(cb);
 }
-void Connection::SetOnWriteComplete(WriteCompleteCallback cb)
-{
-    onWriteComplete_ = std::move(cb);
-}
+// void Connection::SetOnWriteComplete(WriteCompleteCallback cb)
+// {
+//     onWriteComplete_ = std::move(cb);
+// }
 
 
 
@@ -295,6 +295,7 @@ void Connection::EnableWriteEvent()
 // 是否长连接？
 bool Connection::OnResponseFinished()
 {
+    // std::cout << "keepalive = " << IsKeepAlive() << std::endl;
     if(IsKeepAlive())
     {
         ResetForNextRequest();
@@ -322,4 +323,38 @@ void Connection::ProcessInWorker()
 
         self->TrySend();
     });
+}
+
+
+//--------------private:
+void Connection::HandleWriteResult(WriteResult result)
+{
+    switch(result)
+    {
+        case WRITE_COMPLETE:
+        {
+            if(!OnResponseFinished())
+            {
+                if(onClose_)
+                {
+                    onClose_(shared_from_this());
+                }
+            }
+            break;
+        }
+        case WRITE_AGAIN:
+        {
+            EnableWriteEvent();
+            LOG_DEBUG("Waiting to send more data fd= " + std::to_string(fd_));
+            break;
+        }
+        case WRITE_ERROR:
+        {
+            if(onClose_)
+            {
+                onClose_(shared_from_this());
+            }
+            break;
+        }
+    }
 }

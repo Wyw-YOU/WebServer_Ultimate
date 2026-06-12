@@ -64,7 +64,7 @@ public:
     using ReadEventCallback = std::function<void(std::shared_ptr<Connection>)>;
     // using WriteEventCallback = std::function<void(std::shared_ptr<Connection>)>;
     using ConnectionCloseCallback = std::function<void(std::shared_ptr<Connection>)>;
-    using WriteCompleteCallback = std::function<void(std::shared_ptr<Connection>, WriteResult)>;
+    // using WriteCompleteCallback = std::function<void(std::shared_ptr<Connection>, WriteResult)>;
     
     bool Process();
 
@@ -90,7 +90,7 @@ public:
     void SetOnRead(ReadEventCallback cb);
     // void SetOnWrite(WriteEventCallback cb);
     void SetOnClose(ConnectionCloseCallback cb);
-    void SetOnWriteComplete(WriteCompleteCallback cb);
+    // void SetOnWriteComplete(WriteCompleteCallback cb);
 
     // 事件修改
     void EnableReading();
@@ -119,6 +119,9 @@ public:
     void ProcessInWorker();
 
 private:
+    void HandleWriteResult(WriteResult result);
+
+private:
     int fd_;
     EventLoop* loop_;
     std::atomic<ConnState> state_;
@@ -134,5 +137,5 @@ private:
     ReadEventCallback onRead_;
     // WriteEventCallback onWrite_;
     ConnectionCloseCallback onClose_;
-    WriteCompleteCallback onWriteComplete_;
+    // WriteCompleteCallback onWriteComplete_;
 };

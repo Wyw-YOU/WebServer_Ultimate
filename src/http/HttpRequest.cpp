@@ -6,6 +6,8 @@
 // 解析HTTP请求
 bool HttpRequest::Parse(const std::string& raw)
 {
+    // 先清理再使用
+    Reset();
     // 解析HTTP请求行
     std::stringstream ss(raw);
     std::string line;
@@ -70,6 +72,17 @@ bool HttpRequest::Parse(const std::string& raw)
     return true;
 }
 
+    // 清空上次的残留信息
+void HttpRequest::Reset()
+{
+    method_.clear();
+    path_.clear();
+    version_.clear();
+
+    body_.clear();
+    headers_.clear();
+}
+
 const std::string& HttpRequest::Method() const
 {
     return method_;
@@ -100,10 +113,21 @@ bool HttpRequest::IsKeepAlive() const
 {
     auto it = headers_.find("Connection");
 
-    if(it == headers_.end())
+    if(version_ == "HTTP/1.1")
     {
-        return false;
+        if(it == headers_.end())
+            return true;
+
+        return it->second != "close";
     }
 
-    return it->second == "keep-alive";
+    if(version_ == "HTTP/1.0")
+    {
+        if(it == headers_.end())
+            return false;
+
+        return it->second == "keep-alive";
+    }
+
+    return false;
 }
