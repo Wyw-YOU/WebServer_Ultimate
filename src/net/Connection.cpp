@@ -17,13 +17,22 @@ bool Connection::Process()
     // LOG_DEBUG("Process in thread id=" + std::to_string(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     // LOG_DEBUG("Raw request:\n" + raw);
     // 解析请求
-    if(!context_.ParseRequest(readBuffer_))
+    auto result = context_.ParseRequest(readBuffer_);
+    switch(result)
     {
-        response_.SetStatus(400, "Bad Request");
-        response_.SetText("400 Bad Request");
-        response_.SetKeepAlive(false);
-
-        return false;
+        case ParseResult::Incomplete:
+            return true;
+    
+        case ParseResult::Error:
+        {
+            response_.SetStatus(400, "Bad Request");
+            response_.SetText("400 Bad Request");
+            response_.SetKeepAlive(false);
+            return false;
+        }
+    
+        case ParseResult::Complete:
+            break;
     }
     HttpRequest& request = context_.Request();
 

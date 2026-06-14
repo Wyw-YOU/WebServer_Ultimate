@@ -59,6 +59,34 @@ std::string Buffer::Retrieve(size_t len)
     return data;
 }
 
+void Buffer::Consume(size_t len)
+{
+    size_t take = std::min(len, ReadableBytes());
+    readPos_ += take;
+
+    if(readPos_ == writePos_)
+    {
+        readPos_ = 0;
+        writePos_ = 0;
+    }
+}
+
+const char* Buffer::FindCRLF() const
+{
+    const char* begin = ReadBegin();
+    const char* end = begin + ReadableBytes();
+
+    for(const char* p = begin; p + 1 < end; ++p)
+    {
+        if(p[0] == '\r' && p[1] == '\n')
+        {
+            return p;
+        }
+    }
+
+    return nullptr;
+}
+
 // 查看数据但不清空
 const std::string& Buffer::Peek() const
 {

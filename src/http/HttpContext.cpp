@@ -1,21 +1,69 @@
 #include "http/HttpContext.hpp"
 
-    // 解析请求
-bool HttpContext::ParseRequest(Buffer& buffer)
+namespace
 {
-    auto readable = buffer.PeekReadable();
-    std::string raw(readable.first, readable.second);
-    auto pos = raw.find("\r\n\r\n");
-    if(pos == std::string::npos)
+    bool ReadLine(Buffer& buffer, std::string& line)
     {
-        complete_ = false;
-        return false;
+        const char* crlf = buffer.FindCRLF();
+        if(crlf == nullptr)
+        {
+            return false;
+        }
+    
+        const char* begin = buffer.ReadBegin();
+        size_t len = crlf - begin;
+        line.assign(begin, len);
+        buffer.Consume(len + 2);
+    
+        return true;
     }
-    size_t requestLen = pos + 4;
-    std::string requestData = buffer.Retrieve(requestLen);
+}
 
-    complete_ = request_.Parse(requestData);
-    return complete_;
+    // 解析请求
+ParseResult HttpContext::ParseRequest(Buffer& buffer)
+{
+    while(true)
+    {
+        switch(state_)
+        {
+            case ParseState::REQUEST_LINE:
+            {
+                ParseResult result = ParseRequestLine(buffer);
+                if(result != ParseResult::Complete)
+                {
+                    return result;
+                }
+                break;
+            }
+            case ParseState::HEADERS:
+            {
+                ParseResult result = ParseHeaders(buffer);
+                if(result != ParseResult::Complete)
+                {
+                    return result;
+                }
+                break;
+            }
+            case ParseState::BODY:
+            {
+                ParseResult result = ParseBody(buffer);
+                if(result != ParseResult::Complete)
+                {
+                    return result;
+                }
+                break;
+            }
+            case ParseState::FINISH:
+            {
+                complete_ = true;
+                return ParseResult::Complete;
+            }
+            default:
+            {
+                return ParseResult::Error;
+            }
+        }
+    }
 }
 
     // 判断包是否完整
@@ -42,4 +90,100 @@ void HttpContext::Reset()
 ParseState HttpContext::GetState() const
 {
     return state_;
+}
+
+
+
+
+//         private:
+ParseResult HttpContext::ParseRequestLine(Buffer& buffer)
+{
+    std::string line;
+    ReadLine(buffer, line);
+
+    if(line.empty())
+    {
+        return ParseResult::Incomplete;
+    }
+    if(!request_.ParseStartLine(line))
+    {
+        return ParseResult::Error;
+    }
+    state_ = ParseState::HEADERS;
+
+    return ParseResult::Complete;
+}
+
+ParseResult HttpContext::ParseHeaders(Buffer& buffer)
+{
+    while(true)
+    {
+        std::string line;
+        ReadLine(buffer, line);
+
+        if(line.empty())
+        {
+            return ParseResult::Incomplete;
+        }
+
+        if(ReadLine(buffer, line))
+        {
+            if(contentLength_ > 0)
+            {
+                state_ = ParseState::BODY;
+            }
+            else
+            {
+                state_ = ParseState::FINISH;
+            }
+
+            return ParseResult::Complete;
+        }
+
+        if(!ParseHeaderLine(line))
+        {
+            return ParseResult::Error;
+        }
+    }
+}
+
+bool HttpContext::ParseHeaderLine(const std::string& line)
+{
+    auto pos = line.find(':');
+    if(pos == std::string::npos)
+    {
+        return false;
+    }
+
+    std::string key = line.substr(0, pos);
+    std::string value = line.substr(pos + 1);
+
+    while(!value.empty() && value.front() == ' ')
+    {
+        value.erase(value.begin());
+    }
+
+    request_.SetHeader(key, value);
+    if(key == "Content-Length")
+    {
+        contentLength_ = std::stoul(value);
+    }
+
+    return true;
+}
+
+ParseResult HttpContext::ParseBody(Buffer& buffer)
+{
+    if(buffer.ReadableBytes() < contentLength_)
+    {
+        return ParseResult::Incomplete;
+    }
+
+    auto readable = buffer.PeekReadable();
+    request_.SetBody(std::string(readable.first, contentLength_));
+
+    buffer.Consume(contentLength_);
+    state_ = ParseState::FINISH;
+
+    return ParseResult::Complete;
 }

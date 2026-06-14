@@ -17,19 +17,32 @@ enum class ParseState
     FINISH
 };
 
+enum class ParseResult
+{
+    Complete,
+    Incomplete,
+    Error
+};
+
 class HttpContext
 {
 public:
     // 解析请求
-    bool ParseRequest(Buffer& buffer);
+    ParseResult ParseRequest(Buffer& buffer);
     // 判断包是否完整
     bool IsComplete() const;
     // 获取请求
     HttpRequest& Request();
     // 清除请求的缓存
     void Reset();
-
+    // 获取状态
     ParseState GetState() const;
+
+private:
+ParseResult ParseRequestLine(Buffer& buffer);
+ParseResult ParseHeaders(Buffer& buffer);
+bool ParseHeaderLine(const std::string& line);
+ParseResult ParseBody(Buffer& buffer);
 
 private:
     HttpRequest request_;

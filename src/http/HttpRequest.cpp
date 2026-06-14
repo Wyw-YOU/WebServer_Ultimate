@@ -4,20 +4,6 @@
 #include <sstream>
 
 //--------------private:
-// 解析请求行
-bool HttpRequest::ParseRequestLine(const std::string& line)
-{
-    std::stringstream requestLine(line);
-
-    requestLine >> method_ >> path_ >> version_;
-
-    if(method_.empty() || path_.empty() || version_.empty())
-    {
-        return false;
-    }
-
-    return true;
-}
 // 解析请求头
 bool HttpRequest::ParseHeaders(std::stringstream& ss)
 {
@@ -155,4 +141,62 @@ bool HttpRequest::IsKeepAlive() const
     }
 
     return false;
+}
+
+// 解析请求行
+bool HttpRequest::ParseRequestLine(const std::string& line)
+{
+    std::stringstream requestLine(line);
+
+    requestLine >> method_ >> path_ >> version_;
+
+    if(method_.empty() || path_.empty() || version_.empty())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+// 添加头
+bool HttpRequest::AddHeader(const std::string& line)
+{
+    auto pos = line.find(':');
+
+    if(pos == std::string::npos)
+    {
+        return false;
+    }
+
+    std::string key = line.substr(0, pos);
+    std::string value = line.substr(pos + 1);
+
+    while(!value.empty() && value.front() == ' ')
+    {
+        value.erase(value.begin());
+    }
+
+    headers_[key] = value;
+
+    return true;
+}
+
+// body追加
+void HttpRequest::AppendBody(const std::string& body)
+{
+    body_ += body;
+}
+
+void HttpRequest::SetBody(const std::string& body)
+{
+    body_ = body;
+}
+void HttpRequest::SetHeader(const std::string& key, const std::string& value)
+{
+    headers_[key] = value;
+}
+
+bool HttpRequest::ParseStartLine(const std::string& line)
+{
+    return ParseRequestLine(line);
 }

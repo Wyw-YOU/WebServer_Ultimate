@@ -224,9 +224,17 @@ Server.hpp
 memory
 -
 
-/root/WebServer_Ultimate/src/http/HttpResponse.cpp
-http/HttpResponse.hpp
-/root/WebServer_Ultimate/src/http/http/HttpResponse.hpp
+/root/WebServer_Ultimate/src/http/HttpContext.cpp
+http/HttpContext.hpp
+/root/WebServer_Ultimate/src/http/http/HttpContext.hpp
+
+/root/WebServer_Ultimate/src/http/HttpRequest.cpp
+http/HttpRequest.hpp
+/root/WebServer_Ultimate/src/http/http/HttpRequest.hpp
+Log.hpp
+/root/WebServer_Ultimate/src/http/Log.hpp
+sstream
+-
 
 /root/WebServer_Ultimate/src/main.cpp
 Server.hpp

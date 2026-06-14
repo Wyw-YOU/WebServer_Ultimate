@@ -19,6 +19,9 @@ public:
     std::string RetrieveAll();
     std::string Retrieve(size_t len);
 
+    void Consume(size_t len);
+    const char* FindCRLF() const;
+
     // 查看数据但不清空（返回整个内部 buffer，可能含已读旧数据）
     const std::string& Peek() const;
 
