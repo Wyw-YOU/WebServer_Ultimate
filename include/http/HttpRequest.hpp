@@ -39,6 +39,8 @@ public:
     void SetBody(const std::string& body);
     void SetHeader(const std::string& key, const std::string& value);
     bool ParseStartLine(const std::string& line);
+    // 内容长度
+    size_t ContentLength() const;
 
 private:
     // 解析函数

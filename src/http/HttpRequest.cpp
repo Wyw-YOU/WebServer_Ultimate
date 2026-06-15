@@ -200,3 +200,17 @@ bool HttpRequest::ParseStartLine(const std::string& line)
 {
     return ParseRequestLine(line);
 }
+
+size_t HttpRequest::ContentLength() const
+{
+    auto it = headers_.find("Content-Length");
+
+    if(it == headers_.end())
+    {
+        return 0;
+    }
+
+    return static_cast<size_t>(
+        std::stoul(it->second)
+    );
+}

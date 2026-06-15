@@ -1,7 +1,8 @@
 #include "http/HttpResponse.hpp"
 
-std::string HttpResponse::ToString() const
+std::string HttpResponse::ToString()
 {
+    BuildDefaultHeaders();
     std::stringstream ss;
     // 状态行
     ss << "HTTP/1.1 " << statusCode_ << " " << status_ << "\r\n";

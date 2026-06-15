@@ -29,7 +29,7 @@ public:
     /**
      * @brief 将HttpResponse对象转换为HTTP协议格式的字符串
      */
-    std::string ToString() const;
+    std::string ToString();
 
     // 设置默认头部
     void BuildDefaultHeaders();
