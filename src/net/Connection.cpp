@@ -12,7 +12,7 @@ Connection::Connection(int fd, EventLoop* loop, const std::string& resourceDir)
     }
 
 //  构建Http请求并返回HTTP响应
-bool Connection::Process()
+ProcessResult Connection::Process()
 {
     // LOG_DEBUG("Process in thread id=" + std::to_string(std::hash<std::thread::id>{}(std::this_thread::get_id())));
     // LOG_DEBUG("Raw request:\n" + raw);
@@ -21,14 +21,14 @@ bool Connection::Process()
     switch(result)
     {
         case ParseResult::Incomplete:
-            return true;
+            return ProcessResult::Incomplete;
     
         case ParseResult::Error:
         {
             response_.SetStatus(400, "Bad Request");
             response_.SetText("400 Bad Request");
             response_.SetKeepAlive(false);
-            return false;
+            return ProcessResult::Error;
         }
     
         case ParseResult::Complete:
@@ -55,14 +55,13 @@ bool Connection::Process()
         response_.SetText("404 Not Found");
     }
     response_.SetKeepAlive(request.IsKeepAlive());
-    response_.BuildDefaultHeaders();
     
 
     // 将响应序列化写入发送缓冲区
     std::string resp = response_.ToString();
     writeBuffer_.Append(resp.c_str(), resp.size());
 
-    return true;
+    return ProcessResult::Complete;
 }
 
 //  接受客户端请求数据并写入Buffer
@@ -304,10 +303,21 @@ void Connection::EnableWriteEvent()
 // 响应是否结束：
 bool Connection::OnResponseFinished()
 {
-    // std::cout << "keepalive = " << IsKeepAlive() << std::endl;
     if(IsKeepAlive())
     {
         ResetForNextRequest();
+
+        if(HasPendingRequest())
+        {
+            auto self = shared_from_this();
+
+            loop_->QueueInLoop(
+            [self]()
+            {
+                self->ProcessInWorker();
+            });
+        }
+
         return true;
     }
 
@@ -318,10 +328,33 @@ bool Connection::OnResponseFinished()
 // 解析
 void Connection::ProcessInWorker()
 {
-    Process();
-    SetState(ConnState::Writing);
+    ProcessResult result = Process();
 
+    if(result == ProcessResult::Incomplete)
+    {
+        SetState(ConnState::Connected);
+        return;
+    }
+    
+    if(result == ProcessResult::Error)
+    {
+        SetState(ConnState::Closed);
+    
+        auto self = shared_from_this();
+    
+        loop_->QueueInLoop(
+        [self]()
+        {
+            self->HandleClose();
+        });
+    
+        return;
+    }
+    
+    SetState(ConnState::Writing);
+    
     auto self = shared_from_this();
+    
     loop_->QueueInLoop(
     [self]()
     {
@@ -329,7 +362,7 @@ void Connection::ProcessInWorker()
         {
             return;
         }
-
+    
         self->TrySend();
     });
 }

@@ -50,23 +50,23 @@ enum class SendStatus
     Error
 };
 
+// 解析状态
+enum class ProcessResult
+{
+    Complete,
+    Incomplete,
+    Error
+};
+
 class Connection : public std::enable_shared_from_this<Connection>
 {
 public:
     Connection(int fd, EventLoop* loop, const std::string& resourceDir);
-    // ~Connection()
-    // {
-    //     LOG_ERROR(
-    //         "Connection destroyed fd="
-    //         + std::to_string(fd_));
-    // }
 
     using ReadEventCallback = std::function<void(std::shared_ptr<Connection>)>;
-    // using WriteEventCallback = std::function<void(std::shared_ptr<Connection>)>;
     using ConnectionCloseCallback = std::function<void(std::shared_ptr<Connection>)>;
-    // using WriteCompleteCallback = std::function<void(std::shared_ptr<Connection>, WriteResult)>;
     
-    bool Process();
+    ProcessResult Process();
 
     ReadResult Read();
     WriteResult Write();
