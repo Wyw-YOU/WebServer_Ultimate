@@ -78,6 +78,10 @@ unordered_map
 sstream
 -
 
+../include/http/MimeType.hpp
+string
+-
+
 ../include/net/Acceptor.hpp
 Socket.hpp
 ../include/net/Socket.hpp
@@ -99,6 +103,8 @@ http/HttpResponse.hpp
 ../include/net/http/HttpResponse.hpp
 http/HttpContext.hpp
 ../include/net/http/HttpContext.hpp
+http/MimeType.hpp
+../include/net/http/MimeType.hpp
 util/FileUtil.hpp
 ../include/net/util/FileUtil.hpp
 thread/ThreadPool.hpp
@@ -215,7 +221,13 @@ cstring
 -
 
 ../include/util/FileUtil.hpp
+sys/stat.h
+-
 string
+-
+fstream
+-
+sstream
 -
 
 /root/WebServer_Ultimate/src/Server.cpp
@@ -223,10 +235,6 @@ Server.hpp
 /root/WebServer_Ultimate/src/Server.hpp
 memory
 -
-
-/root/WebServer_Ultimate/src/http/HttpContext.cpp
-http/HttpContext.hpp
-/root/WebServer_Ultimate/src/http/http/HttpContext.hpp
 
 /root/WebServer_Ultimate/src/main.cpp
 Server.hpp
@@ -243,4 +251,8 @@ thread
 /root/WebServer_Ultimate/src/net/Connection.cpp
 net/Connection.hpp
 /root/WebServer_Ultimate/src/net/net/Connection.hpp
+
+/root/WebServer_Ultimate/src/util/FileUtil.cpp
+util/FileUtil.hpp
+/root/WebServer_Ultimate/src/util/util/FileUtil.hpp
 

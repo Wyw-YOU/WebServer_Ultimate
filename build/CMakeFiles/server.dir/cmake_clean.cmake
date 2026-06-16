@@ -8,6 +8,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/server.dir/src/http/HttpContext.cpp.o"
   "CMakeFiles/server.dir/src/http/HttpRequest.cpp.o"
   "CMakeFiles/server.dir/src/http/HttpResponse.cpp.o"
+  "CMakeFiles/server.dir/src/http/MimeType.cpp.o"
   "CMakeFiles/server.dir/src/main.cpp.o"
   "CMakeFiles/server.dir/src/net/Acceptor.cpp.o"
   "CMakeFiles/server.dir/src/net/Channel.cpp.o"

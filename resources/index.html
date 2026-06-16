@@ -1,14 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>资源演示页面</title>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    Welcome to WebServer Ultimate - A High-Performance Web Server in C++!
-    This is a simple web server built using C++ that supports handling multiple client connections concurrently. It is designed to be efficient and scalable, making use of non-blocking sockets and the epoll mechanism for event-driven I/O.
-    The server can serve static files from a specified directory and supports basic HTTP methods such as GET. It also includes features like connection keep-alive and proper HTTP response handling.
-    To get started, you can clone the repository, build the server using CMake, and run it to serve files
+    <div class="container">
+        <h1>静态资源加载成功</h1>
+        <div class="gallery">
+            <div class="card">
+                <img src="images/1.jpg" alt="图片1" width="200">
+                <p>1.jpg</p>
+            </div>
+            <div class="card">
+                <img src="images/640.png" alt="图片640" width="200">
+                <p>640.png</p>
+            </div>
+        </div>
+    </div>
+    <script src="js/app.js"></script>
 </body>
 </html>

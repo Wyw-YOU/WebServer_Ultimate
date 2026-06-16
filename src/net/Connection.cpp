@@ -38,21 +38,54 @@ ProcessResult Connection::Process()
 
     // 根据路径路由
     std::string path = request.Path();
+    // 拒绝非法路径 例如：GET /../../../etc/passwd
+    if(path.find("..") != std::string::npos)
+    {
+        response_.SetStatus(403, "Forbidden");
+        response_.SetText("403 Forbidden");
+
+        response_.SetKeepAlive(false);
+
+        return ProcessResult::Error;
+    }
+
     if(path == "/")
-        path = "/hello";
+        path = "/index.html";
 
-    std::string filename = resourceDir_ + path + ".html";
-    std::string html;
+    std::string filename = resourceDir_ + path;
+    std::string fileContent;
+    // 文件大小保护
+    size_t fileSize = FileUtil::FileSize(filename);
+    if(fileSize > 10 * 1024 * 1024)
+    {
+        response_.SetStatus(413, "Payload Too Large");
 
-    if(FileUtil::ReadFile(filename, html))
+        response_.SetText("File Too Large");
+
+        response_.SetKeepAlive(false);
+        return ProcessResult::Complete;
+    }
+
+    if(FileUtil::ReadFile(filename, fileContent))
     {
         response_.SetStatus(200, "OK");
-        response_.SetHtml(html);
+        response_.SetBody(fileContent);
+        response_.SetHeader("Content-Type", MimeType::GetMime(path));
     }
     else
     {
-        response_.SetStatus(404, "Not Found");
-        response_.SetText("404 Not Found");
+        std::string errorPage;
+        if(FileUtil::ReadFile(resourceDir_ + "/404.html", errorPage))
+        {
+            response_.SetStatus(404, "Not Found");
+            response_.SetBody(errorPage);
+            response_.SetHeader("Content-Type", "text/html");
+        }
+        else
+        {
+            response_.SetStatus(404, "Not Found");
+            response_.SetText("404 Not Found");
+        }
     }
     response_.SetKeepAlive(request.IsKeepAlive());
     
@@ -367,6 +400,10 @@ void Connection::ProcessInWorker()
     });
 }
 
+bool Connection::HasPendingRequest() const
+{
+    return readBuffer_.ReadableBytes() > 0;
+}
 
 //--------------private:
 void Connection::HandleWriteResult(WriteResult result)

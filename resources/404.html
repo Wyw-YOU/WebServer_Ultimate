@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - 页面未找到</title>
+    <style>
+        /* 全局重置与字体 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(145deg, #f5f7fa 0%, #e6ecf5 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        .error-container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 3rem;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .error-container:hover {
+            transform: scale(1.01);
+        }
+
+        /* 大号 404 数字 */
+        .error-code {
+            font-size: 8rem;
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(135deg, #2d3748, #4a5568);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .error-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            color: #4a5568;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            padding: 0 0.5rem;
+        }
+
+        /* 返回按钮 */
+        .btn-home {
+            display: inline-block;
+            padding: 0.9rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            background: #2b6cb0;
+            border: none;
+            border-radius: 3rem;
+            text-decoration: none;
+            transition: background 0.25s ease, transform 0.15s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 14px rgba(43, 108, 176, 0.35);
+            cursor: pointer;
+        }
+
+        .btn-home:hover {
+            background: #1a4f8b;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(43, 108, 176, 0.45);
+        }
+
+        .btn-home:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(43, 108, 176, 0.3);
+        }
+
+        /* 装饰小图标 */
+        .icon-emoji {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 响应式 */
+        @media (max-width: 480px) {
+            .error-code {
+                font-size: 5.5rem;
+            }
+            .error-title {
+                font-size: 1.5rem;
+            }
+            .error-container {
+                padding: 2rem 1.5rem;
+                border-radius: 2rem;
+            }
+            .btn-home {
+                padding: 0.7rem 1.8rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <span class="icon-emoji">🔍</span>
+        <div class="error-code">404</div>
+        <h1 class="error-title">页面迷路了</h1>
+        <p class="error-message">
+            您访问的页面不存在，可能是链接已失效或输入有误。<br>
+            回到首页，重新开始吧。
+        </p>
+        <!-- 按钮链接到同目录下的 index.html -->
+        <a href="index.html" class="btn-home">🏠 返回首页</a>
+    </div>
+</body>
+</html>

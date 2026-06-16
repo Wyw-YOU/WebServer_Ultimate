@@ -92,11 +92,6 @@ ParseState HttpContext::GetState() const
     return state_;
 }
 
-bool Connection::HasPendingRequest() const
-{
-    return readBuffer_.ReadableBytes() > 0;
-}
-
 
 
 //         private:

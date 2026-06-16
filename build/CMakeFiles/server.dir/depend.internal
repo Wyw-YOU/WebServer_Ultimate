@@ -11,6 +11,7 @@ CMakeFiles/server.dir/src/Server.cpp.o
  ../include/http/HttpContext.hpp
  ../include/http/HttpRequest.hpp
  ../include/http/HttpResponse.hpp
+ ../include/http/MimeType.hpp
  ../include/net/Acceptor.hpp
  ../include/net/Channel.hpp
  ../include/net/Connection.hpp
@@ -44,6 +45,9 @@ CMakeFiles/server.dir/src/http/HttpRequest.cpp.o
 CMakeFiles/server.dir/src/http/HttpResponse.cpp.o
  ../include/http/HttpResponse.hpp
  /root/WebServer_Ultimate/src/http/HttpResponse.cpp
+CMakeFiles/server.dir/src/http/MimeType.cpp.o
+ ../include/http/MimeType.hpp
+ /root/WebServer_Ultimate/src/http/MimeType.cpp
 CMakeFiles/server.dir/src/main.cpp.o
  ../include/Log.hpp
  ../include/Server.hpp
@@ -51,6 +55,7 @@ CMakeFiles/server.dir/src/main.cpp.o
  ../include/http/HttpContext.hpp
  ../include/http/HttpRequest.hpp
  ../include/http/HttpResponse.hpp
+ ../include/http/MimeType.hpp
  ../include/net/Acceptor.hpp
  ../include/net/Channel.hpp
  ../include/net/Connection.hpp
@@ -78,6 +83,7 @@ CMakeFiles/server.dir/src/net/Connection.cpp.o
  ../include/http/HttpContext.hpp
  ../include/http/HttpRequest.hpp
  ../include/http/HttpResponse.hpp
+ ../include/http/MimeType.hpp
  ../include/net/Channel.hpp
  ../include/net/Connection.hpp
  ../include/net/Epoll.hpp

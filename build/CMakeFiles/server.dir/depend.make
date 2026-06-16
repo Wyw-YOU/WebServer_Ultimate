@@ -10,6 +10,7 @@ CMakeFiles/server.dir/src/Server.cpp.o: ../include/buffer/Buffer.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpContext.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpResponse.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/MimeType.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Acceptor.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Channel.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Connection.hpp
@@ -44,12 +45,16 @@ CMakeFiles/server.dir/src/http/HttpRequest.cpp.o: ../src/http/HttpRequest.cpp
 CMakeFiles/server.dir/src/http/HttpResponse.cpp.o: ../include/http/HttpResponse.hpp
 CMakeFiles/server.dir/src/http/HttpResponse.cpp.o: ../src/http/HttpResponse.cpp
 
+CMakeFiles/server.dir/src/http/MimeType.cpp.o: ../include/http/MimeType.hpp
+CMakeFiles/server.dir/src/http/MimeType.cpp.o: ../src/http/MimeType.cpp
+
 CMakeFiles/server.dir/src/main.cpp.o: ../include/Log.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/Server.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/buffer/Buffer.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/http/HttpContext.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/http/HttpResponse.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/http/MimeType.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Acceptor.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Channel.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Connection.hpp
@@ -77,6 +82,7 @@ CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/buffer/Buffer.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpContext.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpResponse.hpp
+CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/MimeType.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/net/Channel.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/net/Connection.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/net/Epoll.hpp

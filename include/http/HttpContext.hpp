@@ -38,7 +38,6 @@ public:
     // 获取状态
     ParseState GetState() const;
 
-    bool HasPendingRequest() const;
 
 private:
 ParseResult ParseRequestLine(Buffer& buffer);

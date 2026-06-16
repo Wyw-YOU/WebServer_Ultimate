@@ -3,6 +3,7 @@
 #include "buffer/Buffer.hpp"
 #include "http/HttpResponse.hpp"
 #include "http/HttpContext.hpp"
+#include "http/MimeType.hpp"
 #include "util/FileUtil.hpp"
 #include "thread/ThreadPool.hpp"
 #include "net/Channel.hpp"
@@ -117,6 +118,8 @@ public:
 
     // 解析处理
     void ProcessInWorker();
+    
+    bool HasPendingRequest() const;
 
 private:
     void HandleWriteResult(WriteResult result);
