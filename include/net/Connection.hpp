@@ -4,6 +4,7 @@
 #include "http/HttpResponse.hpp"
 #include "http/HttpContext.hpp"
 #include "http/MimeType.hpp"
+#include "http/Router.hpp"
 #include "util/FileUtil.hpp"
 #include "thread/ThreadPool.hpp"
 #include "net/Channel.hpp"
@@ -62,7 +63,7 @@ enum class ProcessResult
 class Connection : public std::enable_shared_from_this<Connection>
 {
 public:
-    Connection(int fd, EventLoop* loop, const std::string& resourceDir);
+    Connection(int fd, EventLoop* loop, const std::string& resourceDir, Router* router);
 
     using ReadEventCallback = std::function<void(std::shared_ptr<Connection>)>;
     using ConnectionCloseCallback = std::function<void(std::shared_ptr<Connection>)>;
@@ -129,6 +130,7 @@ private:
     EventLoop* loop_;
     std::atomic<ConnState> state_;
     std::string resourceDir_;
+    Router* router_;
 
     std::unique_ptr<Channel> channel_;
 

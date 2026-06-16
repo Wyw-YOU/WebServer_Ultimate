@@ -413,6 +413,33 @@ src/http/MimeType.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/http/MimeType.cpp.s
 .PHONY : src/http/MimeType.cpp.s
 
+src/http/Router.o: src/http/Router.cpp.o
+
+.PHONY : src/http/Router.o
+
+# target to build an object file
+src/http/Router.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/http/Router.cpp.o
+.PHONY : src/http/Router.cpp.o
+
+src/http/Router.i: src/http/Router.cpp.i
+
+.PHONY : src/http/Router.i
+
+# target to preprocess a source file
+src/http/Router.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/http/Router.cpp.i
+.PHONY : src/http/Router.cpp.i
+
+src/http/Router.s: src/http/Router.cpp.s
+
+.PHONY : src/http/Router.s
+
+# target to generate assembly for a file
+src/http/Router.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/http/Router.cpp.s
+.PHONY : src/http/Router.cpp.s
+
 src/main.o: src/main.cpp.o
 
 .PHONY : src/main.o
@@ -776,6 +803,9 @@ help:
 	@echo "... src/http/MimeType.o"
 	@echo "... src/http/MimeType.i"
 	@echo "... src/http/MimeType.s"
+	@echo "... src/http/Router.o"
+	@echo "... src/http/Router.i"
+	@echo "... src/http/Router.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

@@ -9,6 +9,7 @@ enum class HttpMethod
     POST,
     PUT,
     DELETE_,
+    HEAD,
     UNKNOWN
 };
 
@@ -41,6 +42,8 @@ public:
     bool ParseStartLine(const std::string& line);
     // 内容长度
     size_t ContentLength() const;
+    // 请求类型
+    HttpMethod MethodType() const;
 
 private:
     // 解析函数
@@ -53,5 +56,6 @@ private:
     std::string path_;
     std::string version_;
     std::string body_;
+    HttpMethod methodType_ = HttpMethod::UNKNOWN;
     std::unordered_map<std::string, std::string> headers_;
 };

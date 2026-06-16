@@ -1,11 +1,12 @@
 #include "net/Connection.hpp"
 
 
-Connection::Connection(int fd, EventLoop* loop, const std::string& resourceDir)
+Connection::Connection(int fd, EventLoop* loop, const std::string& resourceDir, Router* router)
     : fd_(fd),
       loop_(loop),
       state_(ConnState::Connected),
-      resourceDir_(resourceDir)
+      resourceDir_(resourceDir),
+      router_(router)
     {
         // channel_ = std::make_unique<Channel>(fd_);
         channel_ = std::unique_ptr<Channel>(new Channel(fd_));
@@ -36,6 +37,18 @@ ProcessResult Connection::Process()
     }
     HttpRequest& request = context_.Request();
 
+    if(router_)
+    {
+        if(router_->Route(request, response_))
+        {
+            response_.SetKeepAlive(request.IsKeepAlive());
+            std::string resp = response_.ToString();
+            writeBuffer_.Append(resp.c_str(), resp.size());
+
+            return ProcessResult::Complete;
+        }
+    }
+
     // 根据路径路由
     std::string path = request.Path();
     // 拒绝非法路径 例如：GET /../../../etc/passwd
@@ -43,10 +56,12 @@ ProcessResult Connection::Process()
     {
         response_.SetStatus(403, "Forbidden");
         response_.SetText("403 Forbidden");
-
         response_.SetKeepAlive(false);
-
-        return ProcessResult::Error;
+        
+        std::string resp = response_.ToString();
+        writeBuffer_.Append(resp.c_str(), resp.size());
+        
+        return ProcessResult::Complete;
     }
 
     if(path == "/")
@@ -59,10 +74,12 @@ ProcessResult Connection::Process()
     if(fileSize > 10 * 1024 * 1024)
     {
         response_.SetStatus(413, "Payload Too Large");
-
         response_.SetText("File Too Large");
-
         response_.SetKeepAlive(false);
+    
+        std::string resp = response_.ToString();
+        writeBuffer_.Append(resp.c_str(), resp.size());
+    
         return ProcessResult::Complete;
     }
 
@@ -88,7 +105,10 @@ ProcessResult Connection::Process()
         }
     }
     response_.SetKeepAlive(request.IsKeepAlive());
-    
+    if(request.Method() == "HEAD")
+    {
+        response_.ClearBody();
+    }
 
     // 将响应序列化写入发送缓冲区
     std::string resp = response_.ToString();

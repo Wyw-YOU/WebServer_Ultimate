@@ -12,6 +12,18 @@ Server::Server(int port, const std::string& resourceDir)
       loop_(MAXEVENTS),
       pool_(THREAD_NUM)
 {
+    router_.Get("/hello",
+        [](const HttpRequest& req, HttpResponse& resp)
+        {
+            resp.SetHtml("<h1>Hello Router</h1>");
+        });
+
+    router_.Post("/login",
+        [](const HttpRequest& req, HttpResponse& resp)
+        {
+            resp.SetText("POST BODY:\n" + req.Body());
+        });
+
     // 先设置非阻塞，再注册到epoll
     acceptor_.SetNonBlocking();
 
@@ -69,7 +81,7 @@ void Server::HandleListenEvent()
         fcntl(connfd, F_SETFL, flags | O_NONBLOCK);
 
         // 创建connection 和 channel对象并加入到map中管理
-        connections_[connfd] = std::shared_ptr<Connection>(new Connection(connfd, &loop_, resourceDir_));
+        connections_[connfd] = std::shared_ptr<Connection>(new Connection(connfd, &loop_, resourceDir_, &router_));
         auto conn = connections_[connfd];
 
         // 绑定回调

@@ -92,6 +92,8 @@ void HttpRequest::Reset()
 
     body_.clear();
     headers_.clear();
+
+    methodType_ = HttpMethod::UNKNOWN;
 }
 
 const std::string& HttpRequest::Method() const
@@ -150,6 +152,27 @@ bool HttpRequest::ParseRequestLine(const std::string& line)
 
     requestLine >> method_ >> path_ >> version_;
 
+    if(method_ == "GET")
+    {
+        methodType_ = HttpMethod::GET;
+    }
+    else if(method_ == "POST")
+    {
+        methodType_ = HttpMethod::POST;
+    }
+    else if(method_ == "PUT")
+    {
+        methodType_ = HttpMethod::PUT;
+    }
+    else if(method_ == "DELETE")
+    {
+        methodType_ = HttpMethod::DELETE_;
+    }
+    else
+    {
+        methodType_ = HttpMethod::UNKNOWN;
+    }
+
     if(method_.empty() || path_.empty() || version_.empty())
     {
         return false;
@@ -187,6 +210,11 @@ void HttpRequest::AppendBody(const std::string& body)
     body_ += body;
 }
 
+const std::string& HttpRequest::Body() const
+{
+    return body_;
+}
+
 void HttpRequest::SetBody(const std::string& body)
 {
     body_ = body;
@@ -213,4 +241,9 @@ size_t HttpRequest::ContentLength() const
     return static_cast<size_t>(
         std::stoul(it->second)
     );
+}
+
+HttpMethod HttpRequest::MethodType() const
+{
+    return methodType_;
 }

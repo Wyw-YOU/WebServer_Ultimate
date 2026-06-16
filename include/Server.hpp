@@ -11,6 +11,7 @@
 #include "buffer/Buffer.hpp"
 #include "http/HttpRequest.hpp"
 #include "http/HttpResponse.hpp"
+#include "http/Router.hpp"
 #include "thread/ThreadPool.hpp"
 
 #include <iostream>
@@ -50,6 +51,7 @@ private:
 
 private:
     int port_;
+    Router router_;
     std::string resourceDir_;
     Acceptor acceptor_;
     EventLoop loop_;

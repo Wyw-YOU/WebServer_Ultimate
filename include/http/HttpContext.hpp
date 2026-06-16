@@ -2,6 +2,9 @@
 
 #include "http/HttpRequest.hpp"
 #include "buffer/Buffer.hpp"
+#include "Log.hpp"
+
+#include <algorithm>
 
 // 本代码的意义：解决
 // 半包

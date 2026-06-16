@@ -161,8 +161,13 @@ bool HttpContext::ParseHeaderLine(const std::string& line)
         value = value.substr(start);
     }
 
+    std::string lowerKey = key;
+    std::transform(lowerKey.begin(), lowerKey.end(), lowerKey.begin(), ::tolower);
+
     request_.SetHeader(key, value);
-    if(key == "content-length")
+
+    request_.SetHeader(key, value);
+    if(lowerKey == "content-length")
     {
         try
         {

@@ -33,6 +33,8 @@ public:
 
     // 设置默认头部
     void BuildDefaultHeaders();
+    // 清除body
+    void ClearBody();
 
 private:
     int statusCode_;

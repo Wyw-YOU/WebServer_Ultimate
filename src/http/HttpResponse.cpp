@@ -70,9 +70,6 @@ void HttpResponse::SetKeepAlive(bool keepAlive)
     keepAlive_ = keepAlive;
 }
 
-
-
-//------------------------private
     // 设置默认头部
 void HttpResponse::BuildDefaultHeaders()
 {
@@ -83,4 +80,10 @@ void HttpResponse::BuildDefaultHeaders()
 
     headers_["Content-Length"] = std::to_string(body_.size());
     headers_["Connection"] = keepAlive_ ? "keep-alive" : "close";
+}
+
+// 清除body
+void HttpResponse::ClearBody()
+{
+    body_.clear();
 }

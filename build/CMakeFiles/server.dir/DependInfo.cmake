@@ -14,6 +14,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/root/WebServer_Ultimate/src/http/HttpRequest.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/http/HttpRequest.cpp.o"
   "/root/WebServer_Ultimate/src/http/HttpResponse.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/http/HttpResponse.cpp.o"
   "/root/WebServer_Ultimate/src/http/MimeType.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/http/MimeType.cpp.o"
+  "/root/WebServer_Ultimate/src/http/Router.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/http/Router.cpp.o"
   "/root/WebServer_Ultimate/src/main.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/main.cpp.o"
   "/root/WebServer_Ultimate/src/net/Acceptor.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/net/Acceptor.cpp.o"
   "/root/WebServer_Ultimate/src/net/Channel.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/net/Channel.cpp.o"
