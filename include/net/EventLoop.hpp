@@ -36,6 +36,10 @@ public:
     void AdjustTimer(int fd, int timeoutMs);
     void RemoveTimer(int fd);
 
+    bool IsInLoopThread() const;
+    void RunInLoop(std::function<void()> cb);
+    void Quit();
+
 private:
     void DoPendingFunctors();
 
@@ -53,5 +57,7 @@ private:
     int wakeupFd_;
     std::unique_ptr<Channel> wakeupChannel_;
 
+    std::atomic<bool> quit_;
+    std::thread::id threadId_;
     ThreadPool threadPool_;
 };

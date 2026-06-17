@@ -17,6 +17,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/server.dir/src/net/Epoll.cpp.o"
   "CMakeFiles/server.dir/src/net/EventLoop.cpp.o"
   "CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o"
+  "CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o"
   "CMakeFiles/server.dir/src/net/InetAddress.cpp.o"
   "CMakeFiles/server.dir/src/net/Socket.cpp.o"
   "CMakeFiles/server.dir/src/thread/ThreadPool.cpp.o"

@@ -1,11 +1,11 @@
 #include "net/Channel.hpp"
 
-Channel::Channel(int fd)
+Channel::Channel(int fd, bool et)
     : fd_(fd),
       events_(0),
-      revents_(0)
-{
-}
+      revents_(0),
+      et_(et ? EPOLLET : 0)
+{}
 
 void Channel::HandleEvent()
 {
@@ -61,6 +61,11 @@ uint32_t Channel::GetRevents() const
     return revents_;
 }
 
+uint32_t Channel::GetEtFlag() const
+{
+    return et_;
+}
+
 void Channel::SetEvents(uint32_t events)
 {
     events_ = events;
@@ -68,4 +73,24 @@ void Channel::SetEvents(uint32_t events)
 void Channel::SetRevents(uint32_t revents)
 {
     revents_ = revents;
+}
+
+void Channel::EnableReading()
+{
+    events_ |= EPOLLIN;
+}
+
+void Channel::EnableWriting()
+{
+    events_ |= EPOLLOUT;
+}
+
+void Channel::DisableWriting()
+{
+    events_ &= ~EPOLLOUT;
+}
+
+void Channel::DisableAll()
+{
+    events_ = 0;
 }

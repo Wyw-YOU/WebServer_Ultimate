@@ -13,6 +13,7 @@ public:
     ~EventLoopThread();
 
     EventLoop* StartLoop();
+    EventLoop* GetLoop() const;
 
 private:
     void ThreadFunc();

@@ -17,6 +17,8 @@ CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Channel.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Connection.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Epoll.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/EventLoop.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/EventLoopThread.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/EventLoopThreadPool.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/InetAddress.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Socket.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/thread/ThreadPool.hpp
@@ -69,6 +71,8 @@ CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Channel.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Connection.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Epoll.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/EventLoop.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/net/EventLoopThread.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/net/EventLoopThreadPool.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/InetAddress.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Socket.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/thread/ThreadPool.hpp
@@ -127,6 +131,17 @@ CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/thread/ThreadPoo
 CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/timer/Timer.hpp
 CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/util/Error.hpp
 CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../src/net/EventLoopThread.cpp
+
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/Log.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/net/Channel.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/net/Epoll.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/net/EventLoop.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/net/EventLoopThread.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/net/EventLoopThreadPool.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/thread/ThreadPool.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/timer/Timer.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/util/Error.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../src/net/EventLoopThreadPool.cpp
 
 CMakeFiles/server.dir/src/net/InetAddress.cpp.o: ../include/net/InetAddress.hpp
 CMakeFiles/server.dir/src/net/InetAddress.cpp.o: ../src/net/InetAddress.cpp

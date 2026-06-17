@@ -10,7 +10,8 @@ Server::Server(int port, const std::string& resourceDir)
       resourceDir_(resourceDir),
       acceptor_(port),
       loop_(MAXEVENTS),
-      pool_(THREAD_NUM)
+      workerPool_(THREAD_NUM),          // worker pool
+      ioPool_(&loop_, THREAD_NUM) // io pool
 {
     router_.Get("/hello",
         [](const HttpRequest& req, HttpResponse& resp)
@@ -45,17 +46,17 @@ Server::Server(int port, const std::string& resourceDir)
 void Server::Start()
 {
     LOG_NORMAL("WebServer started on port " + std::to_string(port_));
-
+    ioPool_.Start();
     // 进入实际循坏
     loop_.Loop();
 }
-
 
 
 //  处理监听事件，接受新连接并添加到epoll中
 void Server::HandleListenEvent()
 {
     InetAddress clientAddr;
+
     while(true)
     {
         int connfd = acceptor_.Accept(clientAddr);
@@ -64,83 +65,69 @@ void Server::HandleListenEvent()
             if(errno == EAGAIN || errno == EWOULDBLOCK)
             {
                 LOG_DEBUG("No more incoming connections to accept.");
-                // 没有更多连接了
                 break;
             }
-            else
-            {
-                LOG_ERROR("Accept error!");
-                break;
-            }
+            LOG_ERROR("Accept error!");
+            break;
         }
 
         LOG_DEBUG("new connection fd=" + std::to_string(connfd));
 
-        // 设置非阻塞
+        // 非阻塞
         int flags = fcntl(connfd, F_GETFL, 0);
         fcntl(connfd, F_SETFL, flags | O_NONBLOCK);
 
-        // 创建connection 和 channel对象并加入到map中管理
-        connections_[connfd] = std::shared_ptr<Connection>(new Connection(connfd, &loop_, resourceDir_, &router_));
-        auto conn = connections_[connfd];
+        // ⭐ 关键：选择 IO 线程
+        EventLoop* ioLoop = ioPool_.GetNextLoop();
 
-        // 绑定回调
-        // -----------业务回调
-        // 读写回调
-        conn->SetOnRead
-        (
-            [this](std::shared_ptr<Connection> conn)
-            {
-                HandleReadEvent(conn);
-            }
+        // ⭐ 关键：Connection 绑定 IO loop（不是 main loop）
+        auto conn = std::make_shared<Connection>(
+            connfd,
+            ioLoop,
+            resourceDir_,
+            &router_
         );
 
-        // 错误回调
-        conn->SetOnClose
-        (
-            [this](std::shared_ptr<Connection> conn)
-            {
-                CloseConnection(conn);
-            }
-        );
-        // -----------------------------------
-        // ------------- IO回调
-        std::weak_ptr<Connection> weakConn = conn;  // 避免引起connection环
-        conn->SetReadCallback
-        (
-            [weakConn]()
-            {
-                if(auto conn = weakConn.lock())
-                    conn->HandleRead();
-            }
-        );
+        connections_[connfd] = conn;
 
-        conn->SetWriteCallback
-        (
-            [weakConn]()
-            {
-                if(auto conn = weakConn.lock())
-                    conn->HandleWrite();
-            }
-        );
+        // ========== 业务回调 ==========
+        conn->SetOnRead([this](std::shared_ptr<Connection> conn)
+        {
+            HandleReadEvent(conn);
+        });
 
-        conn->SetCloseCallback
-        (
-            [weakConn]()
-            {
-                if(auto conn = weakConn.lock())
-                    conn->HandleClose();
-            }
-        );
+        conn->SetOnClose([this](std::shared_ptr<Connection> conn)
+        {
+            CloseConnection(conn);
+        });
 
-        // 添加到epoll中监听事件
+        // ========== IO 回调 ==========
+        std::weak_ptr<Connection> weakConn = conn;
+
+        conn->SetReadCallback([weakConn]()
+        {
+            if(auto c = weakConn.lock())
+                c->HandleRead();
+        });
+
+        conn->SetWriteCallback([weakConn]()
+        {
+            if(auto c = weakConn.lock())
+                c->HandleWrite();
+        });
+
+        conn->SetCloseCallback([weakConn]()
+        {
+            if(auto c = weakConn.lock())
+                c->HandleClose();
+        });
+
+        // 注册 epoll
         conn->EnableReading();
+        ioLoop->GetEpoller().AddChannel(conn->GetChannel());
 
-        // 注册到EventLoop中
-        loop_.GetEpoller().AddChannel(conn->GetChannel());
-
-        // 添加timer计时器
-        loop_.AddTimer(connfd, 60000, 
+        // ⭐ Timer 必须挂在 ioLoop（关键修复）
+        ioLoop->AddTimer(connfd, 60000,
             [this, connfd]()
             {
                 auto it = connections_.find(connfd);
@@ -170,7 +157,7 @@ void Server::HandleReadEvent(std::shared_ptr<Connection> conn)
     conn->SetState(ConnState::Processing);
 
     // 业务处理(丢给线程池，并下沉到Connection层，让Connection自行管理)
-    pool_.AddTask
+    workerPool_.AddTask
     (
         [conn]()
         {

@@ -629,6 +629,33 @@ src/net/EventLoopThread.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/EventLoopThread.cpp.s
 .PHONY : src/net/EventLoopThread.cpp.s
 
+src/net/EventLoopThreadPool.o: src/net/EventLoopThreadPool.cpp.o
+
+.PHONY : src/net/EventLoopThreadPool.o
+
+# target to build an object file
+src/net/EventLoopThreadPool.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o
+.PHONY : src/net/EventLoopThreadPool.cpp.o
+
+src/net/EventLoopThreadPool.i: src/net/EventLoopThreadPool.cpp.i
+
+.PHONY : src/net/EventLoopThreadPool.i
+
+# target to preprocess a source file
+src/net/EventLoopThreadPool.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.i
+.PHONY : src/net/EventLoopThreadPool.cpp.i
+
+src/net/EventLoopThreadPool.s: src/net/EventLoopThreadPool.cpp.s
+
+.PHONY : src/net/EventLoopThreadPool.s
+
+# target to generate assembly for a file
+src/net/EventLoopThreadPool.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.s
+.PHONY : src/net/EventLoopThreadPool.cpp.s
+
 src/net/InetAddress.o: src/net/InetAddress.cpp.o
 
 .PHONY : src/net/InetAddress.o
@@ -827,6 +854,9 @@ help:
 	@echo "... src/net/EventLoopThread.o"
 	@echo "... src/net/EventLoopThread.i"
 	@echo "... src/net/EventLoopThread.s"
+	@echo "... src/net/EventLoopThreadPool.o"
+	@echo "... src/net/EventLoopThreadPool.i"
+	@echo "... src/net/EventLoopThreadPool.s"
 	@echo "... src/net/InetAddress.o"
 	@echo "... src/net/InetAddress.i"
 	@echo "... src/net/InetAddress.s"

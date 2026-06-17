@@ -9,7 +9,7 @@ Connection::Connection(int fd, EventLoop* loop, const std::string& resourceDir, 
       router_(router)
     {
         // channel_ = std::make_unique<Channel>(fd_);
-        channel_ = std::unique_ptr<Channel>(new Channel(fd_));
+        channel_ = std::unique_ptr<Channel>(new Channel(fd_, true));
     }
 
 //  构建Http请求并返回HTTP响应
@@ -242,15 +242,15 @@ void Connection::SetCloseCallback(std::function<void()> cb)
     // 事件修改
 void Connection::EnableReading()
 {
-    channel_->SetEvents(EPOLLIN | EPOLLET);
+    channel_->EnableReading();
 }
 void Connection::EnableWriting()
 {
-    channel_->SetEvents(EPOLLIN | EPOLLOUT | EPOLLET);
+    channel_->EnableWriting();
 }
 void Connection::DisableWriting()
 {
-    channel_->SetEvents(EPOLLIN | EPOLLET);
+    channel_->DisableWriting();
 }
 
 void Connection::ResetForNextRequest()

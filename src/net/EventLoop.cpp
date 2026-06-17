@@ -2,8 +2,10 @@
 
 EventLoop::EventLoop(int maxEvents, int threadNum)
     : epoller_(maxEvents),
-      threadPool_(threadNum)
+      threadPool_(threadNum),
+      quit_(false)
 {
+    threadId_ = std::this_thread::get_id();
     // 创建 eventfd
     wakeupFd_ = eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
     if(wakeupFd_ < 0)
@@ -40,7 +42,7 @@ Epoller& EventLoop::GetEpoller()
 
 void EventLoop::Loop()
 {
-    while(true)
+    while(!quit_)
     {
         int timeout = timer_.GetNextTick();
         int eventCnt = epoller_.Wait(timeout);
@@ -137,4 +139,23 @@ void EventLoop::AdjustTimer(int fd, int timeoutMs)
 void EventLoop::RemoveTimer(int fd)
 {
     timer_.Delete(fd);
+}
+
+void EventLoop::Quit()
+{
+    quit_.store(true);
+    Wakeup(); // 防止epoll阻塞
+}
+
+bool EventLoop::IsInLoopThread() const
+{
+    return threadId_ == std::this_thread::get_id();
+}
+
+void EventLoop::RunInLoop(std::function<void()> cb)
+{
+    if(IsInLoopThread())
+        cb();
+    else
+        QueueInLoop(std::move(cb));
 }

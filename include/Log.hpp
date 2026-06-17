@@ -7,7 +7,7 @@
 // #define DISABLE_ALL_LOG
 
 // 日常调试时，如需开启 DEBUG 日志，取消下面一行的注释
-#define ENABLE_DEBUG_LOG
+// #define ENABLE_DEBUG_LOG
 // ====================================================
 
 /**

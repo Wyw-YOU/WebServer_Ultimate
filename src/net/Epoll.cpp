@@ -22,7 +22,7 @@ bool Epoller::AddChannel(Channel* channel)
 {
     epoll_event ev;
     ev.data.ptr = channel;
-    ev.events = channel->GetEvents();
+    ev.events = channel->GetEvents() | channel->GetEtFlag();
 
     return epoll_ctl(epollFd_, EPOLL_CTL_ADD, channel->GetFd(), &ev) == 0;
 }
@@ -30,7 +30,7 @@ bool Epoller::ModChannel(Channel* channel)
 {
     epoll_event ev;
     ev.data.ptr = channel;
-    ev.events = channel->GetEvents();
+    ev.events = channel->GetEvents() | channel->GetEtFlag();
 
     return epoll_ctl(epollFd_, EPOLL_CTL_MOD, channel->GetFd(), &ev) == 0;
 }

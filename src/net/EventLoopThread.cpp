@@ -7,6 +7,11 @@ EventLoopThread::EventLoopThread()
 
 EventLoopThread::~EventLoopThread()
 {
+    if(loop_)
+    {
+        loop_->Quit();
+    }
+
     if(thread_.joinable())
     {
         thread_.join();
@@ -32,14 +37,21 @@ EventLoop* EventLoopThread::StartLoop()
 
 void EventLoopThread::ThreadFunc()
 {
-    EventLoop loop;
+    EventLoop* loop = new EventLoop();
 
     {
         std::lock_guard<std::mutex> lock(mutex_);
-
-        loop_ = &loop;  // 资源转移成共享资源
+        loop_ = loop;  // 资源转移成共享资源
     }
-    cond_.notify_one();     // 避免惊群现象
 
-    loop.Loop();
+    cond_.notify_one();
+
+    loop->Loop();     // 避免惊群现象
+
+    delete loop;
+}
+
+EventLoop* EventLoopThread::GetLoop() const
+{
+    return loop_;
 }
