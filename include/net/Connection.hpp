@@ -5,6 +5,8 @@
 #include "http/HttpContext.hpp"
 #include "http/MimeType.hpp"
 #include "http/Router.hpp"
+#include "http/HttpTask.hpp"
+#include "http/HttpResult.hpp"
 #include "util/FileUtil.hpp"
 #include "thread/ThreadPool.hpp"
 #include "net/Channel.hpp"
@@ -60,6 +62,15 @@ enum class ProcessResult
     Error
 };
 
+enum class WriteState
+{
+    Idle,       // 没有数据，不监听EPOLLOUT
+    Pending,    // 有数据，等待写
+    Writing     // 正在写
+};
+
+class EventLoop;
+
 class Connection : public std::enable_shared_from_this<Connection>
 {
 public:
@@ -90,9 +101,7 @@ public:
 
     // 业务回调
     void SetOnRead(ReadEventCallback cb);
-    // void SetOnWrite(WriteEventCallback cb);
     void SetOnClose(ConnectionCloseCallback cb);
-    // void SetOnWriteComplete(WriteCompleteCallback cb);
 
     // 事件修改
     void EnableReading();
@@ -113,14 +122,18 @@ public:
     // 可读/写
     void EnableReadEvent();
     void EnableWriteEvent();
+    void DisableWriteEvent();
 
     // 判断长连接
     bool OnResponseFinished();
 
     // 解析处理
     void ProcessInWorker();
-    
     bool HasPendingRequest() const;
+
+    Buffer GetReadBufferCopy() const;
+    void PushResult(HttpResult&& result);
+    HttpResult ProcessTask(HttpTask& task);
 
 private:
     void HandleWriteResult(WriteResult result);
@@ -141,4 +154,5 @@ private:
 
     ReadEventCallback onRead_;
     ConnectionCloseCallback onClose_;
+    WriteState writeState_ = WriteState::Idle;
 };

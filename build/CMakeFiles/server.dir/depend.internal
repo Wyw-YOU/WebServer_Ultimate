@@ -11,6 +11,8 @@ CMakeFiles/server.dir/src/Server.cpp.o
  ../include/http/HttpContext.hpp
  ../include/http/HttpRequest.hpp
  ../include/http/HttpResponse.hpp
+ ../include/http/HttpResult.hpp
+ ../include/http/HttpTask.hpp
  ../include/http/MimeType.hpp
  ../include/http/Router.hpp
  ../include/net/Acceptor.hpp
@@ -65,6 +67,8 @@ CMakeFiles/server.dir/src/main.cpp.o
  ../include/http/HttpContext.hpp
  ../include/http/HttpRequest.hpp
  ../include/http/HttpResponse.hpp
+ ../include/http/HttpResult.hpp
+ ../include/http/HttpTask.hpp
  ../include/http/MimeType.hpp
  ../include/http/Router.hpp
  ../include/net/Acceptor.hpp
@@ -88,6 +92,7 @@ CMakeFiles/server.dir/src/net/Acceptor.cpp.o
  ../include/net/Socket.hpp
  /root/WebServer_Ultimate/src/net/Acceptor.cpp
 CMakeFiles/server.dir/src/net/Channel.cpp.o
+ ../include/Log.hpp
  ../include/net/Channel.hpp
  /root/WebServer_Ultimate/src/net/Channel.cpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o
@@ -96,6 +101,8 @@ CMakeFiles/server.dir/src/net/Connection.cpp.o
  ../include/http/HttpContext.hpp
  ../include/http/HttpRequest.hpp
  ../include/http/HttpResponse.hpp
+ ../include/http/HttpResult.hpp
+ ../include/http/HttpTask.hpp
  ../include/http/MimeType.hpp
  ../include/http/Router.hpp
  ../include/net/Channel.hpp
@@ -115,26 +122,55 @@ CMakeFiles/server.dir/src/net/Epoll.cpp.o
  /root/WebServer_Ultimate/src/net/Epoll.cpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o
  ../include/Log.hpp
+ ../include/buffer/Buffer.hpp
+ ../include/http/HttpContext.hpp
+ ../include/http/HttpRequest.hpp
+ ../include/http/HttpResponse.hpp
+ ../include/http/HttpResult.hpp
+ ../include/http/HttpTask.hpp
+ ../include/http/MimeType.hpp
+ ../include/http/Router.hpp
  ../include/net/Channel.hpp
+ ../include/net/Connection.hpp
  ../include/net/Epoll.hpp
  ../include/net/EventLoop.hpp
  ../include/thread/ThreadPool.hpp
  ../include/timer/Timer.hpp
  ../include/util/Error.hpp
+ ../include/util/FileUtil.hpp
  /root/WebServer_Ultimate/src/net/EventLoop.cpp
 CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o
  ../include/Log.hpp
+ ../include/buffer/Buffer.hpp
+ ../include/http/HttpContext.hpp
+ ../include/http/HttpRequest.hpp
+ ../include/http/HttpResponse.hpp
+ ../include/http/HttpResult.hpp
+ ../include/http/HttpTask.hpp
+ ../include/http/MimeType.hpp
+ ../include/http/Router.hpp
  ../include/net/Channel.hpp
+ ../include/net/Connection.hpp
  ../include/net/Epoll.hpp
  ../include/net/EventLoop.hpp
  ../include/net/EventLoopThread.hpp
  ../include/thread/ThreadPool.hpp
  ../include/timer/Timer.hpp
  ../include/util/Error.hpp
+ ../include/util/FileUtil.hpp
  /root/WebServer_Ultimate/src/net/EventLoopThread.cpp
 CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o
  ../include/Log.hpp
+ ../include/buffer/Buffer.hpp
+ ../include/http/HttpContext.hpp
+ ../include/http/HttpRequest.hpp
+ ../include/http/HttpResponse.hpp
+ ../include/http/HttpResult.hpp
+ ../include/http/HttpTask.hpp
+ ../include/http/MimeType.hpp
+ ../include/http/Router.hpp
  ../include/net/Channel.hpp
+ ../include/net/Connection.hpp
  ../include/net/Epoll.hpp
  ../include/net/EventLoop.hpp
  ../include/net/EventLoopThread.hpp
@@ -142,6 +178,7 @@ CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o
  ../include/thread/ThreadPool.hpp
  ../include/timer/Timer.hpp
  ../include/util/Error.hpp
+ ../include/util/FileUtil.hpp
  /root/WebServer_Ultimate/src/net/EventLoopThreadPool.cpp
 CMakeFiles/server.dir/src/net/InetAddress.cpp.o
  ../include/net/InetAddress.hpp

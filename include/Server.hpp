@@ -13,6 +13,8 @@
 #include "http/HttpRequest.hpp"
 #include "http/HttpResponse.hpp"
 #include "http/Router.hpp"
+#include "http/HttpTask.hpp"
+#include "http/HttpResult.hpp"
 #include "thread/ThreadPool.hpp"
 
 #include <iostream>
@@ -45,9 +47,6 @@ public:
 private:
     void HandleListenEvent();
     void HandleReadEvent(std::shared_ptr<Connection> conn);
-    // void HandleWriteEvent(std::shared_ptr<Connection> conn);
-    // void HandleWriteResult(std::shared_ptr<Connection> conn, WriteResult result);
-    void CloseConnection(std::shared_ptr<Connection> conn);
 
 
 private:
@@ -60,5 +59,4 @@ private:
     EventLoopThreadPool ioPool_;         // IO Reactor线程池
 
     std::unique_ptr<Channel> listenChannel_;
-    std::unordered_map<int, std::shared_ptr<Connection>> connections_;
 };

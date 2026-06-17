@@ -42,6 +42,7 @@ Epoller& EventLoop::GetEpoller()
 
 void EventLoop::Loop()
 {
+    LOG_DEBUG("EventLoop tick");
     while(!quit_)
     {
         int timeout = timer_.GetNextTick();
@@ -158,4 +159,17 @@ void EventLoop::RunInLoop(std::function<void()> cb)
         cb();
     else
         QueueInLoop(std::move(cb));
+}
+
+void EventLoop::AddConnection(std::shared_ptr<Connection> conn)
+{
+    connections_[conn->GetFd()] = conn;
+}
+
+void EventLoop::RemoveConnection(int fd)
+{
+    QueueInLoop([this, fd]()
+    {
+        connections_.erase(fd);
+    });
 }

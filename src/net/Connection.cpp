@@ -244,13 +244,17 @@ void Connection::EnableReading()
 {
     channel_->EnableReading();
 }
+
 void Connection::EnableWriting()
 {
-    channel_->EnableWriting();
+    channel_->SetEvents(EPOLLIN | EPOLLOUT | EPOLLET);
+    UpdateChannel(loop_->GetEpoller());
 }
+
 void Connection::DisableWriting()
 {
-    channel_->DisableWriting();
+    channel_->SetEvents(EPOLLIN | EPOLLET);
+    UpdateChannel(loop_->GetEpoller());
 }
 
 void Connection::ResetForNextRequest()
@@ -299,10 +303,28 @@ void Connection::TrySend()
     WriteResult result = SendResponse();
     HandleWriteResult(result);
 }
+
 void Connection::HandleWrite()
 {
-    LOG_DEBUG("HandleWrite fd=" + std::to_string(fd_));
-    TrySend();
+    writeState_ = WriteState::Writing;
+
+    WriteResult result = SendResponse();
+
+    if(writeBuffer_.ReadableBytes() == 0)
+    {
+        //  写完必须收敛
+        writeState_ = WriteState::Idle;
+        DisableWriteEvent();
+
+        HandleWriteResult(WRITE_COMPLETE);
+        return;
+    }
+
+    // 没写完
+    writeState_ = WriteState::Pending;
+    EnableWriteEvent();
+
+    HandleWriteResult(result);
 }
 void Connection::HandleClose()
 {
@@ -311,6 +333,11 @@ void Connection::HandleClose()
     {
         onClose_(shared_from_this());
     }
+
+    loop_->QueueInLoop([this]()
+    {
+        loop_->RemoveConnection(fd_);
+    });
 }
 void Connection::UpdateChannel(Epoller& epoller)
 {
@@ -322,19 +349,10 @@ void Connection::SetOnRead(ReadEventCallback cb)
 {
     onRead_ = std::move(cb);
 }
-// void Connection::SetOnWrite(WriteEventCallback cb)
-// {
-//     onWrite_ = std::move(cb);
-// }
 void Connection::SetOnClose(ConnectionCloseCallback cb)
 {
     onClose_ = std::move(cb);
 }
-// void Connection::SetOnWriteComplete(WriteCompleteCallback cb)
-// {
-//     onWriteComplete_ = std::move(cb);
-// }
-
 
 
 WriteResult Connection::SendResponse()
@@ -349,7 +367,12 @@ void Connection::EnableReadEvent()
 }
 void Connection::EnableWriteEvent()
 {
-    EnableWriting();
+    channel_->EnableWriting();
+    UpdateChannel(loop_->GetEpoller());
+}
+void Connection::DisableWriteEvent()
+{
+    channel_->DisableWriting();
     UpdateChannel(loop_->GetEpoller());
 }
 
@@ -423,6 +446,114 @@ void Connection::ProcessInWorker()
 bool Connection::HasPendingRequest() const
 {
     return readBuffer_.ReadableBytes() > 0;
+}
+
+Buffer Connection::GetReadBufferCopy() const
+{
+    return readBuffer_;
+}
+
+void Connection::PushResult(HttpResult&& result)
+{
+    LOG_DEBUG("PushResult fd=" + std::to_string(fd_));
+
+    if(state_ == ConnState::Closed)
+        return;
+
+    writeBuffer_.RetrieveAll();
+    writeBuffer_.Append(result.response.c_str(), result.response.size());
+
+    SetState(ConnState::Writing);
+
+    // 只有在确实有数据时才启用 EPOLLOUT
+    if(writeBuffer_.ReadableBytes() > 0)
+    {
+        writeState_ = WriteState::Pending;
+        EnableWriteEvent();
+    }
+    else
+    {
+        writeState_ = WriteState::Idle;
+        DisableWriteEvent();
+    }
+
+    if(!result.keepAlive)
+    {
+        SetState(ConnState::Closed);
+
+        auto self = shared_from_this();
+        loop_->QueueInLoop([self]()
+        {
+            self->HandleClose();
+        });
+    }
+}
+
+HttpResult Connection::ProcessTask(HttpTask& task)
+{
+    LOG_DEBUG("Worker running task");
+    HttpResult result;
+    result.fd = fd_;
+
+    // 1. 解析 HTTP
+    HttpContext ctx;
+    auto parseResult = ctx.ParseRequest(task.requestBuffer);
+
+    if(parseResult == ParseResult::Incomplete)
+    {
+        result.close = false;
+        return result;
+    }
+
+    if(parseResult == ParseResult::Error)
+    {
+        HttpResponse resp;
+        resp.SetStatus(400, "Bad Request");
+        resp.SetText("Bad Request");
+
+        result.response = resp.ToString();
+        result.keepAlive = false;
+        return result;
+    }
+
+    HttpRequest& req = ctx.Request();
+
+    // 2. 路由
+    HttpResponse resp;
+
+    if(router_ && router_->Route(req, resp))
+    {
+        resp.SetKeepAlive(req.IsKeepAlive());
+        result.keepAlive = req.IsKeepAlive();
+    }
+    else
+    {
+        std::string path = req.Path();
+        if(path == "/") path = "/index.html";
+
+        std::string file = resourceDir_ + path;
+        std::string content;
+
+        if(FileUtil::ReadFile(file, content))
+        {
+            resp.SetStatus(200, "OK");
+            resp.SetBody(content);
+        }
+        else
+        {
+            resp.SetStatus(404, "Not Found");
+            resp.SetText("404 Not Found");
+        }
+
+        result.keepAlive = req.IsKeepAlive();
+    }
+
+    if(req.Method() == "HEAD")
+        resp.ClearBody();
+
+    result.response = resp.ToString();
+
+    return result;
 }
 
 //--------------private:

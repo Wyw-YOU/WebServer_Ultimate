@@ -2,6 +2,7 @@
 
 #include "net/Epoll.hpp"
 #include "net/Channel.hpp"
+#include "net/Connection.hpp"
 #include "thread/ThreadPool.hpp"
 #include "timer/Timer.hpp"
 #include "Log.hpp"
@@ -16,6 +17,10 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <stdint.h>
+#include <unordered_map>
+#include <memory>
+
+class Connection;
 
 class EventLoop
 {
@@ -40,6 +45,9 @@ public:
     void RunInLoop(std::function<void()> cb);
     void Quit();
 
+    void AddConnection(std::shared_ptr<Connection> conn);
+    void RemoveConnection(int fd);
+
 private:
     void DoPendingFunctors();
 
@@ -60,4 +68,5 @@ private:
     std::atomic<bool> quit_;
     std::thread::id threadId_;
     ThreadPool threadPool_;
+    std::unordered_map<int, std::shared_ptr<Connection>> connections_;
 };

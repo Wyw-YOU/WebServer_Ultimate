@@ -28,6 +28,7 @@ void Channel::HandleEvent()
 
     if(revents_ & EPOLLOUT)
     {
+        LOG_DEBUG("EPOLLOUT triggered fd=" + std::to_string(fd_));
         if(writeCallback_)
         {
             writeCallback_();

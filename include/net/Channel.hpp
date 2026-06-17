@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Log.hpp"
+
 #include <functional>
 #include <cstdint>
 #include <sys/epoll.h>

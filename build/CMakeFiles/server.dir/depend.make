@@ -10,6 +10,8 @@ CMakeFiles/server.dir/src/Server.cpp.o: ../include/buffer/Buffer.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpContext.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpResponse.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpResult.hpp
+CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/HttpTask.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/MimeType.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/http/Router.hpp
 CMakeFiles/server.dir/src/Server.cpp.o: ../include/net/Acceptor.hpp
@@ -64,6 +66,8 @@ CMakeFiles/server.dir/src/main.cpp.o: ../include/buffer/Buffer.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/http/HttpContext.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/http/HttpResponse.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/http/HttpResult.hpp
+CMakeFiles/server.dir/src/main.cpp.o: ../include/http/HttpTask.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/http/MimeType.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/http/Router.hpp
 CMakeFiles/server.dir/src/main.cpp.o: ../include/net/Acceptor.hpp
@@ -87,6 +91,7 @@ CMakeFiles/server.dir/src/net/Acceptor.cpp.o: ../include/net/InetAddress.hpp
 CMakeFiles/server.dir/src/net/Acceptor.cpp.o: ../include/net/Socket.hpp
 CMakeFiles/server.dir/src/net/Acceptor.cpp.o: ../src/net/Acceptor.cpp
 
+CMakeFiles/server.dir/src/net/Channel.cpp.o: ../include/Log.hpp
 CMakeFiles/server.dir/src/net/Channel.cpp.o: ../include/net/Channel.hpp
 CMakeFiles/server.dir/src/net/Channel.cpp.o: ../src/net/Channel.cpp
 
@@ -95,6 +100,8 @@ CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/buffer/Buffer.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpContext.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpRequest.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpResponse.hpp
+CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpResult.hpp
+CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/HttpTask.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/MimeType.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/http/Router.hpp
 CMakeFiles/server.dir/src/net/Connection.cpp.o: ../include/net/Channel.hpp
@@ -114,26 +121,55 @@ CMakeFiles/server.dir/src/net/Epoll.cpp.o: ../include/util/Error.hpp
 CMakeFiles/server.dir/src/net/Epoll.cpp.o: ../src/net/Epoll.cpp
 
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/Log.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/buffer/Buffer.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/http/HttpContext.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/http/HttpRequest.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/http/HttpResponse.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/http/HttpResult.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/http/HttpTask.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/http/MimeType.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/http/Router.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/net/Channel.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/net/Connection.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/net/Epoll.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/net/EventLoop.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/thread/ThreadPool.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/timer/Timer.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/util/Error.hpp
+CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../include/util/FileUtil.hpp
 CMakeFiles/server.dir/src/net/EventLoop.cpp.o: ../src/net/EventLoop.cpp
 
 CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/Log.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/buffer/Buffer.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/http/HttpContext.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/http/HttpRequest.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/http/HttpResponse.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/http/HttpResult.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/http/HttpTask.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/http/MimeType.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/http/Router.hpp
 CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/net/Channel.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/net/Connection.hpp
 CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/net/Epoll.hpp
 CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/net/EventLoop.hpp
 CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/net/EventLoopThread.hpp
 CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/thread/ThreadPool.hpp
 CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/timer/Timer.hpp
 CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/util/Error.hpp
+CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../include/util/FileUtil.hpp
 CMakeFiles/server.dir/src/net/EventLoopThread.cpp.o: ../src/net/EventLoopThread.cpp
 
 CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/Log.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/buffer/Buffer.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/http/HttpContext.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/http/HttpRequest.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/http/HttpResponse.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/http/HttpResult.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/http/HttpTask.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/http/MimeType.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/http/Router.hpp
 CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/net/Channel.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/net/Connection.hpp
 CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/net/Epoll.hpp
 CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/net/EventLoop.hpp
 CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/net/EventLoopThread.hpp
@@ -141,6 +177,7 @@ CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/net/EventLoo
 CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/thread/ThreadPool.hpp
 CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/timer/Timer.hpp
 CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/util/Error.hpp
+CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../include/util/FileUtil.hpp
 CMakeFiles/server.dir/src/net/EventLoopThreadPool.cpp.o: ../src/net/EventLoopThreadPool.cpp
 
 CMakeFiles/server.dir/src/net/InetAddress.cpp.o: ../include/net/InetAddress.hpp

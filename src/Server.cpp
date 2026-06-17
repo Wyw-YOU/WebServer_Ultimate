@@ -81,14 +81,8 @@ void Server::HandleListenEvent()
         EventLoop* ioLoop = ioPool_.GetNextLoop();
 
         // ⭐ 关键：Connection 绑定 IO loop（不是 main loop）
-        auto conn = std::make_shared<Connection>(
-            connfd,
-            ioLoop,
-            resourceDir_,
-            &router_
-        );
-
-        connections_[connfd] = conn;
+        auto conn = std::make_shared<Connection>(connfd, ioLoop, resourceDir_, &router_);
+        ioLoop->AddConnection(conn);
 
         // ========== 业务回调 ==========
         conn->SetOnRead([this](std::shared_ptr<Connection> conn)
@@ -98,7 +92,7 @@ void Server::HandleListenEvent()
 
         conn->SetOnClose([this](std::shared_ptr<Connection> conn)
         {
-            CloseConnection(conn);
+            // CloseConnection(conn);
         });
 
         // ========== IO 回调 ==========
@@ -126,13 +120,14 @@ void Server::HandleListenEvent()
         conn->EnableReading();
         ioLoop->GetEpoller().AddChannel(conn->GetChannel());
 
-        // ⭐ Timer 必须挂在 ioLoop（关键修复）
+        // Timer 必须挂在 ioLoop
         ioLoop->AddTimer(connfd, 60000,
-            [this, connfd]()
+            [ioLoop, connfd]()
             {
-                auto it = connections_.find(connfd);
-                if(it != connections_.end())
-                    CloseConnection(it->second);
+                ioLoop->QueueInLoop([ioLoop, connfd]()
+                {
+                    ioLoop->RemoveConnection(connfd);
+                });
             }
         );
     }
@@ -157,41 +152,16 @@ void Server::HandleReadEvent(std::shared_ptr<Connection> conn)
     conn->SetState(ConnState::Processing);
 
     // 业务处理(丢给线程池，并下沉到Connection层，让Connection自行管理)
-    workerPool_.AddTask
-    (
-        [conn]()
-        {
-            conn->ProcessInWorker();
-        }
-    );
-}
-
-
-//  关闭连接，删除epoll事件并从连接列表中移除
-void Server::CloseConnection(std::shared_ptr<Connection> conn)
-{
-    // 避免： HandleClose()、Timer超时、Write失败 同时进入关闭流程
-    if(!conn)
-        return;
-
-    if(conn->GetState() == ConnState::Closed)
-        return;
-
-    conn->SetState(ConnState::Closed);
-    int fd = conn->GetFd();
-    auto it = connections_.find(fd);
-    if(it != connections_.end())
+    HttpTask task;
+    task.conn = conn;
+    task.requestBuffer = conn->GetReadBufferCopy();
+    
+    workerPool_.AddTask([task]() mutable
     {
-        // 先移除epoll里面的fd
-        auto channel = it->second->GetChannel();
-        loop_.GetEpoller().DelChannel(channel);
-
-        it->second->Close();
-        connections_.erase(it);
-    }
-    // 关闭计时
-    loop_.RemoveTimer(fd);
-
-    LOG_DEBUG("Closed connection fd=" + std::to_string(fd));
+        HttpResult result = task.conn->ProcessTask(task);
+        task.conn->PushResult(std::move(result));
+    });
 }
+
+
 
