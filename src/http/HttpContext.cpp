@@ -166,7 +166,6 @@ bool HttpContext::ParseHeaderLine(const std::string& line)
 
     request_.SetHeader(key, value);
 
-    request_.SetHeader(key, value);
     if(lowerKey == "content-length")
     {
         try

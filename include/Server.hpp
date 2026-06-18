@@ -9,13 +9,7 @@
 #include "net/EventLoop.hpp"
 #include "net/Channel.hpp"
 #include "net/EventLoopThreadPool.hpp"
-#include "buffer/Buffer.hpp"
-#include "http/HttpRequest.hpp"
-#include "http/HttpResponse.hpp"
 #include "http/Router.hpp"
-#include "http/HttpTask.hpp"
-#include "http/HttpResult.hpp"
-#include "thread/ThreadPool.hpp"
 
 #include <iostream>
 #include <cstring>
@@ -46,7 +40,6 @@ public:
 
 private:
     void HandleListenEvent();
-    void HandleReadEvent(std::shared_ptr<Connection> conn);
 
 
 private:
@@ -55,7 +48,6 @@ private:
     std::string resourceDir_;
     Acceptor acceptor_;
     EventLoop loop_;
-    ThreadPool workerPool_;              // 业务线程池（AddTask）
     EventLoopThreadPool ioPool_;         // IO Reactor线程池
 
     std::unique_ptr<Channel> listenChannel_;

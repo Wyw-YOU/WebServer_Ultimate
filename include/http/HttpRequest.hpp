@@ -16,9 +16,6 @@ enum class HttpMethod
 class HttpRequest
 {
 public:
-    // 解析HTTP请求// 后面优化完要删除（TODO
-    bool Parse(const std::string& raw);
-
     // 清空上次的残留信息
     void Reset();
 
@@ -46,12 +43,8 @@ public:
     HttpMethod MethodType() const;
 
 private:
-    // 解析函数
-    bool ParseHeaders(std::stringstream& ss);
-    void ParseBody(std::stringstream& ss);
     bool ParseRequestLine(const std::string& line);
 
-private:
     std::string method_;
     std::string path_;
     std::string version_;

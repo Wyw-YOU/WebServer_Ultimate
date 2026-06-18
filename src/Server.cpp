@@ -10,7 +10,6 @@ Server::Server(int port, const std::string& resourceDir)
       resourceDir_(resourceDir),
       acceptor_(port),
       loop_(MAXEVENTS),
-      workerPool_(THREAD_NUM),          // worker pool
       ioPool_(&loop_, THREAD_NUM) // io pool
 {
     router_.Get("/hello",
@@ -84,18 +83,7 @@ void Server::HandleListenEvent()
         auto conn = std::make_shared<Connection>(connfd, ioLoop, resourceDir_, &router_);
         ioLoop->AddConnection(conn);
 
-        // ========== 业务回调 ==========
-        conn->SetOnRead([this](std::shared_ptr<Connection> conn)
-        {
-            HandleReadEvent(conn);
-        });
-
-        conn->SetOnClose([this](std::shared_ptr<Connection> conn)
-        {
-            // CloseConnection(conn);
-        });
-
-        // ========== IO 回调 ==========
+        // ========== IO 回调（业务处理已在 HandleRead 中直接执行） ==========
         std::weak_ptr<Connection> weakConn = conn;
 
         conn->SetReadCallback([weakConn]()
@@ -132,36 +120,3 @@ void Server::HandleListenEvent()
         );
     }
 }
-
-
-//  处理读事件，读取客户端请求数据并写入Buffer，构建Http请求并返回HTTP响应，发送HTTP响应数据，并关闭连接
-void Server::HandleReadEvent(std::shared_ptr<Connection> conn)
-{
-    int fd = conn->GetFd();
-    // 刷新计时
-    loop_.AdjustTimer(fd, 60000);
-
-    // std::shared_ptr<Connection> conn = it->second;
-    if(conn->GetState() != ConnState::Connected)
-    {
-        LOG_DEBUG("Connection is processing, ignore fd= " + std::to_string(fd));
-        return;
-    }
-
-    LOG_DEBUG("Read data from fd=" + std::to_string(fd));
-    conn->SetState(ConnState::Processing);
-
-    // 业务处理(丢给线程池，并下沉到Connection层，让Connection自行管理)
-    HttpTask task;
-    task.conn = conn;
-    task.requestBuffer = conn->GetReadBufferCopy();
-    
-    workerPool_.AddTask([task]() mutable
-    {
-        HttpResult result = task.conn->ProcessTask(task);
-        task.conn->PushResult(std::move(result));
-    });
-}
-
-
-

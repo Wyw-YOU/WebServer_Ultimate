@@ -3,7 +3,6 @@
 #include "net/Epoll.hpp"
 #include "net/Channel.hpp"
 #include "net/Connection.hpp"
-#include "thread/ThreadPool.hpp"
 #include "timer/Timer.hpp"
 #include "Log.hpp"
 
@@ -25,16 +24,13 @@ class Connection;
 class EventLoop
 {
 public:
-    explicit EventLoop(int maxEvents = 1024, int threadNum = 128);
+    explicit EventLoop(int maxEvents = 1024);
     ~EventLoop();
 
     void Loop();
     void QueueInLoop(std::function<void()> cb);
 
     Epoller& GetEpoller();
-
-    // 把任务交给线程池执行
-    void RunInThreadPool(std::function<void()> task);
 
     // 接入timer进行时间管理
     void AddTimer(int fd, int timeoutMs, std::function<void()> cb);
@@ -67,6 +63,5 @@ private:
 
     std::atomic<bool> quit_;
     std::thread::id threadId_;
-    ThreadPool threadPool_;
     std::unordered_map<int, std::shared_ptr<Connection>> connections_;
 };

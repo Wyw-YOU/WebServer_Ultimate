@@ -5,10 +5,7 @@
 #include "http/HttpContext.hpp"
 #include "http/MimeType.hpp"
 #include "http/Router.hpp"
-#include "http/HttpTask.hpp"
-#include "http/HttpResult.hpp"
 #include "util/FileUtil.hpp"
-#include "thread/ThreadPool.hpp"
 #include "net/Channel.hpp"
 #include "net/EventLoop.hpp"
 #include "Log.hpp"
@@ -46,14 +43,6 @@ enum class ReadResult
     Error
 };
 
-// 发送状态
-enum class SendStatus
-{
-    Complete,
-    Again,
-    Error
-};
-
 // 解析状态
 enum class ProcessResult
 {
@@ -76,13 +65,9 @@ class Connection : public std::enable_shared_from_this<Connection>
 public:
     Connection(int fd, EventLoop* loop, const std::string& resourceDir, Router* router);
 
-    using ReadEventCallback = std::function<void(std::shared_ptr<Connection>)>;
-    using ConnectionCloseCallback = std::function<void(std::shared_ptr<Connection>)>;
-    
-    ProcessResult Process();
-
     ReadResult Read();
     WriteResult Write();
+    ProcessResult Process();
 
     // 连接状态管理
     ConnState GetState() const;
@@ -99,14 +84,8 @@ public:
     void SetWriteCallback(std::function<void()> cb);
     void SetCloseCallback(std::function<void()> cb);
 
-    // 业务回调
-    void SetOnRead(ReadEventCallback cb);
-    void SetOnClose(ConnectionCloseCallback cb);
-
     // 事件修改
     void EnableReading();
-    void EnableWriting();
-    void DisableWriting();
 
     void ResetForNextRequest();     //继续监听
 
@@ -127,13 +106,9 @@ public:
     // 判断长连接
     bool OnResponseFinished();
 
-    // 解析处理
+    // 解析处理（IO线程内直接执行）
     void ProcessInWorker();
     bool HasPendingRequest() const;
-
-    Buffer GetReadBufferCopy() const;
-    void PushResult(HttpResult&& result);
-    HttpResult ProcessTask(HttpTask& task);
 
 private:
     void HandleWriteResult(WriteResult result);
@@ -152,7 +127,5 @@ private:
     HttpResponse response_;
     HttpContext context_;
 
-    ReadEventCallback onRead_;
-    ConnectionCloseCallback onClose_;
     WriteState writeState_ = WriteState::Idle;
 };

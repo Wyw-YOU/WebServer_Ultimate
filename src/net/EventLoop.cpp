@@ -1,8 +1,7 @@
 #include "net/EventLoop.hpp"
 
-EventLoop::EventLoop(int maxEvents, int threadNum)
+EventLoop::EventLoop(int maxEvents)
     : epoller_(maxEvents),
-      threadPool_(threadNum),
       quit_(false)
 {
     threadId_ = std::this_thread::get_id();
@@ -79,11 +78,6 @@ void EventLoop::QueueInLoop(std::function<void()> cb)
     }
     // 唤醒eventloop线程
     Wakeup();
-}
-
-void EventLoop::RunInThreadPool(std::function<void()> task)
-{
-    threadPool_.AddTask(std::move(task));
 }
 
 
