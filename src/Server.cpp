@@ -5,6 +5,8 @@
 #define MAXEVENTS 1024
 #define THREAD_NUM 20
 
+Server* Server::instance_ = nullptr;
+
 Server::Server(int port, const std::string& resourceDir)
     : port_(port),
       resourceDir_(resourceDir),
@@ -39,11 +41,26 @@ Server::Server(int port, const std::string& resourceDir)
     );
 
     loop_.GetEpoller().AddChannel(listenChannel_.get());
+
+    instance_ = this;
+}
+
+void Server::SignalHandler(int sig)
+{
+    (void)sig;
+    if(instance_)
+    {
+        instance_->running_.store(false);
+        instance_->loop_.Quit();
+    }
 }
 
 // 启动服务器
 void Server::Start()
 {
+    signal(SIGINT, SignalHandler);
+    signal(SIGTERM, SignalHandler);
+
     LOG_NORMAL("WebServer started on port " + std::to_string(port_));
     ioPool_.Start();
     // 进入实际循坏

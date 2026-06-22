@@ -15,6 +15,7 @@
 #include <cstring>
 #include <unordered_map>
 #include <memory>
+#include <csignal>
 
 #include <unistd.h>
 #include <arpa/inet.h>
@@ -40,6 +41,10 @@ public:
 
 private:
     void HandleListenEvent();
+    static void SignalHandler(int sig);
+
+    static Server* instance_;
+    std::atomic<bool> running_{true};
 
 
 private:

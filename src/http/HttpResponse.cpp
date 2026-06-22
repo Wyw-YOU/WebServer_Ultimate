@@ -24,6 +24,19 @@ std::string HttpResponse::ToString()
     return ss.str();
 }
 
+std::string HttpResponse::HeadersOnly()
+{
+    BuildDefaultHeaders();
+    std::stringstream ss;
+    ss << "HTTP/1.1 " << statusCode_ << " " << status_ << "\r\n";
+    for (auto it = headers_.begin(); it != headers_.end(); ++it)
+    {
+        ss << it->first << ": " << it->second << "\r\n";
+    }
+    ss << "\r\n";
+    return ss.str();
+}
+
 void HttpResponse::SetStatus(int code, const std::string& status)
 {
     statusCode_ = code;
