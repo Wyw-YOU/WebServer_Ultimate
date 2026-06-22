@@ -9,8 +9,10 @@
 - HTTP/1.1 协议解析（增量状态机，支持半包/粘包）
 - Keep-Alive 长连接复用
 - 静态文件服务（10MB 大小保护）
+- sendfile 零拷贝传输（静态文件绕过用户空间拷贝）
 - URL 路由（GET/POST 精确匹配）
 - 最小堆定时器（连接超时管理）
+- SIGINT / SIGTERM 优雅退出
 - 分级日志系统（可编译期关闭）
 
 ## 技术栈
@@ -195,6 +197,12 @@ wrk -t4 -c1000 -d30s http://localhost:8080/wrk_test.html
 - `Connection` 使用 `shared_ptr` / `weak_ptr` 管理生命周期
 - `HandleClose` 通过 `shared_from_this()` 捕获，防止 use-after-free
 - `atomic<ConnState>` 保证状态可见性
+- 信号处理通过 `EventLoop::Quit()` 安全退出，不直接操作 fd
+
+## 性能优化
+
+- **sendfile 零拷贝**：静态文件通过 `sendfile()` 系统调用直接从文件描述符传输到 socket，绕过用户空间缓冲区，减少 2 次内存拷贝（file → userspace → kernel send buffer → NIC）
+- **Header 分离**：静态文件响应的 HTTP 头部通过 `HeadersOnly()` 序列化后先写入 writeBuffer，body 通过 sendfile 传输
 
 ## 性能
 
@@ -207,8 +215,9 @@ wrk -t4 -c1000 -d30s http://localhost:8080/wrk_test.html
 
 ## 后续计划
 
+- [x] sendfile 零拷贝优化
+- [x] 信号处理（优雅退出）
 - [ ] 日志异步化（独立日志线程 + 缓冲区）
-- [ ] sendfile 零拷贝优化
+- [ ] 内存池（Buffer / Connection 对象复用）
 - [ ] 连接池（数据库）
 - [ ] HTTPS 支持（OpenSSL）
-- [ ] 信号处理（优雅退出）

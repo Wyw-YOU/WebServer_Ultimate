@@ -11,6 +11,7 @@
 #include "Log.hpp"
 
 #include <sys/socket.h>   // recv, send
+#include <sys/sendfile.h> // sendfile
 #include <unistd.h>       // read, write, close
 #include <atomic>
 #include <iostream>
@@ -128,4 +129,7 @@ private:
     HttpContext context_;
 
     WriteState writeState_ = WriteState::Idle;
+
+    int sendFileFd_ = -1;
+    off_t sendFileLen_ = 0;
 };

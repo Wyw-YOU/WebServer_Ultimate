@@ -1,5 +1,8 @@
 #include "net/Connection.hpp"
 
+#include <fcntl.h>
+#include <sys/stat.h>
+
 
 Connection::Connection(int fd, EventLoop* loop, const std::string& resourceDir, Router* router)
     : fd_(fd),
@@ -83,6 +86,30 @@ ProcessResult Connection::Process()
         return ProcessResult::Complete;
     }
 
+    // sendfile 零拷贝：静态文件直接用 sendfile 传输 body
+    if(request.Method() != "HEAD" && FileUtil::Exists(filename) && FileUtil::IsRegularFile(filename))
+    {
+        int fileFd = open(filename.c_str(), O_RDONLY);
+        if(fileFd >= 0)
+        {
+            struct stat st;
+            fstat(fileFd, &st);
+
+            response_.SetStatus(200, "OK");
+            response_.SetHeader("Content-Type", MimeType::GetMime(path));
+            response_.SetHeader("Content-Length", std::to_string(st.st_size));
+            response_.SetKeepAlive(request.IsKeepAlive());
+
+            std::string headers = response_.HeadersOnly();
+            writeBuffer_.Append(headers.c_str(), headers.size());
+
+            sendFileFd_ = fileFd;
+            sendFileLen_ = st.st_size;
+            return ProcessResult::Complete;
+        }
+    }
+
+    // 非 sendfile 路径（HEAD / 404 / 文件打开失败）
     if(FileUtil::ReadFile(filename, fileContent))
     {
         response_.SetStatus(200, "OK");
@@ -201,6 +228,11 @@ Channel* Connection::GetChannel() const
 // 关闭连接
 bool Connection::Close()
 {
+    if(sendFileFd_ >= 0)
+    {
+        close(sendFileFd_);
+        sendFileFd_ = -1;
+    }
     if(fd_ != -1)
     {
         close(fd_);
@@ -250,7 +282,14 @@ void Connection::ResetForNextRequest()
     context_.Reset();
     response_.Reset();
     writeBuffer_.RetrieveAll();
-    
+
+    if(sendFileFd_ >= 0)
+    {
+        close(sendFileFd_);
+        sendFileFd_ = -1;
+        sendFileLen_ = 0;
+    }
+
     SetState(ConnState::Connected);
     EnableReadEvent();
 
@@ -291,10 +330,37 @@ void Connection::HandleWrite()
 
     if(writeBuffer_.ReadableBytes() == 0)
     {
-        //  写完必须收敛
+        // buffer 排空，检查是否需要 sendfile
+        if(sendFileFd_ >= 0)
+        {
+            off_t offset = 0;
+            while(sendFileLen_ > 0)
+            {
+                ssize_t n = ::sendfile(fd_, sendFileFd_, &offset, sendFileLen_);
+                if(n > 0)
+                {
+                    sendFileLen_ -= n;
+                }
+                else if(n == -1)
+                {
+                    if(errno == EAGAIN || errno == EWOULDBLOCK)
+                    {
+                        EnableWriteEvent();
+                        writeState_ = WriteState::Pending;
+                        return;
+                    }
+                    close(sendFileFd_);
+                    sendFileFd_ = -1;
+                    HandleWriteResult(WRITE_ERROR);
+                    return;
+                }
+            }
+            close(sendFileFd_);
+            sendFileFd_ = -1;
+        }
+
         writeState_ = WriteState::Idle;
         DisableWriteEvent();
-
         HandleWriteResult(WRITE_COMPLETE);
         return;
     }
