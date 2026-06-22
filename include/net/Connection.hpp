@@ -15,6 +15,7 @@
 #include <atomic>
 #include <iostream>
 #include <string>
+#include <memory>
 
 
 // 连接状态
