@@ -1,0 +1,4 @@
+2026-06-23 20:11:47.361 [NORMAL] Database config: root@127.0.0.1:3306/webserver (pool: 8)
+2026-06-23 20:11:47.370 [NORMAL] ConnectionPool initialized with 8 connections
+2026-06-23 20:11:47.370 [NORMAL] WebServer started on port 8080
+2026-06-23 20:13:10.970 [ERROR] epoll_wait failed: Interrupted system call
