@@ -6,6 +6,7 @@
 #include "http/MimeType.hpp"
 #include "http/Router.hpp"
 #include "util/FileUtil.hpp"
+#include "util/GzipUtil.hpp"
 #include "net/Channel.hpp"
 #include "net/EventLoop.hpp"
 #include "Log.hpp"

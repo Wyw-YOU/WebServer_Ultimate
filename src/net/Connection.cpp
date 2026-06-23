@@ -40,11 +40,26 @@ ProcessResult Connection::Process()
     }
     HttpRequest& request = context_.Request();
 
+    std::string acceptEncoding = request.GetHeader("Accept-Encoding");
+    bool clientGzip = (acceptEncoding.find("gzip") != std::string::npos);
+
     if(router_)
     {
         if(router_->Route(request, response_))
         {
             response_.SetKeepAlive(request.IsKeepAlive());
+
+            if(clientGzip && GzipUtil::ShouldCompress(response_.GetHeader("Content-Type"))
+               && !response_.GetBody().empty())
+            {
+                std::string compressed;
+                if(GzipUtil::Compress(response_.GetBody(), compressed))
+                {
+                    response_.SetBody(compressed);
+                    response_.SetHeader("Content-Encoding", "gzip");
+                }
+            }
+
             std::string resp = response_.ToString();
             writeBuffer_.Append(resp.c_str(), resp.size());
 
@@ -87,25 +102,48 @@ ProcessResult Connection::Process()
     }
 
     // sendfile 零拷贝：静态文件直接用 sendfile 传输 body
+    // gzip 压缩时不能用 sendfile（压缩后数据与磁盘文件不同）
+
     if(request.Method() != "HEAD" && FileUtil::Exists(filename) && FileUtil::IsRegularFile(filename))
     {
-        int fileFd = open(filename.c_str(), O_RDONLY);
-        if(fileFd >= 0)
+        std::string mime = MimeType::GetMime(path);
+
+        // gzip 路径：读文件到内存，后续统一压缩
+        if(clientGzip && GzipUtil::ShouldCompress(mime))
         {
-            struct stat st;
-            fstat(fileFd, &st);
+            if(FileUtil::ReadFile(filename, fileContent))
+            {
+                response_.SetStatus(200, "OK");
+                response_.SetBody(fileContent);
+                response_.SetHeader("Content-Type", mime);
+            }
+            else
+            {
+                response_.SetStatus(404, "Not Found");
+                response_.SetText("404 Not Found");
+            }
+        }
+        // sendfile 零拷贝路径
+        else
+        {
+            int fileFd = open(filename.c_str(), O_RDONLY);
+            if(fileFd >= 0)
+            {
+                struct stat st;
+                fstat(fileFd, &st);
 
-            response_.SetStatus(200, "OK");
-            response_.SetHeader("Content-Type", MimeType::GetMime(path));
-            response_.SetHeader("Content-Length", std::to_string(st.st_size));
-            response_.SetKeepAlive(request.IsKeepAlive());
+                response_.SetStatus(200, "OK");
+                response_.SetHeader("Content-Type", mime);
+                response_.SetHeader("Content-Length", std::to_string(st.st_size));
+                response_.SetKeepAlive(request.IsKeepAlive());
 
-            std::string headers = response_.HeadersOnly();
-            writeBuffer_.Append(headers.c_str(), headers.size());
+                std::string headers = response_.HeadersOnly();
+                writeBuffer_.Append(headers.c_str(), headers.size());
 
-            sendFileFd_ = fileFd;
-            sendFileLen_ = st.st_size;
-            return ProcessResult::Complete;
+                sendFileFd_ = fileFd;
+                sendFileLen_ = st.st_size;
+                return ProcessResult::Complete;
+            }
         }
     }
 
@@ -135,6 +173,18 @@ ProcessResult Connection::Process()
     if(request.Method() == "HEAD")
     {
         response_.ClearBody();
+    }
+
+    // gzip 压缩
+    if(clientGzip && GzipUtil::ShouldCompress(response_.GetHeader("Content-Type"))
+       && !response_.GetBody().empty())
+    {
+        std::string compressed;
+        if(GzipUtil::Compress(response_.GetBody(), compressed))
+        {
+            response_.SetBody(compressed);
+            response_.SetHeader("Content-Encoding", "gzip");
+        }
     }
 
     // 将响应序列化写入发送缓冲区

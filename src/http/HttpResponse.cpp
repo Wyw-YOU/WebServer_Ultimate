@@ -47,6 +47,7 @@ void HttpResponse::SetBody(const std::string& body)
 {
     body_ = body;
     headers_["Content-Length"] = std::to_string(body.size());
+    contentLengthSet_ = true;
 }
 
 void HttpResponse::SetHeader(const std::string& key, const std::string& value)
@@ -63,6 +64,7 @@ void HttpResponse::Reset()
     body_.clear();
     headers_.clear();
     keepAlive_ = false;
+    contentLengthSet_ = false;
 }
 
 // 设置text
@@ -91,7 +93,10 @@ void HttpResponse::BuildDefaultHeaders()
         headers_["Content-Type"] = "text/plain";
     }
 
-    headers_["Content-Length"] = std::to_string(body_.size());
+    if(!contentLengthSet_)
+    {
+        headers_["Content-Length"] = std::to_string(body_.size());
+    }
     headers_["Connection"] = keepAlive_ ? "keep-alive" : "close";
 }
 
@@ -99,4 +104,14 @@ void HttpResponse::BuildDefaultHeaders()
 void HttpResponse::ClearBody()
 {
     body_.clear();
+}
+
+std::string HttpResponse::GetHeader(const std::string& key) const
+{
+    auto it = headers_.find(key);
+    if(it != headers_.end())
+    {
+        return it->second;
+    }
+    return "";
 }

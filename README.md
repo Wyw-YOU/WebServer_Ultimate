@@ -10,6 +10,7 @@
 - Keep-Alive 长连接复用
 - 静态文件服务（10MB 大小保护）
 - sendfile 零拷贝传输（静态文件绕过用户空间拷贝）
+- HTTP gzip 压缩（文本响应带宽减 60-80%）
 - URL 路由（GET/POST 精确匹配）
 - 最小堆定时器（连接超时管理）
 - SIGINT / SIGTERM 优雅退出
@@ -23,7 +24,7 @@
 | 语言 | C++14 |
 | 构建 | CMake 3.10+ |
 | 平台 | Linux（epoll + eventfd + POSIX sockets） |
-| 依赖 | 无外部库，纯系统调用 |
+| 依赖 | zlib（系统自带，用于 gzip 压缩） |
 
 ## 架构
 
@@ -107,7 +108,8 @@ WebServer_Ultimate/
 │   │   └── Timer.hpp                 # 最小堆定时器
 │   └── util/
 │       ├── Error.hpp                 # strerror 封装
-│       └── FileUtil.hpp              # 文件读取 / stat
+│       ├── FileUtil.hpp              # 文件读取 / stat
+│       └── GzipUtil.hpp              # gzip 压缩（zlib deflate）
 ├── src/                              # 对应实现文件
 ├── resources/                        # 静态资源
 │   ├── index.html / 404.html / hello.html / wrk_test.html
@@ -217,6 +219,7 @@ wrk -t4 -c1000 -d30s http://localhost:8080/wrk_test.html
 
 - **sendfile 零拷贝**：静态文件通过 `sendfile()` 系统调用直接从文件描述符传输到 socket，绕过用户空间缓冲区，减少 2 次内存拷贝（file → userspace → kernel send buffer → NIC）
 - **Header 分离**：静态文件响应的 HTTP 头部通过 `HeadersOnly()` 序列化后先写入 writeBuffer，body 通过 sendfile 传输
+- **HTTP gzip 压缩**：检测 `Accept-Encoding: gzip`，对文本类响应（HTML/CSS/JS/JSON）使用 zlib deflate 压缩，带宽减少 60-80%；客户端不支持 gzip 时自动降级为原始响应
 
 ## 性能
 
@@ -232,7 +235,7 @@ wrk -t4 -c1000 -d30s http://localhost:8080/wrk_test.html
 - [x] sendfile 零拷贝优化
 - [x] 信号处理（优雅退出）
 - [x] 异步日志（双缓冲 + 独立写线程）
-- [ ] HTTP gzip 压缩
+- [x] HTTP gzip 压缩
 - [ ] 内存池（Buffer / Connection 对象复用）
 - [ ] 日志写文件 + 轮转
 - [ ] 数据库连接池

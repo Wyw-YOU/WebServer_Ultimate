@@ -37,9 +37,13 @@ public:
     // 清除body
     void ClearBody();
 
+    const std::string& GetBody() const { return body_; }
+    std::string GetHeader(const std::string& key) const;
+
 private:
     int statusCode_;
     bool keepAlive_;
+    bool contentLengthSet_ = false;
     std::string status_;
     std::string body_;
     std::unordered_map<std::string, std::string> headers_;
