@@ -2,6 +2,8 @@
 #include "AsyncLogger.hpp"
 #include "db/ConnectionPool.hpp"
 #include "util/UrlDecode.hpp"
+#include "util/HtmlEscape.hpp"
+#include "util/Config.hpp"
 
 #include <mysql/mysql.h>
 #include <memory>
@@ -16,11 +18,14 @@ Server* Server::instance_ = nullptr;
 static std::string BuildAlertPage(const std::string& message, bool success)
 {
     std::string redirect = success ? "/hello.html" : "/";
+    std::string safeMessage = HtmlEscape::EscapeJsString(message);
+    std::string safeRedirect = HtmlEscape::EscapeHtml(redirect);
+
     std::ostringstream ss;
     ss << "<!DOCTYPE html><html><head><meta charset=\"UTF-8\">"
        << "<title>登录结果</title></head><body>"
-       << "<script>alert('" << message << "');"
-       << "location.href='" << redirect << "';</script>"
+       << "<script>alert('" << safeMessage << "');"
+       << "location.href='" << safeRedirect << "';</script>"
        << "</body></html>";
     return ss.str();
 }
@@ -115,7 +120,7 @@ Server::Server(int port, const std::string& resourceDir)
 
             if(found)
             {
-                resp.SetHtml(BuildAlertPage("登录成功，欢迎 " + username, true));
+                resp.SetHtml(BuildAlertPage("登录成功，欢迎 " + HtmlEscape::EscapeHtml(username), true));
             }
             else
             {
@@ -156,8 +161,29 @@ void Server::Start()
 
     AsyncLogger::Init();
 
+    // 从环境变量读取数据库配置
+    const char* dbHost = Config::Get("DB_HOST", "127.0.0.1");
+    int dbPort = Config::GetInt("DB_PORT", 3306);
+    const char* dbUser = Config::Get("DB_USER", "root");
+    const char* dbPassword = Config::Get("DB_PASSWORD");
+    const char* dbName = Config::Get("DB_NAME", "webserver");
+    int dbPoolSize = Config::GetInt("DB_POOL_SIZE", 8);
+
+    // 检查必需的配置
+    if(!dbPassword)
+    {
+        LOG_ERROR("DB_PASSWORD environment variable is required but not set");
+        std::cerr << "Error: DB_PASSWORD environment variable is required" << std::endl;
+        std::cerr << "Please set it before starting the server" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    LOG_NORMAL("Database config: " + std::string(dbUser) + "@" +
+               std::string(dbHost) + ":" + std::to_string(dbPort) +
+               "/" + std::string(dbName) + " (pool: " + std::to_string(dbPoolSize) + ")");
+
     // 初始化数据库连接池
-    ConnectionPool::Init("127.0.0.1", 3306, "root", "Wyw962464.", "webserver", 8);
+    ConnectionPool::Init(dbHost, dbPort, dbUser, dbPassword, dbName, dbPoolSize);
 
     LOG_NORMAL("WebServer started on port " + std::to_string(port_));
     ioPool_.Start();

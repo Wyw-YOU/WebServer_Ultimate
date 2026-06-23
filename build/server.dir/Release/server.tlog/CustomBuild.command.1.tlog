@@ -1,0 +1,10 @@
+^D:\FOR 简历\WEBSERVER_ULTIMATE\CMAKELISTS.TXT
+setlocal
+"D:\Program Files\CMake\bin\cmake.exe" "-SD:/For 简历/WebServer_Ultimate" "-BD:/For 简历/WebServer_Ultimate/build" --check-stamp-file "D:/For 简历/WebServer_Ultimate/build/CMakeFiles/generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
