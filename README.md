@@ -13,6 +13,7 @@
 - URL 路由（GET/POST 精确匹配）
 - 最小堆定时器（连接超时管理）
 - SIGINT / SIGTERM 优雅退出
+- 异步日志（双缓冲 + 独立写线程，IO 线程零阻塞）
 - 分级日志系统（可编译期关闭）
 
 ## 技术栈
@@ -83,6 +84,7 @@ WebServer_Ultimate/
 ├── include/
 │   ├── Server.hpp                    # 服务器主控（Acceptor + IO 池）
 │   ├── Log.hpp                       # 分级日志（NORMAL / DEBUG / ERROR）
+│   ├── AsyncLogger.hpp               # 异步日志后端（双缓冲 + 写线程）
 │   ├── buffer/
 │   │   └── Buffer.hpp                # 读写缓冲区（string + 双游标）
 │   ├── net/
@@ -156,6 +158,18 @@ REQUEST_LINE → HEADERS → BODY → FINISH
 - `FindCRLF` — 扫描 `\r\n`（供 HTTP 解析器使用）
 - `PeekReadable` — 零拷贝返回可读区域指针和长度（供 send 使用）
 
+### AsyncLogger — 异步日志
+
+独立写线程 + 双缓冲设计，IO 线程只做 `Append`（加锁写 buffer），无 I/O 阻塞。
+
+- `Init()` — 启动后台写线程
+- `Stop()` — flush 剩余 buffer，join 线程
+- `Append(level, msg)` — 格式化日志行（带时间戳），写入前端 buffer
+- buffer 满（1024 条）或 3 秒超时自动 flush
+- Logger 未启动时自动降级为同步输出
+
+日志格式：`2026-06-22 14:30:45.123 [NORMAL] Server started on port 8080`
+
 ## 构建与运行
 
 ```bash
@@ -217,7 +231,11 @@ wrk -t4 -c1000 -d30s http://localhost:8080/wrk_test.html
 
 - [x] sendfile 零拷贝优化
 - [x] 信号处理（优雅退出）
-- [ ] 日志异步化（独立日志线程 + 缓冲区）
+- [x] 异步日志（双缓冲 + 独立写线程）
+- [ ] HTTP gzip 压缩
 - [ ] 内存池（Buffer / Connection 对象复用）
-- [ ] 连接池（数据库）
+- [ ] 日志写文件 + 轮转
+- [ ] 数据库连接池
 - [ ] HTTPS 支持（OpenSSL）
+
+详见 [FEATURE_STATUS.md](FEATURE_STATUS.md)。

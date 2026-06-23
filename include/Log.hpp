@@ -35,6 +35,8 @@ public:
     static inline void Debug(const std::string& msg)  { Print(LOG_DEBUG, msg); }
     static inline void Error(const std::string& msg)  { Print(LOG_ERROR, msg); }
 
+    static const char* LevelName(LogLevel level);
+
 private:
     static LogLevel s_minLevel;
     static const char* LevelToString(LogLevel level);

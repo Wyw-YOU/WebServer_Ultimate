@@ -1,4 +1,5 @@
 #include "Log.hpp"
+#include "AsyncLogger.hpp"
 
 #include <iostream>
 
@@ -13,6 +14,11 @@ void Log::SetMinLevel(LogLevel level)
 LogLevel Log::GetMinLevel()
 {
     return s_minLevel;
+}
+
+const char* Log::LevelName(LogLevel level)
+{
+    return LevelToString(level);
 }
 
 const char* Log::LevelToString(LogLevel level)
@@ -31,12 +37,9 @@ const char* Log::LevelToString(LogLevel level)
 
 void Log::Print(LogLevel level, const std::string& msg)
 {
-    // 级别过滤：低于最低级别的不输出
     if (level < s_minLevel)
         return;
 
-    const char* levelStr = LevelToString(level);
-    // ERROR 级别输出到 stderr，其余到 stdout
-    std::ostream& os = (level == LOG_ERROR) ? std::cerr : std::cout;
-    os << "[" << levelStr << "] " << msg << std::endl;
+    // AsyncLogger 已启动则走异步路径，否则同步输出
+    AsyncLogger::Append(level, msg);
 }

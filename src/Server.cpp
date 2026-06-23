@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include "AsyncLogger.hpp"
 
 #include <memory>
 
@@ -61,10 +62,14 @@ void Server::Start()
     signal(SIGINT, SignalHandler);
     signal(SIGTERM, SignalHandler);
 
+    AsyncLogger::Init();
+
     LOG_NORMAL("WebServer started on port " + std::to_string(port_));
     ioPool_.Start();
     // 进入实际循坏
     loop_.Loop();
+
+    AsyncLogger::Stop();
 }
 
 
