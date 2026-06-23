@@ -157,7 +157,7 @@ void Server::Start()
     AsyncLogger::Init();
 
     // 初始化数据库连接池
-    ConnectionPool::Init("localhost", 3306, "root", "Wyw962464.", "webserver", 8);
+    ConnectionPool::Init("127.0.0.1", 3306, "root", "Wyw962464.", "webserver", 8);
 
     LOG_NORMAL("WebServer started on port " + std::to_string(port_));
     ioPool_.Start();

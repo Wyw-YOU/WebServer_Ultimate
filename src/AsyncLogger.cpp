@@ -5,22 +5,76 @@
 #include <chrono>
 #include <ctime>
 #include <cstdio>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <cstring>
 
 AsyncLogger* AsyncLogger::s_instance = nullptr;
 
 AsyncLogger::AsyncLogger() = default;
 AsyncLogger::~AsyncLogger() = default;
 
-void AsyncLogger::Init()
+void AsyncLogger::Init(const std::string& logDir, size_t maxFileSize, int maxFiles)
 {
     if(s_instance)
         return;
 
     s_instance = new AsyncLogger();
+    s_instance->logDir_ = logDir;
+    s_instance->maxFileSize_ = maxFileSize;
+    s_instance->maxFiles_ = maxFiles;
+
     s_instance->currentBuffer_.reserve(kBufferThreshold);
     s_instance->nextBuffer_.reserve(kBufferThreshold);
+
+    s_instance->OpenLogFile();
+
     s_instance->running_.store(true);
     s_instance->thread_ = std::thread(&AsyncLogger::ThreadFunc, s_instance);
+}
+
+void AsyncLogger::OpenLogFile()
+{
+    // 创建日志目录
+    mkdir(logDir_.c_str(), 0755);
+
+    std::string path = logDir_ + "/server.log";
+    logFile_.open(path, std::ios::app);
+    if(logFile_.is_open())
+    {
+        // 获取当前文件大小
+        logFile_.seekp(0, std::ios::end);
+        currentFileSize_ = logFile_.tellp();
+    }
+    else
+    {
+        std::cerr << "[AsyncLogger] Failed to open log file: " << path << std::endl;
+    }
+}
+
+void AsyncLogger::RotateLog()
+{
+    logFile_.close();
+
+    // 删除最旧的文件
+    std::string oldest = logDir_ + "/server.log." + std::to_string(maxFiles_ - 1);
+    unlink(oldest.c_str());
+
+    // server.log.(N-2) → server.log.(N-1), ..., server.log.1 → server.log.2
+    for(int i = maxFiles_ - 2; i >= 1; --i)
+    {
+        std::string from = logDir_ + "/server.log." + std::to_string(i);
+        std::string to   = logDir_ + "/server.log." + std::to_string(i + 1);
+        rename(from.c_str(), to.c_str());
+    }
+
+    // server.log → server.log.1
+    std::string current = logDir_ + "/server.log";
+    std::string backup  = logDir_ + "/server.log.1";
+    rename(current.c_str(), backup.c_str());
+
+    // 重新打开新文件
+    OpenLogFile();
 }
 
 void AsyncLogger::Stop()
@@ -42,14 +96,19 @@ void AsyncLogger::Stop()
         {
             std::ostream& os = (entry.first == LOG_ERROR) ? std::cerr : std::cout;
             os << entry.second << '\n';
+            if(s_instance->logFile_.is_open())
+                s_instance->logFile_ << entry.second << '\n';
         }
     };
 
     for(auto& buf : s_instance->flushBuffers_)
         flush(buf);
     flush(s_instance->currentBuffer_);
+
     std::cout.flush();
     std::cerr.flush();
+    if(s_instance->logFile_.is_open())
+        s_instance->logFile_.flush();
 
     delete s_instance;
     s_instance = nullptr;
@@ -59,7 +118,6 @@ void AsyncLogger::Append(LogLevel level, const std::string& msg)
 {
     if(!s_instance)
     {
-        // Logger 未启动，同步输出兜底
         std::ostream& os = (level == LOG_ERROR) ? std::cerr : std::cout;
         os << "[" << Log::LevelName(level) << "] " << msg << std::endl;
         return;
@@ -112,19 +170,33 @@ void AsyncLogger::ThreadFunc()
         {
             for(auto& entry : buf)
             {
+                // 控制台输出
                 std::ostream& os = (entry.first == LOG_ERROR) ? std::cerr : std::cout;
                 os << entry.second << '\n';
+
+                // 文件输出
+                if(logFile_.is_open())
+                {
+                    logFile_ << entry.second << '\n';
+                    currentFileSize_ += entry.second.size() + 1;
+
+                    if(currentFileSize_ >= maxFileSize_)
+                    {
+                        RotateLog();
+                    }
+                }
             }
         }
         std::cout.flush();
         std::cerr.flush();
+        if(logFile_.is_open())
+            logFile_.flush();
 
-        // 回收一个 spare buffer，其余释放
+        // 回收一个 spare buffer
         {
             std::lock_guard<std::mutex> lock(mutex_);
             if(nextBuffer_.empty())
             {
-                // 回收一个已写完的 buffer 作为 spare
                 nextBuffer_.swap(flushBuffers_.back());
                 nextBuffer_.clear();
             }

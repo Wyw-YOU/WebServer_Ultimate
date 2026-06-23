@@ -16,6 +16,7 @@
 - SIGINT / SIGTERM 优雅退出
 - 异步日志（双缓冲 + 独立写线程，IO 线程零阻塞）
 - MySQL 连接池（预建连接 + RAII 自动归还 + 探活重连）
+- 日志持久化（写文件 + 按大小自动轮转，默认 50MB/文件，保留 10 个）
 - 分级日志系统（可编译期关闭）
 
 ## 技术栈
@@ -122,6 +123,7 @@ WebServer_Ultimate/
 │   ├── css/main.css
 │   ├── js/app.js
 │   └── images/
+├── logs/                             # 运行时生成，日志文件
 └── build/
 ```
 
@@ -170,11 +172,13 @@ REQUEST_LINE → HEADERS → BODY → FINISH
 
 独立写线程 + 双缓冲设计，IO 线程只做 `Append`（加锁写 buffer），无 I/O 阻塞。
 
-- `Init()` — 启动后台写线程
+- `Init(logDir, maxFileSize, maxFiles)` — 启动后台写线程，创建日志目录，打开日志文件
 - `Stop()` — flush 剩余 buffer，join 线程
 - `Append(level, msg)` — 格式化日志行（带时间戳），写入前端 buffer
 - buffer 满（1024 条）或 3 秒超时自动 flush
 - Logger 未启动时自动降级为同步输出
+- 日志同时输出到控制台和文件，ERROR 级别走 stderr
+- 文件轮转：`server.log` 达到上限后 → `server.log.1` → `server.log.2` → ... → 删除最旧文件
 
 日志格式：`2026-06-22 14:30:45.123 [NORMAL] Server started on port 8080`
 
@@ -255,8 +259,8 @@ wrk -t4 -c1000 -d30s http://localhost:8080/wrk_test.html
 - [x] 异步日志（双缓冲 + 独立写线程）
 - [x] HTTP gzip 压缩
 - [x] 数据库连接池
+- [x] 日志写文件 + 轮转
 - [ ] 内存池（Buffer / Connection 对象复用）
-- [ ] 日志写文件 + 轮转
 - [ ] HTTPS 支持（OpenSSL）
 
 详见 [FEATURE_STATUS.md](FEATURE_STATUS.md)。
