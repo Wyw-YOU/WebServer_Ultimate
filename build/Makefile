@@ -143,6 +143,33 @@ server/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
 .PHONY : server/fast
 
+src/AsyncLogger.o: src/AsyncLogger.cpp.o
+
+.PHONY : src/AsyncLogger.o
+
+# target to build an object file
+src/AsyncLogger.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/AsyncLogger.cpp.o
+.PHONY : src/AsyncLogger.cpp.o
+
+src/AsyncLogger.i: src/AsyncLogger.cpp.i
+
+.PHONY : src/AsyncLogger.i
+
+# target to preprocess a source file
+src/AsyncLogger.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/AsyncLogger.cpp.i
+.PHONY : src/AsyncLogger.cpp.i
+
+src/AsyncLogger.s: src/AsyncLogger.cpp.s
+
+.PHONY : src/AsyncLogger.s
+
+# target to generate assembly for a file
+src/AsyncLogger.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/AsyncLogger.cpp.s
+.PHONY : src/AsyncLogger.cpp.s
+
 src/Log.o: src/Log.cpp.o
 
 .PHONY : src/Log.o
@@ -304,6 +331,33 @@ src/buffer/Buffer.s: src/buffer/Buffer.cpp.s
 src/buffer/Buffer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/buffer/Buffer.cpp.s
 .PHONY : src/buffer/Buffer.cpp.s
+
+src/db/ConnectionPool.o: src/db/ConnectionPool.cpp.o
+
+.PHONY : src/db/ConnectionPool.o
+
+# target to build an object file
+src/db/ConnectionPool.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/db/ConnectionPool.cpp.o
+.PHONY : src/db/ConnectionPool.cpp.o
+
+src/db/ConnectionPool.i: src/db/ConnectionPool.cpp.i
+
+.PHONY : src/db/ConnectionPool.i
+
+# target to preprocess a source file
+src/db/ConnectionPool.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/db/ConnectionPool.cpp.i
+.PHONY : src/db/ConnectionPool.cpp.i
+
+src/db/ConnectionPool.s: src/db/ConnectionPool.cpp.s
+
+.PHONY : src/db/ConnectionPool.s
+
+# target to generate assembly for a file
+src/db/ConnectionPool.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/db/ConnectionPool.cpp.s
+.PHONY : src/db/ConnectionPool.cpp.s
 
 src/http/HttpContext.o: src/http/HttpContext.cpp.o
 
@@ -791,6 +845,33 @@ src/util/FileUtil.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/util/FileUtil.cpp.s
 .PHONY : src/util/FileUtil.cpp.s
 
+src/util/GzipUtil.o: src/util/GzipUtil.cpp.o
+
+.PHONY : src/util/GzipUtil.o
+
+# target to build an object file
+src/util/GzipUtil.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/util/GzipUtil.cpp.o
+.PHONY : src/util/GzipUtil.cpp.o
+
+src/util/GzipUtil.i: src/util/GzipUtil.cpp.i
+
+.PHONY : src/util/GzipUtil.i
+
+# target to preprocess a source file
+src/util/GzipUtil.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/util/GzipUtil.cpp.i
+.PHONY : src/util/GzipUtil.cpp.i
+
+src/util/GzipUtil.s: src/util/GzipUtil.cpp.s
+
+.PHONY : src/util/GzipUtil.s
+
+# target to generate assembly for a file
+src/util/GzipUtil.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/util/GzipUtil.cpp.s
+.PHONY : src/util/GzipUtil.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -800,6 +881,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... server"
+	@echo "... src/AsyncLogger.o"
+	@echo "... src/AsyncLogger.i"
+	@echo "... src/AsyncLogger.s"
 	@echo "... src/Log.o"
 	@echo "... src/Log.i"
 	@echo "... src/Log.s"
@@ -818,6 +902,9 @@ help:
 	@echo "... src/buffer/Buffer.o"
 	@echo "... src/buffer/Buffer.i"
 	@echo "... src/buffer/Buffer.s"
+	@echo "... src/db/ConnectionPool.o"
+	@echo "... src/db/ConnectionPool.i"
+	@echo "... src/db/ConnectionPool.s"
 	@echo "... src/http/HttpContext.o"
 	@echo "... src/http/HttpContext.i"
 	@echo "... src/http/HttpContext.s"
@@ -872,6 +959,9 @@ help:
 	@echo "... src/util/FileUtil.o"
 	@echo "... src/util/FileUtil.i"
 	@echo "... src/util/FileUtil.s"
+	@echo "... src/util/GzipUtil.o"
+	@echo "... src/util/GzipUtil.i"
+	@echo "... src/util/GzipUtil.s"
 .PHONY : help
 
 

@@ -4,12 +4,14 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/root/WebServer_Ultimate/src/AsyncLogger.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/AsyncLogger.cpp.o"
   "/root/WebServer_Ultimate/src/Log.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/Log.cpp.o"
   "/root/WebServer_Ultimate/src/Server.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/Server.cpp.o"
   "/root/WebServer_Ultimate/src/Test/ChannelTest.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/Test/ChannelTest.cpp.o"
   "/root/WebServer_Ultimate/src/Test/EventLoopThreadTest.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/Test/EventLoopThreadTest.cpp.o"
   "/root/WebServer_Ultimate/src/Test/ThreadPoolTest.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/Test/ThreadPoolTest.cpp.o"
   "/root/WebServer_Ultimate/src/buffer/Buffer.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/buffer/Buffer.cpp.o"
+  "/root/WebServer_Ultimate/src/db/ConnectionPool.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/db/ConnectionPool.cpp.o"
   "/root/WebServer_Ultimate/src/http/HttpContext.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/http/HttpContext.cpp.o"
   "/root/WebServer_Ultimate/src/http/HttpRequest.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/http/HttpRequest.cpp.o"
   "/root/WebServer_Ultimate/src/http/HttpResponse.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/http/HttpResponse.cpp.o"
@@ -28,6 +30,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/root/WebServer_Ultimate/src/thread/ThreadPool.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/thread/ThreadPool.cpp.o"
   "/root/WebServer_Ultimate/src/timer/Timer.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/timer/Timer.cpp.o"
   "/root/WebServer_Ultimate/src/util/FileUtil.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/util/FileUtil.cpp.o"
+  "/root/WebServer_Ultimate/src/util/GzipUtil.cpp" "/root/WebServer_Ultimate/build/CMakeFiles/server.dir/src/util/GzipUtil.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

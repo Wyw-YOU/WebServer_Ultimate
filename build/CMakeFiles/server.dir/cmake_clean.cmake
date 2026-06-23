@@ -1,10 +1,12 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/server.dir/src/AsyncLogger.cpp.o"
   "CMakeFiles/server.dir/src/Log.cpp.o"
   "CMakeFiles/server.dir/src/Server.cpp.o"
   "CMakeFiles/server.dir/src/Test/ChannelTest.cpp.o"
   "CMakeFiles/server.dir/src/Test/EventLoopThreadTest.cpp.o"
   "CMakeFiles/server.dir/src/Test/ThreadPoolTest.cpp.o"
   "CMakeFiles/server.dir/src/buffer/Buffer.cpp.o"
+  "CMakeFiles/server.dir/src/db/ConnectionPool.cpp.o"
   "CMakeFiles/server.dir/src/http/HttpContext.cpp.o"
   "CMakeFiles/server.dir/src/http/HttpRequest.cpp.o"
   "CMakeFiles/server.dir/src/http/HttpResponse.cpp.o"
@@ -23,6 +25,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/server.dir/src/thread/ThreadPool.cpp.o"
   "CMakeFiles/server.dir/src/timer/Timer.cpp.o"
   "CMakeFiles/server.dir/src/util/FileUtil.cpp.o"
+  "CMakeFiles/server.dir/src/util/GzipUtil.cpp.o"
   "server"
   "server.pdb"
 )
