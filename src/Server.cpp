@@ -1,19 +1,36 @@
 #include "Server.hpp"
 #include "AsyncLogger.hpp"
+#include "db/ConnectionPool.hpp"
+#include "util/UrlDecode.hpp"
 
+#include <mysql/mysql.h>
 #include <memory>
+#include <sstream>
 
 #define MAXEVENTS 1024
 #define THREAD_NUM 20
 
 Server* Server::instance_ = nullptr;
 
+// 构建登录结果提示页面
+static std::string BuildAlertPage(const std::string& message, bool success)
+{
+    std::string redirect = success ? "/hello.html" : "/";
+    std::ostringstream ss;
+    ss << "<!DOCTYPE html><html><head><meta charset=\"UTF-8\">"
+       << "<title>登录结果</title></head><body>"
+       << "<script>alert('" << message << "');"
+       << "location.href='" << redirect << "';</script>"
+       << "</body></html>";
+    return ss.str();
+}
+
 Server::Server(int port, const std::string& resourceDir)
     : port_(port),
       resourceDir_(resourceDir),
       acceptor_(port),
       loop_(MAXEVENTS),
-      ioPool_(&loop_, THREAD_NUM) // io pool
+      ioPool_(&loop_, THREAD_NUM)
 {
     router_.Get("/hello",
         [](const HttpRequest& req, HttpResponse& resp)
@@ -24,17 +41,94 @@ Server::Server(int port, const std::string& resourceDir)
     router_.Post("/login",
         [](const HttpRequest& req, HttpResponse& resp)
         {
-            resp.SetText("POST BODY:\n" + req.Body());
+            auto params = ParseFormBody(req.Body());
+            std::string username = params["username"];
+            std::string password = params["password"];
+
+            if(username.empty() || password.empty())
+            {
+                resp.SetHtml(BuildAlertPage("用户名和密码不能为空", false));
+                return;
+            }
+
+            auto pool = ConnectionPool::Instance();
+            if(!pool)
+            {
+                resp.SetHtml(BuildAlertPage("数据库未初始化", false));
+                return;
+            }
+
+            DBGuard guard(pool);
+            MYSQL* conn = guard.Get();
+            if(!conn)
+            {
+                resp.SetHtml(BuildAlertPage("数据库连接失败", false));
+                return;
+            }
+
+            // 预处理语句防 SQL 注入
+            MYSQL_STMT* stmt = mysql_stmt_init(conn);
+            if(!stmt)
+            {
+                resp.SetHtml(BuildAlertPage("服务器内部错误", false));
+                return;
+            }
+
+            const char* sql = "SELECT id FROM users WHERE username=? AND password=?";
+            if(mysql_stmt_prepare(stmt, sql, strlen(sql)) != 0)
+            {
+                mysql_stmt_close(stmt);
+                resp.SetHtml(BuildAlertPage("服务器内部错误", false));
+                return;
+            }
+
+            MYSQL_BIND bind[2] = {};
+            unsigned long usernameLen = username.size();
+            unsigned long passwordLen = password.size();
+
+            bind[0].buffer_type   = MYSQL_TYPE_STRING;
+            bind[0].buffer        = const_cast<char*>(username.c_str());
+            bind[0].buffer_length = usernameLen;
+
+            bind[1].buffer_type   = MYSQL_TYPE_STRING;
+            bind[1].buffer        = const_cast<char*>(password.c_str());
+            bind[1].buffer_length = passwordLen;
+
+            mysql_stmt_bind_param(stmt, bind);
+
+            if(mysql_stmt_execute(stmt) != 0)
+            {
+                mysql_stmt_close(stmt);
+                resp.SetHtml(BuildAlertPage("查询失败", false));
+                return;
+            }
+
+            int userId = 0;
+            MYSQL_BIND result[1] = {};
+            result[0].buffer_type = MYSQL_TYPE_LONG;
+            result[0].buffer      = &userId;
+
+            mysql_stmt_bind_result(stmt, result);
+            bool found = (mysql_stmt_fetch(stmt) == 0);
+
+            mysql_stmt_close(stmt);
+
+            if(found)
+            {
+                resp.SetHtml(BuildAlertPage("登录成功，欢迎 " + username, true));
+            }
+            else
+            {
+                resp.SetHtml(BuildAlertPage("用户名或密码错误", false));
+            }
         });
 
-    // 先设置非阻塞，再注册到epoll
     acceptor_.SetNonBlocking();
 
     listenChannel_.reset(new Channel(acceptor_.GetFd()));
     listenChannel_->SetEvents(EPOLLIN | EPOLLET);
 
-    listenChannel_->SetReadCallback
-    (
+    listenChannel_->SetReadCallback(
         [this]()
         {
             HandleListenEvent();
@@ -42,7 +136,6 @@ Server::Server(int port, const std::string& resourceDir)
     );
 
     loop_.GetEpoller().AddChannel(listenChannel_.get());
-
     instance_ = this;
 }
 
@@ -56,7 +149,6 @@ void Server::SignalHandler(int sig)
     }
 }
 
-// 启动服务器
 void Server::Start()
 {
     signal(SIGINT, SignalHandler);
@@ -64,16 +156,18 @@ void Server::Start()
 
     AsyncLogger::Init();
 
+    // 初始化数据库连接池
+    ConnectionPool::Init("localhost", 3306, "root", "Wyw962464.", "webserver", 8);
+
     LOG_NORMAL("WebServer started on port " + std::to_string(port_));
     ioPool_.Start();
-    // 进入实际循坏
     loop_.Loop();
 
+    // 优雅退出：先销毁连接池，再停止日志
+    ConnectionPool::Destroy();
     AsyncLogger::Stop();
 }
 
-
-//  处理监听事件，接受新连接并添加到epoll中
 void Server::HandleListenEvent()
 {
     InetAddress clientAddr;
@@ -94,18 +188,14 @@ void Server::HandleListenEvent()
 
         LOG_DEBUG("new connection fd=" + std::to_string(connfd));
 
-        // 非阻塞
         int flags = fcntl(connfd, F_GETFL, 0);
         fcntl(connfd, F_SETFL, flags | O_NONBLOCK);
 
-        // ⭐ 关键：选择 IO 线程
         EventLoop* ioLoop = ioPool_.GetNextLoop();
 
-        // ⭐ 关键：Connection 绑定 IO loop（不是 main loop）
         auto conn = std::make_shared<Connection>(connfd, ioLoop, resourceDir_, &router_);
         ioLoop->AddConnection(conn);
 
-        // ========== IO 回调（业务处理已在 HandleRead 中直接执行） ==========
         std::weak_ptr<Connection> weakConn = conn;
 
         conn->SetReadCallback([weakConn]()
@@ -126,11 +216,9 @@ void Server::HandleListenEvent()
                 c->HandleClose();
         });
 
-        // 注册 epoll
         conn->EnableReading();
         ioLoop->GetEpoller().AddChannel(conn->GetChannel());
 
-        // Timer 必须挂在 ioLoop
         ioLoop->AddTimer(connfd, 60000,
             [ioLoop, connfd]()
             {

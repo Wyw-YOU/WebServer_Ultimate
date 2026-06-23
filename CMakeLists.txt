@@ -21,4 +21,4 @@ add_executable(
     ${SRC_FILES}
 )
 
-target_link_libraries(server z)
+target_link_libraries(server z mysqlclient)

@@ -15,6 +15,7 @@
 - 最小堆定时器（连接超时管理）
 - SIGINT / SIGTERM 优雅退出
 - 异步日志（双缓冲 + 独立写线程，IO 线程零阻塞）
+- MySQL 连接池（预建连接 + RAII 自动归还 + 探活重连）
 - 分级日志系统（可编译期关闭）
 
 ## 技术栈
@@ -24,7 +25,7 @@
 | 语言 | C++14 |
 | 构建 | CMake 3.10+ |
 | 平台 | Linux（epoll + eventfd + POSIX sockets） |
-| 依赖 | zlib（系统自带，用于 gzip 压缩） |
+| 依赖 | zlib（gzip 压缩）、mysqlclient（数据库连接池） |
 
 ## 架构
 
@@ -104,13 +105,18 @@ WebServer_Ultimate/
 │   │   ├── HttpResponse.hpp          # 响应构建 + 序列化
 │   │   ├── MimeType.hpp              # 扩展名 → MIME 映射
 │   │   └── Router.hpp                # 路径路由（GET / POST）
+│   ├── db/
+│   │   └── ConnectionPool.hpp        # MySQL 连接池（RAII）
 │   ├── timer/
 │   │   └── Timer.hpp                 # 最小堆定时器
 │   └── util/
 │       ├── Error.hpp                 # strerror 封装
 │       ├── FileUtil.hpp              # 文件读取 / stat
-│       └── GzipUtil.hpp              # gzip 压缩（zlib deflate）
+│       ├── GzipUtil.hpp              # gzip 压缩（zlib deflate）
+│       └── UrlDecode.hpp             # URL 解码 + 表单解析
 ├── src/                              # 对应实现文件
+├── sql/
+│   └── init.sql                      # 数据库建表 + 测试数据
 ├── resources/                        # 静态资源
 │   ├── index.html / 404.html / hello.html / wrk_test.html
 │   ├── css/main.css
@@ -172,9 +178,21 @@ REQUEST_LINE → HEADERS → BODY → FINISH
 
 日志格式：`2026-06-22 14:30:45.123 [NORMAL] Server started on port 8080`
 
+### ConnectionPool — 数据库连接池
+
+预建 N 个 MySQL 连接，mutex + condition_variable 保护的连接队列。
+
+- `GetConnection()` — 阻塞获取连接（5s 超时，超时后尝试新建）
+- `ReturnConnection()` — 归还连接，`mysql_ping()` 探活，断开则自动重建
+- `DBGuard` — RAII guard，析构时自动归还连接
+- 使用 `MYSQL_STMT` 预处理语句，防止 SQL 注入
+
 ## 构建与运行
 
 ```bash
+# 初始化数据库（首次运行）
+mysql -u root -p < sql/init.sql
+
 # 构建
 mkdir build && cd build
 cmake ..
@@ -236,9 +254,9 @@ wrk -t4 -c1000 -d30s http://localhost:8080/wrk_test.html
 - [x] 信号处理（优雅退出）
 - [x] 异步日志（双缓冲 + 独立写线程）
 - [x] HTTP gzip 压缩
+- [x] 数据库连接池
 - [ ] 内存池（Buffer / Connection 对象复用）
 - [ ] 日志写文件 + 轮转
-- [ ] 数据库连接池
 - [ ] HTTPS 支持（OpenSSL）
 
 详见 [FEATURE_STATUS.md](FEATURE_STATUS.md)。

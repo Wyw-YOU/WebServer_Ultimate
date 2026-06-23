@@ -18,15 +18,14 @@
 | 信号处理 + 优雅退出 | ✅ | SIGINT / SIGTERM 安全退出 | `Server.hpp/cpp` |
 | 异步日志 | ✅ | 双缓冲 + 独立写线程，IO 线程零阻塞（修复 enum 前向声明编译错误） | `AsyncLogger.hpp/cpp`, `Log.hpp/cpp` |
 | HTTP gzip 压缩 | ✅ | zlib deflate，文本响应带宽减 60-80%；修复 sendfile Content-Length bug | `GzipUtil.hpp/cpp`, `Connection.cpp`, `HttpResponse.hpp/cpp` |
+| 数据库连接池 | ✅ | 预建连接 + RAII 自动归还 + mysql_ping 探活重连 + 预处理语句防注入 | `ConnectionPool.hpp/cpp`, `UrlDecode.hpp`, `Server.cpp` |
 
 ## 待实现
 
 | 功能 | 优先级 | 预期收益 | 说明 |
 |------|--------|----------|------|
-| HTTP 管线化 | P1 | 同连接多请求吞吐提升 | `HasPendingRequest` 逻辑已预留 |
 | 内存池 | P2 | 减少 malloc 开销 | Buffer / Connection 对象复用 |
 | 日志写文件 | P2 | 生产环境持久化 | 文件输出 + 日志轮转 |
-| 数据库连接池 | P3 | MySQL 连接复用 | 需要 mysqlclient 依赖 |
 | HTTPS | P3 | 加密通信 | OpenSSL 集成 |
 
 ## 性能里程碑
@@ -39,3 +38,4 @@
 | 移除 Worker Pool | ~21000 | 业务处理回归 IO 线程，消除竞争 |
 | sendfile + 异步日志 | 待测 | 零拷贝 + 日志不阻塞 IO 线程 |
 | gzip + Content-Length 修复 | 待测 | 压缩带宽减 60-80% + 修复 sendfile 头部 bug |
+| 数据库连接池 | 待测 | MySQL 连接复用 + 登录功能演示 |
