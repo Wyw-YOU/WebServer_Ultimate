@@ -144,6 +144,175 @@ Server::Server(int port, const std::string& resourceDir)
             }
         });
 
+    // 注册路由
+    router_.Post("/register",
+        [](const HttpRequest& req, HttpResponse& resp)
+        {
+            auto params = ParseFormBody(req.Body());
+            std::string username = params["username"];
+            std::string password = params["password"];
+            std::string confirmPassword = params["confirmPassword"];
+
+            // 验证输入
+            if(username.empty() || password.empty())
+            {
+                resp.SetHtml(BuildAlertPage("用户名和密码不能为空", false));
+                return;
+            }
+
+            if(password != confirmPassword)
+            {
+                resp.SetHtml(BuildAlertPage("两次输入的密码不一致", false));
+                return;
+            }
+
+            // 验证用户名格式（只允许字母、数字、下划线）
+            for(char c : username)
+            {
+                if(!std::isalnum(c) && c != '_')
+                {
+                    resp.SetHtml(BuildAlertPage("用户名只能包含字母、数字和下划线", false));
+                    return;
+                }
+            }
+
+            // 验证长度
+            if(username.length() < 3 || username.length() > 50)
+            {
+                resp.SetHtml(BuildAlertPage("用户名长度必须在 3-50 个字符之间", false));
+                return;
+            }
+
+            if(password.length() < 6 || password.length() > 100)
+            {
+                resp.SetHtml(BuildAlertPage("密码长度必须在 6-100 个字符之间", false));
+                return;
+            }
+
+            // 获取数据库连接
+            auto pool = ConnectionPool::Instance();
+            if(!pool)
+            {
+                LOG_ERROR("Database connection pool not initialized");
+                resp.SetHtml(BuildAlertPage("服务器内部错误", false));
+                return;
+            }
+
+            DBGuard guard(pool);
+            MYSQL* conn = guard.Get();
+            if(!conn)
+            {
+                LOG_ERROR("Failed to get database connection from pool");
+                resp.SetHtml(BuildAlertPage("服务器内部错误", false));
+                return;
+            }
+
+            // 检查用户名是否已存在
+            MYSQL_STMT* checkStmt = mysql_stmt_init(conn);
+            if(!checkStmt)
+            {
+                resp.SetHtml(BuildAlertPage("服务器内部错误", false));
+                return;
+            }
+
+            const char* checkSql = "SELECT id FROM users WHERE username=?";
+            if(mysql_stmt_prepare(checkStmt, checkSql, strlen(checkSql)) != 0)
+            {
+                mysql_stmt_close(checkStmt);
+                resp.SetHtml(BuildAlertPage("服务器内部错误", false));
+                return;
+            }
+
+            MYSQL_BIND checkBind[1] = {};
+            unsigned long usernameLen = username.size();
+            checkBind[0].buffer_type = MYSQL_TYPE_STRING;
+            checkBind[0].buffer = const_cast<char*>(username.c_str());
+            checkBind[0].buffer_length = usernameLen;
+
+            mysql_stmt_bind_param(checkStmt, checkBind);
+            mysql_stmt_execute(checkStmt);
+
+            int existingId = 0;
+            MYSQL_BIND checkResult[1] = {};
+            checkResult[0].buffer_type = MYSQL_TYPE_LONG;
+            checkResult[0].buffer = &existingId;
+
+            mysql_stmt_bind_result(checkStmt, checkResult);
+            bool userExists = (mysql_stmt_fetch(checkStmt) == 0);
+            mysql_stmt_close(checkStmt);
+
+            if(userExists)
+            {
+                resp.SetHtml(BuildAlertPage("用户名已存在，请选择其他用户名", false));
+                return;
+            }
+
+            // 生成密码哈希
+            std::string hashedPassword = PasswordUtil::HashNewPassword(password);
+
+            // 插入新用户
+            MYSQL_STMT* insertStmt = mysql_stmt_init(conn);
+            if(!insertStmt)
+            {
+                resp.SetHtml(BuildAlertPage("服务器内部错误", false));
+                return;
+            }
+
+            const char* insertSql = "INSERT INTO users (username, password) VALUES (?, ?)";
+            if(mysql_stmt_prepare(insertStmt, insertSql, strlen(insertSql)) != 0)
+            {
+                mysql_stmt_close(insertStmt);
+                resp.SetHtml(BuildAlertPage("服务器内部错误", false));
+                return;
+            }
+
+            MYSQL_BIND insertBind[2] = {};
+            unsigned long usernameLen2 = username.size();
+            unsigned long passwordLen = hashedPassword.size();
+
+            insertBind[0].buffer_type = MYSQL_TYPE_STRING;
+            insertBind[0].buffer = const_cast<char*>(username.c_str());
+            insertBind[0].buffer_length = usernameLen2;
+
+            insertBind[1].buffer_type = MYSQL_TYPE_STRING;
+            insertBind[1].buffer = const_cast<char*>(hashedPassword.c_str());
+            insertBind[1].buffer_length = passwordLen;
+
+            mysql_stmt_bind_param(insertStmt, insertBind);
+
+            if(mysql_stmt_execute(insertStmt) != 0)
+            {
+                LOG_ERROR("Failed to insert user: " + std::string(mysql_stmt_error(insertStmt)));
+                mysql_stmt_close(insertStmt);
+                resp.SetHtml(BuildAlertPage("注册失败，请稍后重试", false));
+                return;
+            }
+
+            mysql_stmt_close(insertStmt);
+
+            LOG_NORMAL("New user registered: " + username);
+            resp.SetHtml(BuildAlertPage("注册成功！请登录", true));
+        });
+
+    // 提供注册页面
+    router_.Get("/register",
+        [this](const HttpRequest& req, HttpResponse& resp)
+        {
+            std::string filename = resourceDir_ + "/register.html";
+            std::string content;
+            if(FileUtil::ReadFile(filename, content))
+            {
+                resp.SetStatus(200, "OK");
+                resp.SetBody(content);
+                resp.SetHeader("Content-Type", "text/html");
+            }
+            else
+            {
+                resp.SetStatus(404, "Not Found");
+                resp.SetText("Register page not found");
+            }
+        });
+
     acceptor_.SetNonBlocking();
 
     listenChannel_.reset(new Channel(acceptor_.GetFd()));
