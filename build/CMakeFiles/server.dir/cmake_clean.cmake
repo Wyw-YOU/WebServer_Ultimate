@@ -26,6 +26,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/server.dir/src/timer/Timer.cpp.o"
   "CMakeFiles/server.dir/src/util/FileUtil.cpp.o"
   "CMakeFiles/server.dir/src/util/GzipUtil.cpp.o"
+  "CMakeFiles/server.dir/src/util/PasswordUtil.cpp.o"
   "server"
   "server.pdb"
 )

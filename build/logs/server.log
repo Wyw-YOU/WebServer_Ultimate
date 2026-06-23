@@ -1,4 +1,18 @@
-2026-06-23 20:11:47.361 [NORMAL] Database config: root@127.0.0.1:3306/webserver (pool: 8)
-2026-06-23 20:11:47.370 [NORMAL] ConnectionPool initialized with 8 connections
-2026-06-23 20:11:47.370 [NORMAL] WebServer started on port 8080
-2026-06-23 20:13:10.970 [ERROR] epoll_wait failed: Interrupted system call
+2026-06-23 20:30:04.992 [NORMAL] Database config: root@127.0.0.1:3306/webserver (pool: 8)
+2026-06-23 20:30:04.999 [NORMAL] ConnectionPool initialized with 8 connections
+2026-06-23 20:30:04.999 [NORMAL] WebServer started on port 8080
+2026-06-23 20:30:45.884 [ERROR] epoll_wait failed: Interrupted system call
+2026-06-23 20:31:55.625 [NORMAL] Database config: root@127.0.0.1:3306/webserver (pool: 8)
+2026-06-23 20:31:55.636 [NORMAL] ConnectionPool initialized with 8 connections
+2026-06-23 20:31:55.636 [NORMAL] WebServer started on port 8080
+2026-06-23 20:33:09.379 [ERROR] epoll_wait failed: Interrupted system call
+2026-06-23 20:39:04.632 [NORMAL] Database config: root@127.0.0.1:3306/webserver (pool: 8)
+2026-06-23 20:39:04.639 [NORMAL] ConnectionPool initialized with 8 connections
+2026-06-23 20:39:04.639 [NORMAL] WebServer started on port 8080
+2026-06-23 20:39:15.791 [ERROR] Invalid password hash format
+2026-06-23 20:44:06.214 [ERROR] epoll_wait failed: Interrupted system call
+2026-06-23 20:44:40.291 [NORMAL] Database config: root@127.0.0.1:3306/webserver (pool: 8)
+2026-06-23 20:44:40.297 [NORMAL] ConnectionPool initialized with 8 connections
+2026-06-23 20:44:40.297 [NORMAL] WebServer started on port 8080
+2026-06-23 20:47:41.025 [NORMAL] New user registered: Aa123456
+2026-06-23 20:48:10.565 [ERROR] epoll_wait failed: Interrupted system call

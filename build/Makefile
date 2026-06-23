@@ -872,6 +872,33 @@ src/util/GzipUtil.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/util/GzipUtil.cpp.s
 .PHONY : src/util/GzipUtil.cpp.s
 
+src/util/PasswordUtil.o: src/util/PasswordUtil.cpp.o
+
+.PHONY : src/util/PasswordUtil.o
+
+# target to build an object file
+src/util/PasswordUtil.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/util/PasswordUtil.cpp.o
+.PHONY : src/util/PasswordUtil.cpp.o
+
+src/util/PasswordUtil.i: src/util/PasswordUtil.cpp.i
+
+.PHONY : src/util/PasswordUtil.i
+
+# target to preprocess a source file
+src/util/PasswordUtil.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/util/PasswordUtil.cpp.i
+.PHONY : src/util/PasswordUtil.cpp.i
+
+src/util/PasswordUtil.s: src/util/PasswordUtil.cpp.s
+
+.PHONY : src/util/PasswordUtil.s
+
+# target to generate assembly for a file
+src/util/PasswordUtil.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/util/PasswordUtil.cpp.s
+.PHONY : src/util/PasswordUtil.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -962,6 +989,9 @@ help:
 	@echo "... src/util/GzipUtil.o"
 	@echo "... src/util/GzipUtil.i"
 	@echo "... src/util/GzipUtil.s"
+	@echo "... src/util/PasswordUtil.o"
+	@echo "... src/util/PasswordUtil.i"
+	@echo "... src/util/PasswordUtil.s"
 .PHONY : help
 
 
