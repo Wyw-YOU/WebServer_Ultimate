@@ -193,7 +193,21 @@ void Server::HandleListenEvent()
 
         EventLoop* ioLoop = ioPool_.GetNextLoop();
 
-        auto conn = std::make_shared<Connection>(connfd, ioLoop, resourceDir_, &router_);
+        // 优先从连接池复用，否则新建
+        Connection* raw = ioLoop->GetConnectionFromPool();
+        if(raw)
+            raw->Reuse(connfd, ioLoop, resourceDir_, &router_);
+        else
+            raw = new Connection(connfd, ioLoop, resourceDir_, &router_);
+
+        // 自定义 deleter：关闭 fd 并归还连接到池
+        std::shared_ptr<Connection> conn(raw,
+            [ioLoop](Connection* c)
+            {
+                c->Close();
+                ioLoop->ReturnConnectionToPool(c);
+            });
+
         ioLoop->AddConnection(conn);
 
         std::weak_ptr<Connection> weakConn = conn;

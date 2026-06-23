@@ -11,9 +11,28 @@ Connection::Connection(int fd, EventLoop* loop, const std::string& resourceDir, 
       resourceDir_(resourceDir),
       router_(router)
     {
-        // channel_ = std::make_unique<Channel>(fd_);
         channel_ = std::unique_ptr<Channel>(new Channel(fd_, true));
     }
+
+void Connection::Reuse(int fd, EventLoop* loop, const std::string& resourceDir, Router* router)
+{
+    fd_ = fd;
+    loop_ = loop;
+    state_.store(ConnState::Connected);
+    resourceDir_ = resourceDir;
+    router_ = router;
+
+    channel_.reset(new Channel(fd_, true));
+
+    readBuffer_.Clear();
+    writeBuffer_.Clear();
+    response_.Reset();
+    context_.Reset();
+
+    writeState_ = WriteState::Idle;
+    sendFileFd_ = -1;
+    sendFileLen_ = 0;
+}
 
 //  构建Http请求并返回HTTP响应
 ProcessResult Connection::Process()

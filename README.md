@@ -17,6 +17,7 @@
 - 异步日志（双缓冲 + 独立写线程，IO 线程零阻塞）
 - MySQL 连接池（预建连接 + RAII 自动归还 + 探活重连）
 - 日志持久化（写文件 + 按大小自动轮转，默认 50MB/文件，保留 10 个）
+- 内存池（Connection 对象池 + Buffer 对象池，减少 malloc 开销）
 - 分级日志系统（可编译期关闭）
 
 ## 技术栈
@@ -110,6 +111,8 @@ WebServer_Ultimate/
 │   │   └── ConnectionPool.hpp        # MySQL 连接池（RAII）
 │   ├── timer/
 │   │   └── Timer.hpp                 # 最小堆定时器
+│   ├── pool/
+│   │   └── ObjectPool.hpp            # 通用对象池模板
 │   └── util/
 │       ├── Error.hpp                 # strerror 封装
 │       ├── FileUtil.hpp              # 文件读取 / stat
@@ -191,6 +194,14 @@ REQUEST_LINE → HEADERS → BODY → FINISH
 - `DBGuard` — RAII guard，析构时自动归还连接
 - 使用 `MYSQL_STMT` 预处理语句，防止 SQL 注入
 
+### ObjectPool — 内存池
+
+通用对象池模板，减少高并发下频繁 malloc/free 开销。
+
+- **Connection 池**：每个 EventLoop 独立池（单线程访问，无锁），`shared_ptr` 自定义 deleter 自动归还
+- **Buffer 池**：全局静态池（mutex 保护），`Clear()` 重置游标但保留已分配 capacity
+- 新连接优先从池中获取并 `Reuse()`，否则 `new`；连接关闭后归还池而非 `delete`
+
 ## 构建与运行
 
 ```bash
@@ -260,7 +271,6 @@ wrk -t4 -c1000 -d30s http://localhost:8080/wrk_test.html
 - [x] HTTP gzip 压缩
 - [x] 数据库连接池
 - [x] 日志写文件 + 轮转
-- [ ] 内存池（Buffer / Connection 对象复用）
-- [ ] HTTPS 支持（OpenSSL）
+- [x] 内存池（Buffer / Connection 对象复用）
 
 详见 [FEATURE_STATUS.md](FEATURE_STATUS.md)。

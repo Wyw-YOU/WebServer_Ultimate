@@ -20,13 +20,11 @@
 | HTTP gzip 压缩 | ✅ | zlib deflate，文本响应带宽减 60-80%；修复 sendfile Content-Length bug | `GzipUtil.hpp/cpp`, `Connection.cpp`, `HttpResponse.hpp/cpp` |
 | 数据库连接池 | ✅ | 预建连接 + RAII 自动归还 + mysql_ping 探活重连 + 预处理语句防注入 | `ConnectionPool.hpp/cpp`, `UrlDecode.hpp`, `Server.cpp` |
 | 日志写文件 | ✅ | 写文件 + 按大小自动轮转（50MB/文件，保留 10 个） | `AsyncLogger.hpp/cpp` |
+| 内存池 | ✅ | Connection 对象池（per-EventLoop 无锁）+ Buffer 对象池（全局 mutex） | `ObjectPool.hpp`, `Buffer.hpp/cpp`, `Connection.hpp/cpp`, `EventLoop.hpp/cpp`, `Server.cpp` |
 
 ## 待实现
 
-| 功能 | 优先级 | 预期收益 | 说明 |
-|------|--------|----------|------|
-| 内存池 | P2 | 减少 malloc 开销 | Buffer / Connection 对象复用 |
-| HTTPS | P3 | 加密通信 | OpenSSL 集成 |
+当前所有计划功能已全部完成。
 
 ## 性能里程碑
 
@@ -40,3 +38,4 @@
 | gzip + Content-Length 修复 | 待测 | 压缩带宽减 60-80% + 修复 sendfile 头部 bug |
 | 数据库连接池 | 待测 | MySQL 连接复用 + 登录功能演示 |
 | 日志写文件 | 待测 | 文件持久化 + 按大小轮转 |
+| 内存池 | 待测 | Connection + Buffer 对象复用，减少 malloc |

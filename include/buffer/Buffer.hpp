@@ -38,6 +38,13 @@ public:
 
     bool Empty() const;
 
+    // 清空数据但保留已分配内存
+    void Clear();
+
+    // 对象池
+    static Buffer* GetFromPool();
+    static void ReturnToPool(Buffer* buf);
+
 private:
     std::string buffer_;
     size_t readPos_;

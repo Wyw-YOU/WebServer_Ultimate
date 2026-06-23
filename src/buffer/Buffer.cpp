@@ -1,4 +1,10 @@
 #include "buffer/Buffer.hpp"
+#include "pool/ObjectPool.hpp"
+
+#include <mutex>
+
+static std::mutex s_poolMutex;
+static ObjectPool<Buffer> s_bufferPool;
 
 Buffer::Buffer(size_t initSize)
     : buffer_(initSize, '\0'),
@@ -116,4 +122,25 @@ size_t Buffer::WritableBytes() const
 bool Buffer::Empty() const
 {
     return ReadableBytes() == 0;
+}
+
+void Buffer::Clear()
+{
+    readPos_ = 0;
+    writePos_ = 0;
+}
+
+Buffer* Buffer::GetFromPool()
+{
+    std::lock_guard<std::mutex> lock(s_poolMutex);
+    return s_bufferPool.Get();
+}
+
+void Buffer::ReturnToPool(Buffer* buf)
+{
+    if(!buf)
+        return;
+    buf->Clear();
+    std::lock_guard<std::mutex> lock(s_poolMutex);
+    s_bufferPool.Return(buf);
 }

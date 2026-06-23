@@ -68,6 +68,9 @@ class Connection : public std::enable_shared_from_this<Connection>
 public:
     Connection(int fd, EventLoop* loop, const std::string& resourceDir, Router* router);
 
+    // 复用：重置所有状态以服务新连接
+    void Reuse(int fd, EventLoop* loop, const std::string& resourceDir, Router* router);
+
     ReadResult Read();
     WriteResult Write();
     ProcessResult Process();

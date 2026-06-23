@@ -167,3 +167,13 @@ void EventLoop::RemoveConnection(int fd)
         connections_.erase(fd);
     });
 }
+
+Connection* EventLoop::GetConnectionFromPool()
+{
+    return connPool_.Get();
+}
+
+void EventLoop::ReturnConnectionToPool(Connection* conn)
+{
+    connPool_.Return(conn);
+}

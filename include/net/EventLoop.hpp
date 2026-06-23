@@ -3,6 +3,7 @@
 #include "net/Epoll.hpp"
 #include "net/Channel.hpp"
 #include "net/Connection.hpp"
+#include "pool/ObjectPool.hpp"
 #include "timer/Timer.hpp"
 #include "Log.hpp"
 
@@ -45,6 +46,10 @@ public:
     void AddConnection(std::shared_ptr<Connection> conn);
     void RemoveConnection(int fd);
 
+    // 连接对象池
+    Connection* GetConnectionFromPool();
+    void ReturnConnectionToPool(Connection* conn);
+
 private:
     void DoPendingFunctors();
 
@@ -65,4 +70,7 @@ private:
     std::atomic<bool> quit_;
     std::thread::id threadId_;
     std::unordered_map<int, std::shared_ptr<Connection>> connections_;
+
+    // 连接对象池（单线程访问，无需 mutex）
+    ObjectPool<Connection> connPool_;
 };
