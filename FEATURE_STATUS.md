@@ -16,7 +16,7 @@
 | 最小堆定时器 | ✅ | 60s 连接超时，O(1) 按 fd 查找 | `Timer.hpp/cpp` |
 | sendfile 零拷贝 | ✅ | 静态文件绕过用户空间拷贝 | `Connection.cpp`, `HttpResponse.hpp/cpp` |
 | 信号处理 + 优雅退出 | ✅ | SIGINT / SIGTERM 安全退出 | `Server.hpp/cpp` |
-| 异步日志 | ✅ | 双缓冲 + 独立写线程，IO 线程零阻塞 | `AsyncLogger.hpp/cpp`, `Log.hpp/cpp` |
+| 异步日志 | ✅ | 双缓冲 + 独立写线程，IO 线程零阻塞（修复 enum 前向声明编译错误） | `AsyncLogger.hpp/cpp`, `Log.hpp/cpp` |
 
 ## 待实现
 

@@ -7,7 +7,7 @@
 #include <thread>
 #include <atomic>
 
-enum LogLevel;
+#include "Log.hpp"
 
 class AsyncLogger
 {
