@@ -4,6 +4,7 @@
 #include "util/UrlDecode.hpp"
 #include "util/HtmlEscape.hpp"
 #include "util/Config.hpp"
+#include "util/PasswordUtil.hpp"
 
 #include <mysql/mysql.h>
 #include <memory>
@@ -59,7 +60,8 @@ Server::Server(int port, const std::string& resourceDir)
             auto pool = ConnectionPool::Instance();
             if(!pool)
             {
-                resp.SetHtml(BuildAlertPage("数据库未初始化", false));
+                LOG_ERROR("Database connection pool not initialized");
+                resp.SetHtml(BuildAlertPage("服务器内部错误", false));
                 return;
             }
 
@@ -67,7 +69,8 @@ Server::Server(int port, const std::string& resourceDir)
             MYSQL* conn = guard.Get();
             if(!conn)
             {
-                resp.SetHtml(BuildAlertPage("数据库连接失败", false));
+                LOG_ERROR("Failed to get database connection from pool");
+                resp.SetHtml(BuildAlertPage("服务器内部错误", false));
                 return;
             }
 
@@ -79,7 +82,8 @@ Server::Server(int port, const std::string& resourceDir)
                 return;
             }
 
-            const char* sql = "SELECT id FROM users WHERE username=? AND password=?";
+            // 修改 SQL：只查询用户名，密码在 C++ 层验证
+            const char* sql = "SELECT id, password FROM users WHERE username=?";
             if(mysql_stmt_prepare(stmt, sql, strlen(sql)) != 0)
             {
                 mysql_stmt_close(stmt);
@@ -87,38 +91,50 @@ Server::Server(int port, const std::string& resourceDir)
                 return;
             }
 
-            MYSQL_BIND bind[2] = {};
+            MYSQL_BIND bind[1] = {};
             unsigned long usernameLen = username.size();
-            unsigned long passwordLen = password.size();
 
             bind[0].buffer_type   = MYSQL_TYPE_STRING;
             bind[0].buffer        = const_cast<char*>(username.c_str());
             bind[0].buffer_length = usernameLen;
-
-            bind[1].buffer_type   = MYSQL_TYPE_STRING;
-            bind[1].buffer        = const_cast<char*>(password.c_str());
-            bind[1].buffer_length = passwordLen;
 
             mysql_stmt_bind_param(stmt, bind);
 
             if(mysql_stmt_execute(stmt) != 0)
             {
                 mysql_stmt_close(stmt);
-                resp.SetHtml(BuildAlertPage("查询失败", false));
+                resp.SetHtml(BuildAlertPage("服务器内部错误", false));
                 return;
             }
 
+            // 绑定结果：id 和 password
             int userId = 0;
-            MYSQL_BIND result[1] = {};
+            char storedPassword[100] = {0};
+            unsigned long passwordLen = 0;
+
+            MYSQL_BIND result[2] = {};
             result[0].buffer_type = MYSQL_TYPE_LONG;
             result[0].buffer      = &userId;
 
+            result[1].buffer_type = MYSQL_TYPE_STRING;
+            result[1].buffer      = storedPassword;
+            result[1].buffer_length = sizeof(storedPassword);
+            result[1].length = &passwordLen;
+
             mysql_stmt_bind_result(stmt, result);
-            bool found = (mysql_stmt_fetch(stmt) == 0);
+
+            if(mysql_stmt_fetch(stmt) != 0)
+            {
+                mysql_stmt_close(stmt);
+                resp.SetHtml(BuildAlertPage("用户名或密码错误", false));
+                return;
+            }
 
             mysql_stmt_close(stmt);
 
-            if(found)
+            // 在 C++ 层验证密码（使用 SHA-256 常量时间比较）
+            std::string storedHash(storedPassword, passwordLen);
+            if(PasswordUtil::VerifyPassword(password, storedHash))
             {
                 resp.SetHtml(BuildAlertPage("登录成功，欢迎 " + HtmlEscape::EscapeHtml(username), true));
             }

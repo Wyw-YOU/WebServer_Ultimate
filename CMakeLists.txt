@@ -33,6 +33,7 @@ if(WIN32)
     # 注意：Windows 上需要手动指定 mysqlclient 的路径
     target_link_libraries(server)
 else()
-    # Linux/Unix 平台：链接 zlib 和 mysqlclient
-    target_link_libraries(server z mysqlclient)
+    # Linux/Unix 平台：链接 zlib、mysqlclient 和 OpenSSL crypto
+    # OpenSSL crypto 用于密码哈希（SHA-256）
+    target_link_libraries(server z mysqlclient crypto)
 endif()
