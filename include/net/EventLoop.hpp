@@ -18,6 +18,7 @@
 #include <stdint.h>
 #include <unordered_map>
 #include <memory>
+#include <thread>
 
 class Connection;
 
