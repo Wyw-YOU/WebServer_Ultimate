@@ -2,6 +2,7 @@
 
 #include <fcntl.h>
 #include <sys/stat.h>
+#include "util/PathUtil.hpp"
 
 
 Connection::Connection(int fd, EventLoop* loop, const std::string& resourceDir, Router* router)
@@ -88,18 +89,24 @@ ProcessResult Connection::Process()
 
     // 根据路径路由
     std::string path = request.Path();
-    // 拒绝非法路径 例如：GET /../../../etc/passwd
-    if(path.find("..") != std::string::npos)
+
+    // 使用 SafePath 进行安全路径检查（防路径遍历攻击）
+    std::string safePath = PathUtil::SafePath(resourceDir_, path);
+    if(safePath.empty())
     {
+        LOG_ERROR("Path traversal attempt detected: " + path + " from fd=" + std::to_string(fd_));
         response_.SetStatus(403, "Forbidden");
         response_.SetText("403 Forbidden");
         response_.SetKeepAlive(false);
-        
+
         std::string resp = response_.ToString();
         writeBuffer_.Append(resp.c_str(), resp.size());
-        
+
         return ProcessResult::Complete;
     }
+
+    // 使用安全路径
+    path = safePath;
 
     if(path == "/")
         path = "/index.html";
@@ -219,9 +226,21 @@ ReadResult Connection::Read()
     // 接受客户端请求数据并写入Buffer
     char recvbuffer[4096];
 
+    // 读缓冲区大小限制：2MB（防止内存耗尽）
+    constexpr size_t MAX_READ_BUFFER_SIZE = 2 * 1024 * 1024; // 2MB
+
     // 循坏读取，直到没有数据可读（非阻塞套接字）
     while(true)
     {
+        // 检查缓冲区大小限制
+        if(readBuffer_.ReadableBytes() >= MAX_READ_BUFFER_SIZE)
+        {
+            LOG_ERROR("Read buffer overflow: " + std::to_string(readBuffer_.ReadableBytes()) +
+                      " bytes from fd=" + std::to_string(fd_) + " (max: " +
+                      std::to_string(MAX_READ_BUFFER_SIZE) + " bytes)");
+            return ReadResult::Error;
+        }
+
         ssize_t n = recv(fd_, recvbuffer, sizeof(recvbuffer), 0);
 
         if(n > 0)

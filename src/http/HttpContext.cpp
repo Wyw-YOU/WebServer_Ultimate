@@ -183,6 +183,15 @@ bool HttpContext::ParseHeaderLine(const std::string& line)
 
 ParseResult HttpContext::ParseBody(Buffer& buffer)
 {
+    // 请求体大小限制：1MB（防止 DoS 攻击）
+    constexpr size_t MAX_BODY_SIZE = 1 * 1024 * 1024; // 1MB
+    if(contentLength_ > MAX_BODY_SIZE)
+    {
+        LOG_ERROR("Request body too large: " + std::to_string(contentLength_) +
+                  " bytes (max: " + std::to_string(MAX_BODY_SIZE) + " bytes)");
+        return ParseResult::Error;
+    }
+
     if(buffer.ReadableBytes() < contentLength_)
     {
         return ParseResult::Incomplete;

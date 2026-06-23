@@ -85,6 +85,11 @@
 ```
 WebServer_Ultimate/
 ├── CMakeLists.txt
+├── README.md
+├── FEATURE_STATUS.md
+├── start.sh                        # 启动脚本（自动加载 .env）
+├── .env.example                    # 配置文件示例
+├── .env                            # 实际配置文件（需手动创建）
 ├── include/
 │   ├── Server.hpp                    # 服务器主控（Acceptor + IO 池）
 │   ├── Log.hpp                       # 分级日志（NORMAL / DEBUG / ERROR）
@@ -114,9 +119,11 @@ WebServer_Ultimate/
 │   ├── pool/
 │   │   └── ObjectPool.hpp            # 通用对象池模板
 │   └── util/
+│       ├── Config.hpp                # 环境变量配置读取
 │       ├── Error.hpp                 # strerror 封装
 │       ├── FileUtil.hpp              # 文件读取 / stat
 │       ├── GzipUtil.hpp              # gzip 压缩（zlib deflate）
+│       ├── HtmlEscape.hpp            # HTML/JS 转义（XSS 防护）
 │       └── UrlDecode.hpp             # URL 解码 + 表单解析
 ├── src/                              # 对应实现文件
 ├── sql/
@@ -213,12 +220,63 @@ mkdir build && cd build
 cmake ..
 make
 
-# 运行
+# 配置环境变量
+cp ../.env.example ../.env
+vi ../.env  # 编辑配置文件，设置 DB_PASSWORD
+
+# 运行（三种方式，任选其一）
+
+# 方式 1：使用启动脚本（推荐）
+chmod +x ../start.sh
+../start.sh [端口号]
+
+# 方式 2：手动加载环境变量
+export $(cat ../.env | grep -v '^#' | grep -v '^$' | xargs)
 ./server [端口号] [资源目录]
 
+# 方式 3：一行命令启动
+DB_PASSWORD=your_password ./server [端口号] [资源目录]
+
 # 示例
-./server 8080 ../resources
+../start.sh 8080
+# 或
+DB_PASSWORD=mypassword ./server 8080 ../resources
 ```
+
+### 环境变量配置
+
+创建 `.env` 文件（从 `.env.example` 复制），配置以下环境变量：
+
+```bash
+# 数据库配置
+DB_HOST=127.0.0.1      # 数据库地址（默认：127.0.0.1）
+DB_PORT=3306           # 数据库端口（默认：3306）
+DB_USER=root           # 数据库用户（默认：root）
+DB_PASSWORD=           # 数据库密码（必填）
+DB_NAME=webserver      # 数据库名称（默认：webserver）
+DB_POOL_SIZE=8         # 连接池大小（默认：8）
+```
+
+**注意：** `DB_PASSWORD` 是必需的，未设置时服务会拒绝启动。
+
+### 启动脚本
+
+项目提供了 `start.sh` 启动脚本，自动加载 `.env` 配置文件：
+
+```bash
+# 使用默认端口 8080
+./start.sh
+
+# 指定端口
+./start.sh 3000
+```
+
+脚本会：
+1. 自动加载 `.env` 文件中的配置
+2. 检查必需的环境变量
+3. 启动 WebServer
+
+详见 [`.env.example`](.env.example) 文件了解所有配置项。
 
 ### 压力测试
 
