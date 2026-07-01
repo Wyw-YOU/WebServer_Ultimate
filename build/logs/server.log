@@ -1,18 +1,62 @@
-2026-06-23 20:30:04.992 [NORMAL] Database config: root@127.0.0.1:3306/webserver (pool: 8)
-2026-06-23 20:30:04.999 [NORMAL] ConnectionPool initialized with 8 connections
-2026-06-23 20:30:04.999 [NORMAL] WebServer started on port 8080
-2026-06-23 20:30:45.884 [ERROR] epoll_wait failed: Interrupted system call
-2026-06-23 20:31:55.625 [NORMAL] Database config: root@127.0.0.1:3306/webserver (pool: 8)
-2026-06-23 20:31:55.636 [NORMAL] ConnectionPool initialized with 8 connections
-2026-06-23 20:31:55.636 [NORMAL] WebServer started on port 8080
-2026-06-23 20:33:09.379 [ERROR] epoll_wait failed: Interrupted system call
-2026-06-23 20:39:04.632 [NORMAL] Database config: root@127.0.0.1:3306/webserver (pool: 8)
-2026-06-23 20:39:04.639 [NORMAL] ConnectionPool initialized with 8 connections
-2026-06-23 20:39:04.639 [NORMAL] WebServer started on port 8080
-2026-06-23 20:39:15.791 [ERROR] Invalid password hash format
-2026-06-23 20:44:06.214 [ERROR] epoll_wait failed: Interrupted system call
-2026-06-23 20:44:40.291 [NORMAL] Database config: root@127.0.0.1:3306/webserver (pool: 8)
-2026-06-23 20:44:40.297 [NORMAL] ConnectionPool initialized with 8 connections
-2026-06-23 20:44:40.297 [NORMAL] WebServer started on port 8080
-2026-06-23 20:47:41.025 [NORMAL] New user registered: Aa123456
-2026-06-23 20:48:10.565 [ERROR] epoll_wait failed: Interrupted system call
+2026-07-01 00:50:21.732 [NORMAL] Database config: Wyw@127.0.0.1:3306/webserver (pool: 8)
+2026-07-01 00:50:21.883 [NORMAL] ConnectionPool initialized with 8 connections
+2026-07-01 00:50:21.883 [NORMAL] WebServer started on port 8080
+2026-07-01 00:50:57.943 [ERROR] Path traversal attempt detected: /favicon.ico from fd=59
+2026-07-01 00:59:42.717 [ERROR] epoll_wait failed: Interrupted system call
+2026-07-01 01:02:20.126 [NORMAL] Database config: Wyw@127.0.0.1:3306/webserver (pool: 8)
+2026-07-01 01:02:20.278 [NORMAL] ConnectionPool initialized with 8 connections
+2026-07-01 01:02:20.278 [NORMAL] WebServer started on port 8080
+2026-07-01 02:34:28.262 [ERROR] Path traversal attempt detected: /api/tags from fd=70
+2026-07-01 02:34:28.483 [ERROR] Path traversal attempt detected: /v1/models from fd=69
+2026-07-01 02:34:28.926 [ERROR] Path traversal attempt detected: /api/version from fd=69
+2026-07-01 02:34:29.368 [ERROR] Path traversal attempt detected: /queue/status from fd=69
+2026-07-01 02:34:29.813 [ERROR] Path traversal attempt detected: /metrics from fd=70
+2026-07-01 02:34:30.263 [ERROR] Path traversal attempt detected: /.well-known/mcp.json from fd=70
+2026-07-01 02:34:30.709 [ERROR] Path traversal attempt detected: /.well-known/agent.json from fd=70
+2026-07-01 02:34:31.153 [ERROR] Path traversal attempt detected: /health from fd=70
+2026-07-01 02:34:31.318 [ERROR] Path traversal attempt detected: /docs from fd=71
+2026-07-01 02:34:31.417 [ERROR] Path traversal attempt detected: /openapi.json from fd=70
+2026-07-01 02:34:31.516 [ERROR] Path traversal attempt detected: /v1/chat/completions from fd=72
+2026-07-01 02:34:31.593 [ERROR] Path traversal attempt detected: /api/generate from fd=71
+2026-07-01 02:34:31.718 [ERROR] Path traversal attempt detected: /api/v1/collections from fd=70
+2026-07-01 02:34:31.868 [ERROR] Path traversal attempt detected: /config from fd=71
+2026-07-01 02:34:31.961 [ERROR] Path traversal attempt detected: /api/v1/version from fd=70
+2026-07-01 02:34:32.169 [ERROR] Path traversal attempt detected: /api/kernels from fd=71
+2026-07-01 02:34:32.291 [ERROR] Path traversal attempt detected: /collections from fd=70
+2026-07-01 02:34:32.324 [ERROR] Path traversal attempt detected: /sse from fd=73
+2026-07-01 02:34:32.420 [ERROR] Path traversal attempt detected: /v1/schema from fd=74
+2026-07-01 02:34:32.674 [ERROR] Path traversal attempt detected: /api/2.0/mlflow/experiments/list from fd=72
+2026-07-01 02:34:32.732 [ERROR] Path traversal attempt detected: /api/flows from fd=73
+2026-07-01 02:34:32.766 [ERROR] Path traversal attempt detected: /rest/workflows from fd=75
+2026-07-01 02:34:33.118 [ERROR] Path traversal attempt detected: /api/agents from fd=71
+2026-07-01 02:34:33.181 [ERROR] Path traversal attempt detected: /inference from fd=72
+2026-07-01 02:34:33.211 [ERROR] Path traversal attempt detected: /predict from fd=73
+2026-07-01 02:34:33.255 [ERROR] Path traversal attempt detected: /embed from fd=75
+2026-07-01 02:34:33.407 [ERROR] Path traversal attempt detected: /.well-known/ai-plugin.json from fd=71
+2026-07-01 02:34:33.562 [ERROR] Path traversal attempt detected: /api/v1/status from fd=59
+2026-07-01 02:36:04.779 [ERROR] Path traversal attempt detected: /queue/status from fd=59
+2026-07-01 02:36:28.487 [ERROR] Path traversal attempt detected: /health from fd=59
+2026-07-01 02:36:34.002 [ERROR] Path traversal attempt detected: /api/generate from fd=59
+2026-07-01 02:36:42.686 [ERROR] Path traversal attempt detected: /rest/workflows from fd=59
+2026-07-01 02:38:34.815 [ERROR] Path traversal attempt detected: /api/v1/version from fd=59
+2026-07-01 02:39:31.631 [ERROR] Path traversal attempt detected: /api/flows from fd=59
+2026-07-01 02:39:45.434 [ERROR] Path traversal attempt detected: /api/version from fd=59
+2026-07-01 02:41:02.230 [ERROR] Path traversal attempt detected: /sse from fd=59
+2026-07-01 02:41:02.599 [ERROR] Path traversal attempt detected: /api/v1/status from fd=59
+2026-07-01 02:41:54.795 [ERROR] Path traversal attempt detected: /metrics from fd=59
+2026-07-01 02:42:38.473 [ERROR] Path traversal attempt detected: /docs from fd=59
+2026-07-01 02:42:43.258 [ERROR] Path traversal attempt detected: /api/kernels from fd=59
+2026-07-01 02:42:56.752 [ERROR] Path traversal attempt detected: /embed from fd=59
+2026-07-01 02:43:26.891 [ERROR] Path traversal attempt detected: /api/2.0/mlflow/experiments/list from fd=59
+2026-07-01 02:43:56.947 [ERROR] Path traversal attempt detected: /config from fd=59
+2026-07-01 04:26:40.627 [ERROR] Path traversal attempt detected: /goform/set_LimitClient_cfg from fd=59
+2026-07-01 04:35:25.444 [ERROR] Path traversal attempt detected: /v1/models from fd=59
+2026-07-01 13:35:08.464 [NORMAL] Database config: Wyw@127.0.0.1:3306/webserver (pool: 8)
+2026-07-01 13:35:08.615 [NORMAL] ConnectionPool initialized with 8 connections
+2026-07-01 13:35:08.615 [NORMAL] WebServer started on port 8080
+2026-07-01 13:40:55.642 [ERROR] Path traversal attempt detected: /favicon.ico from fd=61
+2026-07-01 13:40:59.944 [ERROR] Path traversal attempt detected: /favicon.ico from fd=61
+2026-07-01 13:41:00.501 [ERROR] Path traversal attempt detected: /ads.txt from fd=61
+2026-07-01 13:41:00.897 [ERROR] Path traversal attempt detected: /app-ads.txt from fd=61
+2026-07-01 13:41:01.311 [ERROR] Path traversal attempt detected: /sellers.json from fd=62
+2026-07-01 13:41:22.870 [ERROR] epoll_wait failed: Interrupted system call

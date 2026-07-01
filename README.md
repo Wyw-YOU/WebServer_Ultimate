@@ -213,7 +213,7 @@ REQUEST_LINE → HEADERS → BODY → FINISH
 
 ```bash
 # 初始化数据库（首次运行）
-mysql -u root -p < sql/init.sql
+mysql -u Wyw -p < sql/init.sql
 
 # 构建
 mkdir build && cd build
@@ -251,7 +251,7 @@ DB_PASSWORD=mypassword ./server 8080 ../resources
 # 数据库配置
 DB_HOST=127.0.0.1      # 数据库地址（默认：127.0.0.1）
 DB_PORT=3306           # 数据库端口（默认：3306）
-DB_USER=root           # 数据库用户（默认：root）
+DB_USER=Wyw           # 数据库用户（默认：Wyw）
 DB_PASSWORD=           # 数据库密码（必填）
 DB_NAME=webserver      # 数据库名称（默认：webserver）
 DB_POOL_SIZE=8         # 连接池大小（默认：8）
